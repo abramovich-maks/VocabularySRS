@@ -74,4 +74,25 @@ class DictionaryFacadeTest {
         LocalDate nextReviewDate = today.plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
         Assertions.assertEquals(nextReviewDate, entry.getNextReviewDate());
     }
+
+    @Test
+    public void should_throw_an_exception_when_user_want_delete_by_id_not_exist_word() {
+        // given
+        // when
+        WordNotFoundException wordAlreadyExistsException = assertThrows(WordNotFoundException.class, () -> dictionaryFacade.deleteWord(0L));
+        // then
+        assertThat(wordAlreadyExistsException.getMessage()).isEqualTo("Word with id: 0 not found");
+    }
+
+    @Test
+    public void should_deleted_message_when_user_want_delete_by_exist_id() {
+        // given
+        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
+        dictionaryFacade.addWord(dtoRequest);
+        // when
+        WordEntryDtoResponse result = dictionaryFacade.deleteWord(0L);
+        // then
+        assertThat(result.message()).isEqualTo("Deleted word by id: 0");
+        assertThrows(WordNotFoundException.class, () -> dictionaryFacade.deleteWord(0L));
+    }
 }

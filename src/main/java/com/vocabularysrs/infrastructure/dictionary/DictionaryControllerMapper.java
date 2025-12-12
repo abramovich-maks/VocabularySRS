@@ -2,6 +2,8 @@ package com.vocabularysrs.infrastructure.dictionary;
 
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
+import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoRequest;
+import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
 
 class DictionaryControllerMapper {
 
@@ -17,6 +19,12 @@ class DictionaryControllerMapper {
         return WordAddDtoRequest.builder()
                 .word(dtoRequest.word())
                 .translate(dtoRequest.translate())
+                .build();
+    }
+
+    public static DeletedWordEntryControllerDtoResponse mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse(final WordEntryDtoResponse deletedWordEntry) {
+        return DeletedWordEntryControllerDtoResponse.builder()
+                .message(deletedWordEntry.message())
                 .build();
     }
 }

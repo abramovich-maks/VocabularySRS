@@ -20,7 +20,7 @@ class WordAdder {
             log.info("Error: word({}) or translate({}) can't be null", dtoRequest.word(), dtoRequest.translate());
             return new WordEntryDtoResponse(null, null, "Word or translate can't be null");
         }
-        wordRetriever.isExist(dtoRequest.word());
+        wordRetriever.isExistByWord(dtoRequest.word());
         WordEntry newWord = mapFromWordAddDtoRequestToWordEntry(dtoRequest);
         WordEntry save = wordRepository.save(newWord);
         log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());

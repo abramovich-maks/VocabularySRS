@@ -25,4 +25,14 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
         }
         return false;
     }
+
+    @Override
+    public boolean existsById(final Long id) {
+        return database.containsKey(id);
+    }
+
+    @Override
+    public void deleteById(final Long id) {
+        database.remove(id);
+    }
 }
