@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -40,10 +41,23 @@ class WordEntry {
     private String translate;
 
     @Column(nullable = false)
-    private LocalDate dateAdded = LocalDate.now();
+    private LocalDate dateAdded;
 
     @Enumerated(EnumType.STRING)
     private RepetitionInterval currentInterval = RepetitionInterval.INTERVAL_1_DAY;
 
     private LocalDate nextReviewDate = LocalDate.now().plusDays(currentInterval.getDays());
+
+    @PrePersist
+    protected void onCreate() {
+        if (dateAdded == null) {
+            dateAdded = LocalDate.now();
+        }
+        if (currentInterval == null) {
+            currentInterval = RepetitionInterval.INTERVAL_1_DAY;
+        }
+        if (nextReviewDate == null) {
+            nextReviewDate = LocalDate.now().plusDays(currentInterval.getDays());
+        }
+    }
 }
