@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
+import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 
 class WordEntryMapper {
@@ -16,6 +17,14 @@ class WordEntryMapper {
                 .word(save.getWord())
                 .translate(save.getTranslate())
                 .message("Success. New word added")
+                .build();
+    }
+
+    public static WordDtoResponse mapFromWordEntryToWordDtoResponse(final WordEntry wordEntry) {
+        return WordDtoResponse.builder()
+                .id(wordEntry.getId())
+                .word(wordEntry.getWord())
+                .translate(wordEntry.getTranslate())
                 .build();
     }
 }

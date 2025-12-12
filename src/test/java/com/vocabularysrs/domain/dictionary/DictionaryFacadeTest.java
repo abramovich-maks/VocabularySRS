@@ -114,4 +114,40 @@ class DictionaryFacadeTest {
                 () -> assertThat(dictionaryFacade.findAllWords(Pageable.unpaged())).extracting(WordDtoResponse::word).contains("cat", "cat2")
         );
     }
+
+    @Test
+    public void should_return_one_word_entry_by_id() {
+        // given
+        WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2");
+        dictionaryFacade.addWord(dtoRequest1);
+        dictionaryFacade.addWord(dtoRequest2);
+        // when
+        WordDtoResponse result1 = dictionaryFacade.findById(0L);
+        WordDtoResponse result2 = dictionaryFacade.findById(1L);
+        // then
+        assertAll(
+                () -> {
+                    Assertions.assertNotNull(result1);
+                    assertThat(result1.id()).isEqualTo(0);
+                    assertThat(result1.word()).isEqualTo("cat");
+                    assertThat(result1.translate()).isEqualTo("кот");
+                },
+                () -> {
+                    Assertions.assertNotNull(result2);
+                    assertThat(result2.id()).isEqualTo(1);
+                    assertThat(result2.word()).isEqualTo("cat2");
+                    assertThat(result2.translate()).isEqualTo("кот2");
+                }
+        );
+    }
+
+    @Test
+    public void should_throw_an_exception_when_user_want_get_word_entry_is_not_exist() {
+        // given
+        // when
+        WordNotFoundException wordAlreadyExistsException = assertThrows(WordNotFoundException.class, () -> dictionaryFacade.findById(13L));
+        // then
+        assertThat(wordAlreadyExistsException.getMessage()).isEqualTo("Word with id: 13 not found");
+    }
 }

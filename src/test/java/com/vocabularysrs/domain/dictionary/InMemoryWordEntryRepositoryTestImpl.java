@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -43,5 +44,10 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     @Override
     public List<WordEntry> findAll(final Pageable pageable) {
         return new ArrayList<>(database.values());
+    }
+
+    @Override
+    public Optional<WordEntry> findById(final Long id) {
+        return Optional.ofNullable(database.get(id));
     }
 }

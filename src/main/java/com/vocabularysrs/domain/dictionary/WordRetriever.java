@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.vocabularysrs.domain.dictionary.WordEntryMapper.mapFromWordEntryToWordDtoResponse;
+
 @AllArgsConstructor
 class WordRetriever {
 
@@ -27,11 +29,13 @@ class WordRetriever {
 
     List<WordDtoResponse> findAll(final Pageable pageable) {
         return wordEntryRepository.findAll(pageable)
-                .stream().map(word -> WordDtoResponse.builder()
-                        .id(word.getId())
-                        .word(word.getWord())
-                        .translate(word.getTranslate())
-                        .build())
+                .stream().map(WordEntryMapper::mapFromWordEntryToWordDtoResponse)
                 .collect(Collectors.toList());
+    }
+
+    WordDtoResponse findById(Long id) {
+        WordEntry wordEntry = wordEntryRepository.findById(id)
+                .orElseThrow(() -> new WordNotFoundException(id));
+        return mapFromWordEntryToWordDtoResponse(wordEntry);
     }
 }

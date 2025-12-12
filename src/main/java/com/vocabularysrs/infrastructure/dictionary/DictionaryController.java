@@ -5,6 +5,7 @@ import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.GetAllWordsResponseDto;
+import com.vocabularysrs.infrastructure.dictionary.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordDtoResponseToWordDtoControllerResponse;
 import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordDtoresponseToGetAllWordsResponseDto;
 import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordEntryControllerDtoRequestToWordAddDtoRequest;
 import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
@@ -32,7 +34,7 @@ class DictionaryController {
 
     private final DictionaryFacade dictionaryFacade;
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<WordEntryControllerDtoResponse> addWord(@RequestBody WordEntryControllerDtoRequest dtoRequest) {
         WordAddDtoRequest wordEntry = mapFromWordEntryControllerDtoRequestToWordAddDtoRequest(dtoRequest);
         WordEntryDtoResponse newWordEntry = dictionaryFacade.addWord(wordEntry);
@@ -52,6 +54,13 @@ class DictionaryController {
         List<WordDtoResponse> allWords = dictionaryFacade.findAllWords(pageable);
         GetAllWordsResponseDto getAllWordsResponseDto = mapFromWordDtoresponseToGetAllWordsResponseDto(allWords);
         return ResponseEntity.ok().body(getAllWordsResponseDto);
+    }
+
+    @GetMapping("/{wordEntryId}")
+    public ResponseEntity<WordDtoControllerResponse> getAllWords(@PathVariable Long wordEntryId) {
+        WordDtoResponse wordEntryById = dictionaryFacade.findById(wordEntryId);
+        WordDtoControllerResponse response = mapFromWordDtoResponseToWordDtoControllerResponse(wordEntryById);
+        return ResponseEntity.ok().body(response);
     }
 }
 
