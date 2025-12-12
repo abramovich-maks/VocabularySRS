@@ -1,9 +1,15 @@
 package com.vocabularysrs.infrastructure.dictionary;
 
-import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
+import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.dto.GetAllWordsResponseDto;
+import com.vocabularysrs.infrastructure.dictionary.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 class DictionaryControllerMapper {
 
@@ -26,5 +32,20 @@ class DictionaryControllerMapper {
         return DeletedWordEntryControllerDtoResponse.builder()
                 .message(deletedWordEntry.message())
                 .build();
+    }
+
+    public static WordDtoControllerResponse mapFromWordDtoResponseToWordDtoControllerResponse(WordDtoResponse dtoResponse) {
+        return WordDtoControllerResponse.builder()
+                .id(dtoResponse.id())
+                .word(dtoResponse.word())
+                .translate(dtoResponse.translate())
+                .build();
+    }
+
+    public static GetAllWordsResponseDto mapFromWordDtoresponseToGetAllWordsResponseDto(List<WordDtoResponse> songs) {
+        List<WordDtoControllerResponse> dtos = songs.stream()
+                .map(DictionaryControllerMapper::mapFromWordDtoResponseToWordDtoControllerResponse)
+                .collect(Collectors.toList());
+        return new GetAllWordsResponseDto(dtos);
     }
 }

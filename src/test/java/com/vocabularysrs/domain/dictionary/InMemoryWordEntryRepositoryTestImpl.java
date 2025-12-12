@@ -1,5 +1,9 @@
 package com.vocabularysrs.domain.dictionary;
 
+import org.springframework.data.domain.Pageable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,5 +38,10 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     @Override
     public void deleteById(final Long id) {
         database.remove(id);
+    }
+
+    @Override
+    public List<WordEntry> findAll(final Pageable pageable) {
+        return new ArrayList<>(database.values());
     }
 }

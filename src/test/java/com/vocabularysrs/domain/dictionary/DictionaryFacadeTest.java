@@ -1,13 +1,16 @@
 package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
+import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DictionaryFacadeTest {
@@ -94,5 +97,21 @@ class DictionaryFacadeTest {
         // then
         assertThat(result.message()).isEqualTo("Deleted word by id: 0");
         assertThrows(WordNotFoundException.class, () -> dictionaryFacade.deleteWord(0L));
+    }
+
+    @Test
+    public void should_return_all_words_entry() {
+        // given
+        assertThat(dictionaryFacade.findAllWords(Pageable.unpaged())).isEmpty();
+        WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2");
+        // when
+        dictionaryFacade.addWord(dtoRequest1);
+        dictionaryFacade.addWord(dtoRequest2);
+        // then
+        assertAll(
+                () -> assertThat(dictionaryFacade.findAllWords(Pageable.unpaged())).hasSize(2),
+                () -> assertThat(dictionaryFacade.findAllWords(Pageable.unpaged())).extracting(WordDtoResponse::word).contains("cat", "cat2")
+        );
     }
 }
