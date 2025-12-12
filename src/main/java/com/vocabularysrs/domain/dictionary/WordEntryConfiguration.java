@@ -11,6 +11,7 @@ class WordEntryConfiguration {
         WordRetriever wordRetriever = new WordRetriever(wordRepository);
         WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever);
         WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever);
-        return new DictionaryFacade(wordAdder, wordDeleter, wordRetriever);
+        WordUpdater wordUpdater = new WordUpdater(wordRetriever);
+        return new DictionaryFacade(wordAdder, wordDeleter, wordRetriever, wordUpdater);
     }
 }

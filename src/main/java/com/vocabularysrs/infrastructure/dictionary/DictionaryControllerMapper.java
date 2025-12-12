@@ -1,12 +1,15 @@
 package com.vocabularysrs.infrastructure.dictionary;
 
+import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.dto.WordUpdatePartiallyDtoResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,5 +50,14 @@ class DictionaryControllerMapper {
                 .map(DictionaryControllerMapper::mapFromWordDtoResponseToWordDtoControllerResponse)
                 .collect(Collectors.toList());
         return new GetAllWordsResponseDto(dtos);
+    }
+
+    public static WordUpdatePartiallyDtoResponse mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse(final WordEntryUpdateDtoResponse wordEntryById) {
+        return WordUpdatePartiallyDtoResponse.builder()
+                .id(wordEntryById.id())
+                .word(wordEntryById.word())
+                .translate(wordEntryById.translate())
+                .message(wordEntryById.message())
+                .build();
     }
 }

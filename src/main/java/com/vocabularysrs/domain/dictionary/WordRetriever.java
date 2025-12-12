@@ -38,4 +38,9 @@ class WordRetriever {
                 .orElseThrow(() -> new WordNotFoundException(id));
         return mapFromWordEntryToWordDtoResponse(wordEntry);
     }
+
+    WordEntry findEntityById(Long id) {
+        return wordEntryRepository.findById(id)
+                .orElseThrow(() -> new WordNotFoundException(id));
+    }
 }

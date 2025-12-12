@@ -3,6 +3,8 @@ package com.vocabularysrs.domain.dictionary;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ public class DictionaryFacade {
     private final WordAdder wordAdder;
     private final WordDeleter wordDeleter;
     private final WordRetriever wordRetriever;
+    private final WordUpdater wordUpdater;
 
     public WordEntryDtoResponse addWord(WordAddDtoRequest dtoRequest) {
         return wordAdder.addWord(dtoRequest);
@@ -31,5 +34,9 @@ public class DictionaryFacade {
 
     public WordDtoResponse findById(Long id) {
         return wordRetriever.findById(id);
+    }
+
+    public WordEntryUpdateDtoResponse updatePartiallyById(Long id, WordUpdatePartiallyDtoRequest dtoRequest){
+        return wordUpdater.updateById(id, dtoRequest);
     }
 }

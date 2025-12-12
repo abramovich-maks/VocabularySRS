@@ -3,6 +3,9 @@ package com.vocabularysrs.domain.dictionary;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
+
+import static java.lang.String.format;
 
 class WordEntryMapper {
     public static WordEntry mapFromWordAddDtoRequestToWordEntry(final WordAddDtoRequest dtoRequest) {
@@ -25,6 +28,15 @@ class WordEntryMapper {
                 .id(wordEntry.getId())
                 .word(wordEntry.getWord())
                 .translate(wordEntry.getTranslate())
+                .build();
+    }
+
+    public static WordEntryUpdateDtoResponse mapFromWordEntryToWordEntryUpdateDtoResponse(final Long id, final WordEntry wordEntry) {
+        return WordEntryUpdateDtoResponse.builder()
+                .id(wordEntry.getId())
+                .word(wordEntry.getWord())
+                .translate(wordEntry.getTranslate())
+                .message(format("Success. Word entry with id: %s updated", id))
                 .build();
     }
 }

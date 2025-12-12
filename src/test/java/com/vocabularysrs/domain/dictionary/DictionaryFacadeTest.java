@@ -3,6 +3,8 @@ package com.vocabularysrs.domain.dictionary;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
@@ -149,5 +151,53 @@ class DictionaryFacadeTest {
         WordNotFoundException wordAlreadyExistsException = assertThrows(WordNotFoundException.class, () -> dictionaryFacade.findById(13L));
         // then
         assertThat(wordAlreadyExistsException.getMessage()).isEqualTo("Word with id: 13 not found");
+    }
+
+    @Test
+    public void should_return_updated_word() {
+        // given
+        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
+        dictionaryFacade.addWord(dtoRequest);
+        WordUpdatePartiallyDtoRequest updateRequest = WordUpdatePartiallyDtoRequest.builder()
+                .word("dog")
+                .build();
+        // when
+        WordEntryUpdateDtoResponse updatedWordEntry = dictionaryFacade.updatePartiallyById(0L, updateRequest);
+        // then
+        WordDtoResponse result1 = dictionaryFacade.findById(0L);
+        assertAll(
+                () -> assertThat(updatedWordEntry.message()).isEqualTo("Success. Word entry with id: 0 updated"),
+                () -> assertThat(updatedWordEntry.word()).isEqualTo("dog"),
+                () -> assertThat(updatedWordEntry.translate()).isEqualTo("кот"),
+                () -> {
+                    Assertions.assertNotNull(result1);
+                    assertThat(result1.id()).isEqualTo(0);
+                    assertThat(result1.word()).isEqualTo("dog");
+                    assertThat(result1.translate()).isEqualTo("кот");
+                });
+    }
+
+    @Test
+    public void should_return_updated_translate() {
+        // given
+        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
+        dictionaryFacade.addWord(dtoRequest);
+        WordUpdatePartiallyDtoRequest updateRequest = WordUpdatePartiallyDtoRequest.builder()
+                .translate("dog")
+                .build();
+        // when
+        WordEntryUpdateDtoResponse updatedWordEntry = dictionaryFacade.updatePartiallyById(0L, updateRequest);
+        // then
+        WordDtoResponse result1 = dictionaryFacade.findById(0L);
+        assertAll(
+                () -> assertThat(updatedWordEntry.message()).isEqualTo("Success. Word entry with id: 0 updated"),
+                () -> assertThat(updatedWordEntry.word()).isEqualTo("cat"),
+                () -> assertThat(updatedWordEntry.translate()).isEqualTo("dog"),
+                () -> {
+                    Assertions.assertNotNull(result1);
+                    assertThat(result1.id()).isEqualTo(0);
+                    assertThat(result1.word()).isEqualTo("cat");
+                    assertThat(result1.translate()).isEqualTo("dog");
+                });
     }
 }
