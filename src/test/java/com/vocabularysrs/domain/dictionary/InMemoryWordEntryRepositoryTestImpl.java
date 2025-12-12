@@ -15,4 +15,14 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
         wordEntry.setId(index);
         return wordEntry;
     }
+
+    @Override
+    public boolean existsByWord(final String word) {
+        for (WordEntry entry : database.values()) {
+            if (entry.getWord().equals(word)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

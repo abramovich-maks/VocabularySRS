@@ -2,9 +2,13 @@ package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DictionaryFacadeTest {
 
@@ -34,5 +38,40 @@ class DictionaryFacadeTest {
         assertThat(result_1.message()).isEqualTo("Word or translate can't be null");
         assertThat(result_1.word()).isNull();
         assertThat(result_2.translate()).isNull();
+    }
+
+    @Test
+    public void should_throw_an_exception_when_word_already_exist() {
+        // given
+        WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest word_2 = new WordAddDtoRequest("cat", "кот");
+        // when
+        dictionaryFacade.addWord(word_1);
+        // then
+        WordAlreadyExistsException wordAlreadyExistsException = assertThrows(WordAlreadyExistsException.class, () -> dictionaryFacade.addWord(word_2));
+        assertThat(wordAlreadyExistsException.getMessage()).isEqualTo("Word \"cat\" already exists");
+    }
+
+    @Test
+    public void should_save_date_created() {
+        // given
+        WordEntry entry = WordEntry.builder()
+                .word("cat")
+                .translate("кот")
+                .build();
+        Assertions.assertNull(entry.getDateAdded());
+        Assertions.assertNull(entry.getNextReviewDate());
+
+        // when
+        entry.onCreate();
+        // then
+        Assertions.assertNotNull(entry.getDateAdded());
+        Assertions.assertNotNull(entry.getNextReviewDate());
+
+        LocalDate today = LocalDate.now();
+        Assertions.assertEquals(today, entry.getDateAdded());
+
+        LocalDate nextReviewDate = today.plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
+        Assertions.assertEquals(nextReviewDate, entry.getNextReviewDate());
     }
 }
