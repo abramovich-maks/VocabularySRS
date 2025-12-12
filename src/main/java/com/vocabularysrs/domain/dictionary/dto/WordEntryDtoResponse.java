@@ -1,4 +1,4 @@
-package com.vocabularysrs.domain.dictionary;
+package com.vocabularysrs.domain.dictionary.dto;
 
 import lombok.Builder;
 

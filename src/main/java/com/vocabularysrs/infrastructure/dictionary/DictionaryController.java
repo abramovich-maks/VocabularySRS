@@ -1,7 +1,7 @@
 package com.vocabularysrs.infrastructure.dictionary;
 
 import com.vocabularysrs.domain.dictionary.DictionaryFacade;
-import com.vocabularysrs.domain.dictionary.WordEntryDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

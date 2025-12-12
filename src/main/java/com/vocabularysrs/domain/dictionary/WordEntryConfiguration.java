@@ -8,7 +8,8 @@ class WordEntryConfiguration {
 
     @Bean
     DictionaryFacade dictionaryFacade(WordEntryRepository wordRepository) {
-        WordAdder wordAdder = new WordAdder(wordRepository);
+        WordRetriever wordRetriever = new WordRetriever(wordRepository);
+        WordAdder wordAdder = new WordAdder(wordRepository,wordRetriever);
         return new DictionaryFacade(wordAdder);
     }
 }

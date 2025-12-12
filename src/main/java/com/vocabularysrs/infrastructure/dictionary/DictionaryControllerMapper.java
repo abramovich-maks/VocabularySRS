@@ -1,6 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary;
 
-import com.vocabularysrs.domain.dictionary.WordEntryDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 
 class DictionaryControllerMapper {

@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
