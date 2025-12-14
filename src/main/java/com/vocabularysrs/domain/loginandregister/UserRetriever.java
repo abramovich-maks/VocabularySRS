@@ -9,8 +9,19 @@ class UserRetriever {
 
     private final UserRepository userRepository;
 
-    public boolean existsByEmail(final String email) {
-        return userRepository.existsByEmail(email);
+    public void existsByEmail(final String email) {
+        boolean emailExists = userRepository.existsByEmail(email);
+        if (emailExists) {
+            throw new UserAlreadyExistException(email);
+        }
     }
 
+    public UserDtoResponse findByEmail(String email) {
+        User userFound = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found "));
+        return UserDtoResponse.builder()
+                .email(userFound.getEmail())
+                .password(userFound.getPasswordHash())
+                .build();
+    }
 }

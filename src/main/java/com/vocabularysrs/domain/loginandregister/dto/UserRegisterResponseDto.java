@@ -1,4 +1,4 @@
-package com.vocabularysrs.domain.loginandregister;
+package com.vocabularysrs.domain.loginandregister.dto;
 
 import lombok.Builder;
 

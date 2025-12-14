@@ -1,5 +1,7 @@
 package com.vocabularysrs.domain.loginandregister;
 
+import com.vocabularysrs.domain.loginandregister.dto.UserRegisterRequestDto;
+import com.vocabularysrs.domain.loginandregister.dto.UserRegisterResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,10 +17,7 @@ class UserAdder {
     private final PasswordEncoder bCryptpasswordEncoder;
 
     UserRegisterResponseDto addUser(final UserRegisterRequestDto requestDto) {
-        boolean emailExists = userRetriever.existsByEmail(requestDto.email());
-        if (emailExists) {
-            throw new UserAlreadyExistException(requestDto.email());
-        }
+        userRetriever.existsByEmail(requestDto.email());
         String encodedPassword = bCryptpasswordEncoder.encode(requestDto.password());
         User createdUser = User.createNew(requestDto.username(), requestDto.surname(), requestDto.email(), encodedPassword);
         User savedUser = userRepository.save(createdUser);

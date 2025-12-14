@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.loginandregister;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -27,10 +28,11 @@ class InMemoryUserRepository implements UserRepository {
         return user;
     }
 
-    public User findByEmail(final String email) {
-        return database.values().stream()
+    @Override
+    public Optional<User> findByEmail(final String email) {
+        return Optional.ofNullable(database.values().stream()
                 .filter(u -> u.getEmail().equals(email))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found")));
     }
 }
