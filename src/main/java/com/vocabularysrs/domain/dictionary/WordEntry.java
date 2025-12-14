@@ -35,6 +35,9 @@ class WordEntry {
     private Long id;
 
     @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private String word;
 
     @Column(nullable = false)
@@ -46,7 +49,7 @@ class WordEntry {
     @Enumerated(EnumType.STRING)
     private RepetitionInterval currentInterval = RepetitionInterval.INTERVAL_1_DAY;
 
-    private LocalDate nextReviewDate = LocalDate.now().plusDays(currentInterval.getDays());
+    private LocalDate nextReviewDate;
 
     @PrePersist
     protected void onCreate() {

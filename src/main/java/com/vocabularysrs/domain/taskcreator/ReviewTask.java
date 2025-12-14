@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.taskcreator;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,7 +25,7 @@ import java.util.List;
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
 @Entity
-public class ReviewTask {
+class ReviewTask {
     @Id
     @GeneratedValue(generator = "review_task_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
@@ -34,10 +35,14 @@ public class ReviewTask {
     )
     private Long id;
 
+    @Column(nullable = false)
+    private Long userId;
+
+    @Column(nullable = false)
     private LocalDate taskDate;
 
     @OneToMany(mappedBy = "reviewTask", cascade = CascadeType.ALL)
-    private List<ReviewTaskItem> items= new ArrayList<>();
+    private List<ReviewTaskItem> items = new ArrayList<>();
 
     public void addItem(ReviewTaskItem item) {
         this.items.add(item);
