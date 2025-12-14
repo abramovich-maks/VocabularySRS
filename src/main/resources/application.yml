@@ -22,3 +22,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+
+vocabulary:
+  task-creator:
+    scheduler: "0 0 6 * * *"

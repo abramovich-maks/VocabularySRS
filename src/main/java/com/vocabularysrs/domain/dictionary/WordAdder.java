@@ -22,6 +22,7 @@ class WordAdder {
         }
         wordRetriever.isExistByWord(dtoRequest.word());
         WordEntry newWord = mapFromWordAddDtoRequestToWordEntry(dtoRequest);
+        newWord.onCreate();
         WordEntry save = wordRepository.save(newWord);
         log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
         return mapFromWordEntryToWordEntryDtoResponse(save);
