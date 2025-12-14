@@ -8,6 +8,7 @@ import com.vocabularysrs.domain.loginandregister.dto.UserRegisterResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,12 +21,12 @@ class LoginAndRegisterController {
     private final LoginAndRegisterFacade loginAndRegisterFacade;
 
     @PostMapping("/register")
-    public UserRegisterResponseDto registerUser(UserRegisterRequestDto requestDto) {
+    public UserRegisterResponseDto registerUser(@RequestBody UserRegisterRequestDto requestDto) {
         return loginAndRegisterFacade.registerUser(requestDto);
     }
 
     @PostMapping("/login")
-    public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
+    public UserLoginResponseDto login(@RequestBody UserLoginRequestDto requestDto) {
         return loginAndRegisterFacade.login(requestDto);
     }
 }
