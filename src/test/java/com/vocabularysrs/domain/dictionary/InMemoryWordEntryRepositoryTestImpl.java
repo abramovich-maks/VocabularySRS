@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.dictionary;
 
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     AtomicInteger index = new AtomicInteger(0);
 
     public WordEntry save(final WordEntry wordEntry) {
+        wordEntry.onCreate();
         long index = this.index.getAndIncrement();
         database.put(index, wordEntry);
         wordEntry.setId(index);
@@ -49,5 +51,16 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     @Override
     public Optional<WordEntry> findById(final Long id) {
         return Optional.ofNullable(database.get(id));
+    }
+
+    @Override
+    public List<WordEntry> findByNextReviewDate(final LocalDate date) {
+        List<WordEntry> findWordEntry = new ArrayList<>();
+        for (WordEntry entry : database.values()) {
+            if (entry.getNextReviewDate().equals(date)) {
+                findWordEntry.add(entry);
+            }
+        }
+        return findWordEntry;
     }
 }

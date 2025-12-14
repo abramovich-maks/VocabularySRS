@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,7 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DictionaryFacadeTest {
 
-    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(new InMemoryWordEntryRepositoryTestImpl());
+    private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
+    WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
+    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository);
 
     @Test
     public void should_return_success_when_user_gave_new_word_and_translate() {
@@ -199,5 +202,34 @@ class DictionaryFacadeTest {
                     assertThat(result1.word()).isEqualTo("cat");
                     assertThat(result1.translate()).isEqualTo("dog");
                 });
+    }
+
+    @Test
+    void should_return_words_entry_by_next_review_date() {
+        // given
+        LocalDate reviewDate = LocalDate.now().plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
+        // when
+        List<WordEntrySnapshot> wordsForReview = wordEntryReadPort.findWordsForReview(reviewDate);
+        // then
+        assertThat(wordsForReview)
+                .extracting(WordEntrySnapshot::word)
+                .containsExactlyInAnyOrder("cat", "dog");
+    }
+
+    @Test
+    void should_map_entities_to_snapshots_for_given_date() {
+        // given
+        WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest word_2 = new WordAddDtoRequest("dog", "собака");
+        dictionaryFacade.addWord(word_1);
+        dictionaryFacade.addWord(word_2);
+        WordEntryJpaAdapter adapter = new WordEntryJpaAdapter(repository);
+        LocalDate reviewDate = LocalDate.now().plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
+        // when
+        List<WordEntrySnapshot> result = adapter.findWordsForReview(reviewDate);
+        // then
+        assertThat(result)
+                .extracting(WordEntrySnapshot::word)
+                .containsExactlyInAnyOrder("cat", "dog");
     }
 }
