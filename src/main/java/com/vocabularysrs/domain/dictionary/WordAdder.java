@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -14,6 +15,8 @@ class WordAdder {
 
     private final WordEntryRepository wordRepository;
     private final WordRetriever wordRetriever;
+    private final CurrentUserProvider currentUserProvider;
+
 
     WordEntryDtoResponse addWord(final WordAddDtoRequest dtoRequest) {
         if (dtoRequest.word() == null || dtoRequest.translate() == null) {
@@ -23,6 +26,7 @@ class WordAdder {
         wordRetriever.isExistByWord(dtoRequest.word());
         WordEntry newWord = mapFromWordAddDtoRequestToWordEntry(dtoRequest);
         newWord.onCreate();
+        newWord.setUserId(currentUserProvider.getCurrentUserId());  // todo change setUserId for real user
         WordEntry save = wordRepository.save(newWord);
         log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
         return mapFromWordEntryToWordEntryDtoResponse(save);

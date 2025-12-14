@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-interface WordEntryRepository extends Repository<WordEntry, String> {
+interface WordEntryRepository extends Repository<WordEntry, Long> {
     WordEntry save(WordEntry newWord);
 
     boolean existsByWord(String word);

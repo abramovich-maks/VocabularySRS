@@ -5,6 +5,7 @@ import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,8 @@ class DictionaryFacadeTest {
 
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
     WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
-    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository);
+    CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
+    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider);
 
     @Test
     public void should_return_success_when_user_gave_new_word_and_translate() {
