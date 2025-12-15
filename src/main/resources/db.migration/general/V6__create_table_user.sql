@@ -12,7 +12,3 @@ CREATE TABLE users
 
 ALTER TABLE users
     ADD CONSTRAINT uc_users_email UNIQUE (email);
-
-DROP TABLE "user" CASCADE;
-
-DROP SEQUENCE user_id_seq CASCADE;

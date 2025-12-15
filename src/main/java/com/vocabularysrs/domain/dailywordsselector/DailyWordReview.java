@@ -1,4 +1,4 @@
-package com.vocabularysrs.domain.taskcreator;
+package com.vocabularysrs.domain.dailywordsselector;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,12 +25,12 @@ import java.util.List;
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
 @Entity
-class ReviewTask {
+class DailyWordReview {
     @Id
-    @GeneratedValue(generator = "review_task_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "daily_word_review_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
-            name = "review_task_id_seq",
-            sequenceName = "review_task_id_seq",
+            name = "daily_word_review_id_seq",
+            sequenceName = "daily_word_review_id_seq",
             allocationSize = 1
     )
     private Long id;
@@ -41,11 +41,11 @@ class ReviewTask {
     @Column(nullable = false)
     private LocalDate taskDate;
 
-    @OneToMany(mappedBy = "reviewTask", cascade = CascadeType.ALL)
-    private List<ReviewTaskItem> items = new ArrayList<>();
+    @OneToMany(mappedBy = "dailyWordReview", cascade = CascadeType.ALL)
+    private List<ReviewWordItem> items = new ArrayList<>();
 
-    public void addItem(ReviewTaskItem item) {
+    public void addItem(ReviewWordItem item) {
         this.items.add(item);
-        item.setReviewTask(this);
+        item.setDailyWordReview(this);
     }
 }
