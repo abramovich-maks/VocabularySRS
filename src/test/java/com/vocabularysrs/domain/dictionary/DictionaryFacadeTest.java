@@ -211,11 +211,11 @@ class DictionaryFacadeTest {
         // given
         LocalDate reviewDate = LocalDate.now().plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
         // when
-        List<WordEntrySnapshot> wordsForReview = wordEntryReadPort.findWordsForReview(reviewDate);
+        List<WordEntrySnapshot> wordsForReview = wordEntryReadPort.findWordEntriesByNextReviewDate(reviewDate);
         // then
         assertThat(wordsForReview)
                 .extracting(WordEntrySnapshot::word)
-                .containsExactlyInAnyOrder("cat", "dog");
+                .containsExactlyInAnyOrder("cat", "dog","sun");
     }
 
     @Test
@@ -228,7 +228,7 @@ class DictionaryFacadeTest {
         WordEntryJpaAdapter adapter = new WordEntryJpaAdapter(repository);
         LocalDate reviewDate = LocalDate.now().plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
         // when
-        List<WordEntrySnapshot> result = adapter.findWordsForReview(reviewDate);
+        List<WordEntrySnapshot> result = adapter.findWordEntriesByNextReviewDate(reviewDate);
         // then
         assertThat(result)
                 .extracting(WordEntrySnapshot::word)

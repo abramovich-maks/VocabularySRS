@@ -1,4 +1,4 @@
-package com.vocabularysrs.domain.taskcreator;
+package com.vocabularysrs.domain.dailywordsselector;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,26 +20,27 @@ import lombok.Setter;
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
 @Entity
-class ReviewTaskItem {
+class ReviewWordItem {
 
     @Id
-    @GeneratedValue(generator = "review_task_item_id_seq", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "review_word_item_id_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(
-            name = "review_task_item_id_seq",
-            sequenceName = "review_task_item_id_seq",
+            name = "review_word_item_id_seq",
+            sequenceName = "review_word_item_id_seq",
             allocationSize = 1
     )
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private ReviewTask reviewTask;
+    private DailyWordReview dailyWordReview;
 
     private Long wordEntryId;
+    private String word;
+    private String translate;
 
-    private int attempts;
-
-    public ReviewTaskItem(Long wordEntryId) {
+    ReviewWordItem(final Long wordEntryId, final String word, final String translate) {
         this.wordEntryId = wordEntryId;
-        this.attempts = 0;
+        this.word = word;
+        this.translate = translate;
     }
 }

@@ -1,4 +1,7 @@
-package com.vocabularysrs.domain.dictionary;
+package com.vocabularysrs.domain.dailywordsselector;
+
+import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
+import com.vocabularysrs.domain.dictionary.WordEntrySnapshot;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

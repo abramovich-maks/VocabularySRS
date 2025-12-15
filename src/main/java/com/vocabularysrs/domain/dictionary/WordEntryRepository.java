@@ -25,5 +25,5 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
     @Query("SELECT s FROM WordEntry s WHERE s.id = :id")
     Optional<WordEntry> findById(Long id);
 
-    List<WordEntry> findByNextReviewDate(LocalDate date);
+    List<WordEntry> findWordEntriesByNextReviewDate(LocalDate nextReviewDate);
 }
