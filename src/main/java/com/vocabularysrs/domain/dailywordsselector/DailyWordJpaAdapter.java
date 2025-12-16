@@ -3,6 +3,7 @@ package com.vocabularysrs.domain.dailywordsselector;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -12,8 +13,8 @@ class DailyWordJpaAdapter implements DailyWordReadPort {
     private final DailyWordRepository repository;
 
     @Override
-    public List<DailyWordSnapshot> findDailyWordByUserId(final Long userId) {
-        return repository.findDailyWordReviewByUserId(userId)
+    public List<DailyWordSnapshot> findDailyWordReviewByTaskDate(LocalDate today) {
+        return repository.findDailyWordReviewByTaskDate(today)
                 .stream()
                 .map(dailyWord -> new DailyWordSnapshot(
                         dailyWord.getId(),

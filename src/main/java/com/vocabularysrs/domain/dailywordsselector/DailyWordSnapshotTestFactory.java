@@ -7,6 +7,7 @@ public class DailyWordSnapshotTestFactory {
 
     public static DailyWordSnapshot withSingleWord(
             Long userId,
+            LocalDate taskDate,
             String word,
             String translation
     ) {
