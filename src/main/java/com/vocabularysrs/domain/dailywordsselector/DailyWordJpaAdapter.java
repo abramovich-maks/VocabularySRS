@@ -20,7 +20,7 @@ class DailyWordJpaAdapter implements DailyWordReadPort {
                         dailyWord.getUserId(),
                         dailyWord.getTaskDate(),
                         dailyWord.getItems().stream()
-                                .map(item -> new ReviewWordItem(
+                                .map(item -> new ReviewWordItemSnapshot(
                                         item.getWordEntryId(),
                                         item.getWord(),
                                         item.getTranslate()

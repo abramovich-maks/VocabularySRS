@@ -7,8 +7,7 @@ public record DailyWordSnapshot(
         Long id,
         Long userId,
         LocalDate taskDate,
-        List<ReviewWordItem> item
-
+        List<ReviewWordItemSnapshot> items
 ) {
 }
 
