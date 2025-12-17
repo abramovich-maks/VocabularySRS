@@ -28,7 +28,7 @@ class Question {
     @SequenceGenerator(
             name = "question_id_seq",
             sequenceName = "question_id_seq",
-            allocationSize = 1
+            allocationSize = 50
     )
     private Long id;
 
@@ -38,7 +38,7 @@ class Question {
     private TranslationDirection direction;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private LearningTask task;
+    private LearningTask learningTask;
 
     Question(final String prompt, final TranslationDirection direction) {
         this.prompt = prompt;

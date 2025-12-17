@@ -27,7 +27,7 @@ class ReviewWordItem {
     @SequenceGenerator(
             name = "review_word_item_id_seq",
             sequenceName = "review_word_item_id_seq",
-            allocationSize = 1
+            allocationSize = 50
     )
     private Long id;
 

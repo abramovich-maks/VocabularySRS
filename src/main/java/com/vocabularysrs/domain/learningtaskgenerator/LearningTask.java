@@ -31,7 +31,7 @@ class LearningTask {
     @SequenceGenerator(
             name = "learning_task_id_seq",
             sequenceName = "learning_task_id_seq",
-            allocationSize = 1
+            allocationSize = 10
     )
     private Long id;
 
@@ -50,6 +50,6 @@ class LearningTask {
 
     public void addQuestion(Question question) {
         this.questions.add(question);
-        question.setTask(this);
+        question.setLearningTask(this);
     }
 }
