@@ -1,4 +1,4 @@
-CREATE SEQUENCE IF NOT EXISTS review_word_item_id_seq START WITH 1 INCREMENT BY 1;
+CREATE SEQUENCE IF NOT EXISTS review_word_item_id_seq START WITH 1 INCREMENT BY 50;
 
 CREATE TABLE review_word_item
 (
