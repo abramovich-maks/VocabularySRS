@@ -19,10 +19,10 @@ class LearningTaskAdder {
     private final DailyWordReadPort dailyWordReadPort;
     private final LearningTaskRepository learningTaskRepository;
 
-    public List<LearningTask> generateTasks(LocalDate date) {
-
+    public List<LearningTask> generateTasks() {
+        LocalDate today = LocalDate.now();
         List<DailyWordSnapshot> snapshots =
-                dailyWordReadPort.findDailyWordReviewByTaskDate(date);
+                dailyWordReadPort.findDailyWordReviewByTaskDate(today);
 
         Map<Long, List<DailyWordSnapshot>> byUser =
                 snapshots.stream()
@@ -33,7 +33,7 @@ class LearningTaskAdder {
         for (var entry : byUser.entrySet()) {
             Long userId = entry.getKey();
 
-            LearningTask task = new LearningTask(userId, date, new ArrayList<>());
+            LearningTask task = new LearningTask(userId, today, new ArrayList<>());
 
             for (DailyWordSnapshot snapshot : entry.getValue()) {
                 snapshot.items().forEach(item -> {

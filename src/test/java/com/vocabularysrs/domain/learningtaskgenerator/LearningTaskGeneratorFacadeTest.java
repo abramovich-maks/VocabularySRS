@@ -19,7 +19,7 @@ class LearningTaskGeneratorFacadeTest {
         LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordReadPort, dailyWordRepository);
         LocalDate today = LocalDate.now();
         // when
-        List<LearningTask> learningTasks = learningTaskGeneratorFacade.generateTasks(today);
+        List<LearningTask> learningTasks = learningTaskGeneratorFacade.generateTasks();
         // then
         assertThat(learningTasks).hasSize(1);
         LearningTask task = learningTasks.get(0);
@@ -40,7 +40,7 @@ class LearningTaskGeneratorFacadeTest {
         LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordReadPortWithTwoUsers, dailyWordRepository);
         LocalDate today = LocalDate.now();
         // when
-        List<LearningTask> tasks = learningTaskGeneratorFacade.generateTasks(today);
+        List<LearningTask> tasks = learningTaskGeneratorFacade.generateTasks();
         // then
         assertThat(tasks).hasSize(2);
         // USER1

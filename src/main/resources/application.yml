@@ -25,5 +25,7 @@ spring:
 
 
 vocabulary:
-  task-creator:
+  daily-words:
     scheduler: "0 0 6 * * *"
+  learning-task-generator:
+    scheduler: "0 05 6 * * *"

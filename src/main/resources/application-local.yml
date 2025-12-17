@@ -1,3 +1,5 @@
 vocabulary:
-  task-creator:
+  daily-words:
     scheduler: "*/10 * * * * *"
+  learning-task-generator:
+    scheduler: "*/13 * * * * *"

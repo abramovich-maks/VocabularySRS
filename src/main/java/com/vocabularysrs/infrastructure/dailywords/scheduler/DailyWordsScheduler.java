@@ -1,4 +1,4 @@
-package com.vocabularysrs.infrastructure.taskcreator.scheduler;
+package com.vocabularysrs.infrastructure.dailywords.scheduler;
 
 import com.vocabularysrs.domain.dailywordsselector.DailyWordsSelectorFacade;
 import lombok.AllArgsConstructor;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Log4j2
 @Component
-class TaskCreatorScheduler {
+class DailyWordsScheduler {
     private final DailyWordsSelectorFacade dailyWordsSelectorFacade;
 
-    @Scheduled(cron = "${vocabulary.task-creator.scheduler}")
-    public void createDailyReviewTask() {
+    @Scheduled(cron = "${vocabulary.daily-words.scheduler}")
+    public void retrieveWords() {
         try {
             dailyWordsSelectorFacade.retrieveWordsByDate();
         } catch (IllegalStateException e) {
