@@ -37,8 +37,8 @@ class LearningTaskAdder {
 
             for (DailyWordSnapshot snapshot : entry.getValue()) {
                 snapshot.items().forEach(item -> {
-                    task.addQuestion(new Question(item.word(), WORD_TO_TRANSLATION));
-                    task.addQuestion(new Question(item.translation(), TRANSLATION_TO_WORD));
+                    task.addQuestion(new Question(item.word(), WORD_TO_TRANSLATION, item.translation()));
+                    task.addQuestion(new Question(item.translation(), TRANSLATION_TO_WORD, item.word()));
                 });
             }
             result.add(learningTaskRepository.save(task));

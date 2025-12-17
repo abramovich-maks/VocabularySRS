@@ -37,12 +37,15 @@ class Question {
     @Enumerated(EnumType.STRING)
     private TranslationDirection direction;
 
+    private String answer;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private LearningTask learningTask;
 
-    Question(final String prompt, final TranslationDirection direction) {
+    Question(final String prompt, final TranslationDirection direction, String answer) {
         this.prompt = prompt;
         this.direction = direction;
+        this.answer = answer;
     }
 }
 

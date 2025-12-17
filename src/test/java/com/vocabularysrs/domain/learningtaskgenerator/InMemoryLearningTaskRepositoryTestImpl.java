@@ -1,6 +1,8 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
+import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -17,5 +19,10 @@ class InMemoryLearningTaskRepositoryTestImpl implements LearningTaskRepository {
         database.put(task.getUserId(), task);
         task.setId(index);
         return task;
+    }
+
+    @Override
+    public Optional<LearningTask> findLearningTaskByTaskDateAndUserId(final LocalDate taskDate, final Long userId) {
+        return Optional.empty();
     }
 }
