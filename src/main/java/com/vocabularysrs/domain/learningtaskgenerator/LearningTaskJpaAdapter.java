@@ -1,11 +1,13 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
+@Component
 class LearningTaskJpaAdapter implements LearningTaskReadPort {
 
     private final LearningTaskRepository learningTaskRepository;
