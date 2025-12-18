@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.dailytest.dto.DailyTestRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.UserAnswerRequestDto;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -15,18 +16,18 @@ class DailyTestFacadeTest {
 
     DictionaryUpdatePort dictionaryUpdatePort = new DictionaryUpdatePortTestImpl();
     LearningTaskReadPort learningTaskReadPort = new LearningTaskReadPortTestImpl();
-    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort, dictionaryUpdatePort);
+    CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
+    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort, dictionaryUpdatePort, currentUserProvider);
 
     @Test
     void should_count_correct_and_incorrect_answers() {
         // given
-        LocalDate today = LocalDate.now();
         List<UserAnswerRequestDto> userAnswerRequestDtos = List.of(
                 new UserAnswerRequestDto(1L, "кот             "),
                 new UserAnswerRequestDto(2L, "dog"),
                 new UserAnswerRequestDto(3L, "SUN")
         );
-        DailyTestRequestDto request = new DailyTestRequestDto(1L, today, userAnswerRequestDtos);
+        DailyTestRequestDto request = new DailyTestRequestDto(userAnswerRequestDtos);
         // when
         DailyTestResponseDto dailyTestResponseDto = dailyTestFacade.processDailyTest(request);
         // then
