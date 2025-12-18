@@ -13,8 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DailyTestFacadeTest {
 
+    DictionaryUpdatePort dictionaryUpdatePort = new DictionaryUpdatePortTestImpl();
     LearningTaskReadPort learningTaskReadPort = new LearningTaskReadPortTestImpl();
-    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort);
+    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort, dictionaryUpdatePort);
 
     @Test
     void should_count_correct_and_incorrect_answers() {

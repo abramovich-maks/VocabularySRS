@@ -13,9 +13,9 @@ class LearningTaskReadPortTestImpl implements LearningTaskReadPort {
     public LearningTaskSnapshot findLearningTaskByDateAndUserId(final LocalDate today, final Long userId) {
         List<QuestionSnapshot> question = new ArrayList<>();
 
-        QuestionSnapshot cat = new QuestionSnapshot(1L, "cat", null, "кот");
-        QuestionSnapshot dog = new QuestionSnapshot(2L, "dog", null, "собака");
-        QuestionSnapshot sun = new QuestionSnapshot(3L, "солнце", null, "sun");
+        QuestionSnapshot cat = new QuestionSnapshot(1L, 1L, "cat", null, "кот");
+        QuestionSnapshot dog = new QuestionSnapshot(2L, 2L, "dog", null, "собака");
+        QuestionSnapshot sun = new QuestionSnapshot(3L, 3L, "солнце", null, "sun");
 
         question.add(cat);
         question.add(dog);
