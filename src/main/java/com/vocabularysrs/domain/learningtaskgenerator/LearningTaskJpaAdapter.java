@@ -18,7 +18,7 @@ class LearningTaskJpaAdapter implements LearningTaskReadPort {
                 .orElseThrow(() -> new LearningTaskNotFoundException(taskDate, userId));
         List<QuestionSnapshot> questionList = task.getQuestions()
                 .stream()
-                .map(question -> new QuestionSnapshot(question.getId(), question.getPrompt(), question.getDirection(), question.getAnswer()))
+                .map(question -> new QuestionSnapshot(question.getId(), question.getWordEntryId(), question.getPrompt(), question.getDirection(), question.getAnswer()))
                 .toList();
         return new LearningTaskSnapshot(task.getId(), task.getTaskDate(), task.getUserId(), questionList);
     }

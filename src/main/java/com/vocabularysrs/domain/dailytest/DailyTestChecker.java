@@ -18,6 +18,8 @@ import java.util.stream.Collectors;
 class DailyTestChecker {
 
     private final LearningTaskReadPort learningTaskReadPort;
+    private final DictionaryUpdatePort dictionaryUpdatePort;
+
 
     public DailyTestResponseDto checkResult(DailyTestRequestDto request) {
         LearningTaskSnapshot task = learningTaskReadPort.findLearningTaskByDateAndUserId(request.date(), request.userId());
@@ -40,18 +42,21 @@ class DailyTestChecker {
 
             results.add(AnswerResultDto.builder()
                     .questionId(question.id())
+                    .wordEntryId(question.wordEntryId())
                     .userAnswer(userAnswerRequestDto.answer())
                     .correctAnswer(question.answer())
                     .correct(isCorrect)
                     .build());
         }
 
-        return DailyTestResponseDto.builder()
+        DailyTestResponseDto dailyTestResponse = DailyTestResponseDto.builder()
                 .userId(request.userId())
                 .total(task.questions().size())
                 .correct(correct)
                 .incorrect(incorrect)
                 .answers(results)
                 .build();
+        dictionaryUpdatePort.update(dailyTestResponse);
+        return dailyTestResponse;
     }
 }

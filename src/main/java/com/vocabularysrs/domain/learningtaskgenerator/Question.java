@@ -32,6 +32,8 @@ class Question {
     )
     private Long id;
 
+    private Long wordEntryId;
+
     private String prompt;
 
     @Enumerated(EnumType.STRING)
@@ -42,7 +44,8 @@ class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     private LearningTask learningTask;
 
-    Question(final String prompt, final TranslationDirection direction, String answer) {
+    Question(final Long wordEntryId, final String prompt, final TranslationDirection direction, String answer) {
+        this.wordEntryId = wordEntryId;
         this.prompt = prompt;
         this.direction = direction;
         this.answer = answer;
