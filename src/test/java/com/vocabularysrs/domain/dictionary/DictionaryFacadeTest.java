@@ -1,5 +1,7 @@
 package com.vocabularysrs.domain.dictionary;
 
+import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
+import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
@@ -13,16 +15,24 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.vocabularysrs.domain.dictionary.RepetitionInterval.INTERVAL_10_DAYS;
+import static com.vocabularysrs.domain.dictionary.RepetitionInterval.INTERVAL_15_DAYS;
+import static com.vocabularysrs.domain.dictionary.RepetitionInterval.INTERVAL_1_DAY;
+import static com.vocabularysrs.domain.dictionary.RepetitionInterval.INTERVAL_25_DAYS;
+import static com.vocabularysrs.domain.dictionary.RepetitionInterval.INTERVAL_3_DAYS;
+import static com.vocabularysrs.domain.dictionary.RepetitionInterval.INTERVAL_5_DAYS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DictionaryFacadeTest {
 
+    private final RepetitionIntervalCalculator calculator = new RepetitionIntervalCalculator();
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
     WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
     CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
     DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider);
+    DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator);
 
     @Test
     public void should_return_success_when_user_gave_new_word_and_translate() {
@@ -81,7 +91,7 @@ class DictionaryFacadeTest {
         LocalDate today = LocalDate.now();
         Assertions.assertEquals(today, entry.getDateAdded());
 
-        LocalDate nextReviewDate = today.plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
+        LocalDate nextReviewDate = today.plusDays(INTERVAL_1_DAY.getDays());
         Assertions.assertEquals(nextReviewDate, entry.getNextReviewDate());
     }
 
@@ -209,13 +219,13 @@ class DictionaryFacadeTest {
     @Test
     void should_return_words_entry_by_next_review_date() {
         // given
-        LocalDate reviewDate = LocalDate.now().plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
+        LocalDate reviewDate = LocalDate.now().plusDays(INTERVAL_1_DAY.getDays());
         // when
         List<WordEntrySnapshot> wordsForReview = wordEntryReadPort.findWordEntriesByNextReviewDate(reviewDate);
         // then
         assertThat(wordsForReview)
                 .extracting(WordEntrySnapshot::word)
-                .containsExactlyInAnyOrder("cat", "dog","sun");
+                .containsExactlyInAnyOrder("cat", "dog", "sun");
     }
 
     @Test
@@ -226,12 +236,78 @@ class DictionaryFacadeTest {
         dictionaryFacade.addWord(word_1);
         dictionaryFacade.addWord(word_2);
         WordEntryJpaAdapter adapter = new WordEntryJpaAdapter(repository);
-        LocalDate reviewDate = LocalDate.now().plusDays(RepetitionInterval.INTERVAL_1_DAY.getDays());
+        LocalDate reviewDate = LocalDate.now().plusDays(INTERVAL_1_DAY.getDays());
         // when
         List<WordEntrySnapshot> result = adapter.findWordEntriesByNextReviewDate(reviewDate);
         // then
         assertThat(result)
                 .extracting(WordEntrySnapshot::word)
                 .containsExactlyInAnyOrder("cat", "dog");
+    }
+
+    @Test
+    void should_increase_interval_and_update_next_review_date_when_correct() {
+        // given
+        WordEntry entry = WordEntry.builder()
+                .currentInterval(INTERVAL_1_DAY)
+                .build();
+        // when
+        entry.applyReviewResult(true, calculator);
+        // then
+        assertThat(entry.getCurrentInterval()).isEqualTo(INTERVAL_3_DAYS);
+        assertThat(entry.getNextReviewDate()).isEqualTo(LocalDate.now().plusDays(3));
+    }
+
+    @Test
+    void should_decrease_interval_and_update_next_review_date_when_incorrect() {
+        // given
+        WordEntry entry = WordEntry.builder()
+                .currentInterval(INTERVAL_10_DAYS)
+                .build();
+        // when
+        entry.applyReviewResult(false, calculator);
+        // then
+        assertThat(entry.getCurrentInterval()).isEqualTo(INTERVAL_5_DAYS);
+        assertThat(entry.getNextReviewDate()).isEqualTo(LocalDate.now().plusDays(5));
+    }
+
+    @Test
+    void should_update_word_entry_where_user_request_test() {
+        // given
+        WordEntry entry = WordEntry.builder()
+                .currentInterval(INTERVAL_1_DAY)
+                .build();
+        repository.save(entry);
+        DailyTestResponseDto response = DailyTestResponseDto.builder()
+                .answers(List.of(AnswerResultDto.builder()
+                        .wordEntryId(0L)
+                        .correct(true)
+                        .build()))
+                .build();
+        // when
+        adapter.update(response);
+        // then
+        WordEntry updated = repository.findById(1L).orElseThrow();
+        assertThat(updated.getCurrentInterval()).isEqualTo(INTERVAL_3_DAYS);
+    }
+
+    @Test
+    void should_move_forward_when_answer_is_correct() {
+        assertThat(calculator.next(INTERVAL_1_DAY)).isEqualTo(INTERVAL_3_DAYS);
+        assertThat(calculator.next(INTERVAL_3_DAYS)).isEqualTo(INTERVAL_5_DAYS);
+        assertThat(calculator.next(INTERVAL_5_DAYS)).isEqualTo(INTERVAL_10_DAYS);
+        assertThat(calculator.next(INTERVAL_10_DAYS)).isEqualTo(INTERVAL_15_DAYS);
+        assertThat(calculator.next(INTERVAL_15_DAYS)).isEqualTo(INTERVAL_25_DAYS);
+        assertThat(calculator.next(INTERVAL_25_DAYS)).isEqualTo(INTERVAL_25_DAYS);
+    }
+
+    @Test
+    void should_move_backward_when_answer_is_incorrect() {
+        assertThat(calculator.back(INTERVAL_25_DAYS)).isEqualTo(INTERVAL_15_DAYS);
+        assertThat(calculator.back(INTERVAL_15_DAYS)).isEqualTo(INTERVAL_10_DAYS);
+        assertThat(calculator.back(INTERVAL_10_DAYS)).isEqualTo(INTERVAL_5_DAYS);
+        assertThat(calculator.back(INTERVAL_5_DAYS)).isEqualTo(INTERVAL_3_DAYS);
+        assertThat(calculator.back(INTERVAL_3_DAYS)).isEqualTo(INTERVAL_1_DAY);
+        assertThat(calculator.back(INTERVAL_1_DAY)).isEqualTo(INTERVAL_1_DAY);
     }
 }
