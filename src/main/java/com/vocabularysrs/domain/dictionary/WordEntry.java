@@ -63,4 +63,16 @@ class WordEntry {
             nextReviewDate = LocalDate.now().plusDays(currentInterval.getDays());
         }
     }
+
+    void applyReviewResult(boolean correct, RepetitionIntervalCalculator calculator) {
+
+        if (!correct) {
+            this.currentInterval = calculator.back(this.currentInterval);
+        } else {
+            this.currentInterval = calculator.next(this.currentInterval);
+        }
+
+        this.nextReviewDate = LocalDate.now().plusDays(this.currentInterval.getDays());
+    }
+
 }

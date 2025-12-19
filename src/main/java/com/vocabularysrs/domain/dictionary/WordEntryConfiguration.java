@@ -21,4 +21,10 @@ class WordEntryConfiguration {
     CurrentUserProvider currentUserProvider() {
         return new StubCurrentUserProvider();
     }
+
+    @Bean
+    DictionaryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator) {
+        WordRetriever wordRetriever = new WordRetriever(wordEntryRepository);
+        return new DictionaryUpdateAdapter(wordEntryRepository, wordRetriever, calculator);
+    }
 }
