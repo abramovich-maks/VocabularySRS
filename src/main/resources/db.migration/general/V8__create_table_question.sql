@@ -5,6 +5,7 @@ CREATE TABLE question
     id               BIGINT NOT NULL,
     prompt           VARCHAR(255),
     direction        VARCHAR(255),
+    answer           VARCHAR(255),
     learning_task_id BIGINT,
     CONSTRAINT pk_question PRIMARY KEY (id)
 );
