@@ -3,6 +3,7 @@ CREATE SEQUENCE IF NOT EXISTS question_id_seq START WITH 1 INCREMENT BY 50;
 CREATE TABLE question
 (
     id               BIGINT NOT NULL,
+    word_entry_id    BIGINT,
     prompt           VARCHAR(255),
     direction        VARCHAR(255),
     answer           VARCHAR(255),
