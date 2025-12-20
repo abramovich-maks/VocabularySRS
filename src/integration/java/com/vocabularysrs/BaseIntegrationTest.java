@@ -1,6 +1,7 @@
 package com.vocabularysrs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vocabularysrs.domain.AdjustableClock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +14,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest(classes = VocabularySrsApplication.class)
+@SpringBootTest(classes = {VocabularySrsApplication.class, IntegrationConfiguration.class})
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
 @Testcontainers
@@ -21,6 +22,9 @@ public class BaseIntegrationTest {
 
     @Autowired
     public MockMvc mockMvc;
+
+    @Autowired
+    public AdjustableClock clock;
 
     @Container
     public static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"));
