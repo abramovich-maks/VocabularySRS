@@ -51,28 +51,14 @@ class WordEntry {
 
     private LocalDate nextReviewDate;
 
-    @PrePersist
-    protected void onCreate() {
-        if (dateAdded == null) {
-            dateAdded = LocalDate.now();
-        }
-        if (currentInterval == null) {
-            currentInterval = RepetitionInterval.INTERVAL_1_DAY;
-        }
-        if (nextReviewDate == null) {
-            nextReviewDate = LocalDate.now().plusDays(currentInterval.getDays());
-        }
+    void initialize(LocalDate today) {
+        this.dateAdded = today;
+        this.currentInterval = RepetitionInterval.INTERVAL_1_DAY;
+        this.nextReviewDate = today.plusDays(currentInterval.getDays());
     }
 
-    void applyReviewResult(boolean correct, RepetitionIntervalCalculator calculator) {
-
-        if (!correct) {
-            this.currentInterval = calculator.back(this.currentInterval);
-        } else {
-            this.currentInterval = calculator.next(this.currentInterval);
-        }
-
-        this.nextReviewDate = LocalDate.now().plusDays(this.currentInterval.getDays());
+    void applyReviewResult(boolean correct, RepetitionIntervalCalculator calculator, LocalDate today) {
+        this.currentInterval = correct ? calculator.next(this.currentInterval) : calculator.back(this.currentInterval);
+        this.nextReviewDate = today.plusDays(this.currentInterval.getDays());
     }
-
 }

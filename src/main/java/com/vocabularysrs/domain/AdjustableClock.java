@@ -104,4 +104,8 @@ public class AdjustableClock extends Clock {
         Duration offset = Duration.ofMinutes(minutes);
         advanceInTimeBy(offset);
     }
+
+    public LocalDate today() {
+        return LocalDate.now(this);
+    }
 }
