@@ -1,3 +1,5 @@
+CREATE SEQUENCE IF NOT EXISTS word_entry_id_seq START WITH 1 INCREMENT BY 1;
+
 CREATE TABLE word_entry
 (
     id               BIGINT       NOT NULL,
