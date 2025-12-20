@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.dictionary;
 
+import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
@@ -13,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static com.vocabularysrs.domain.dictionary.RepetitionInterval.INTERVAL_10_DAYS;
@@ -27,12 +30,18 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DictionaryFacadeTest {
 
+    AdjustableClock clock = AdjustableClock.ofLocalDateAndLocalTime(
+            LocalDate.of(2025, 1, 1),
+            LocalTime.of(12, 0),
+            ZoneId.systemDefault()
+    );
+
     private final RepetitionIntervalCalculator calculator = new RepetitionIntervalCalculator();
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
     WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
     CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
-    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider);
-    DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator);
+    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock);
+    DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock);
 
     @Test
     public void should_return_success_when_user_gave_new_word_and_translate() {
@@ -83,12 +92,12 @@ class DictionaryFacadeTest {
         Assertions.assertNull(entry.getNextReviewDate());
 
         // when
-        entry.onCreate();
+        entry.initialize(clock.today());
         // then
         Assertions.assertNotNull(entry.getDateAdded());
         Assertions.assertNotNull(entry.getNextReviewDate());
 
-        LocalDate today = LocalDate.now();
+        LocalDate today = clock.today();
         Assertions.assertEquals(today, entry.getDateAdded());
 
         LocalDate nextReviewDate = today.plusDays(INTERVAL_1_DAY.getDays());
@@ -236,7 +245,7 @@ class DictionaryFacadeTest {
         dictionaryFacade.addWord(word_1);
         dictionaryFacade.addWord(word_2);
         WordEntryJpaAdapter adapter = new WordEntryJpaAdapter(repository);
-        LocalDate reviewDate = LocalDate.now().plusDays(INTERVAL_1_DAY.getDays());
+        LocalDate reviewDate = clock.today().plusDays(INTERVAL_1_DAY.getDays());
         // when
         List<WordEntrySnapshot> result = adapter.findWordEntriesByNextReviewDate(reviewDate);
         // then
@@ -252,10 +261,10 @@ class DictionaryFacadeTest {
                 .currentInterval(INTERVAL_1_DAY)
                 .build();
         // when
-        entry.applyReviewResult(true, calculator);
+        entry.applyReviewResult(true, calculator, clock.today());
         // then
         assertThat(entry.getCurrentInterval()).isEqualTo(INTERVAL_3_DAYS);
-        assertThat(entry.getNextReviewDate()).isEqualTo(LocalDate.now().plusDays(3));
+        assertThat(entry.getNextReviewDate()).isEqualTo(clock.today().plusDays(3));
     }
 
     @Test
@@ -265,10 +274,10 @@ class DictionaryFacadeTest {
                 .currentInterval(INTERVAL_10_DAYS)
                 .build();
         // when
-        entry.applyReviewResult(false, calculator);
+        entry.applyReviewResult(false, calculator, clock.today());
         // then
         assertThat(entry.getCurrentInterval()).isEqualTo(INTERVAL_5_DAYS);
-        assertThat(entry.getNextReviewDate()).isEqualTo(LocalDate.now().plusDays(5));
+        assertThat(entry.getNextReviewDate()).isEqualTo(clock.today().plusDays(5));
     }
 
     @Test
@@ -277,6 +286,7 @@ class DictionaryFacadeTest {
         WordEntry entry = WordEntry.builder()
                 .currentInterval(INTERVAL_1_DAY)
                 .build();
+        entry.initialize(clock.today());
         repository.save(entry);
         DailyTestResponseDto response = DailyTestResponseDto.builder()
                 .answers(List.of(AnswerResultDto.builder()
@@ -287,7 +297,7 @@ class DictionaryFacadeTest {
         // when
         adapter.update(response);
         // then
-        WordEntry updated = repository.findById(1L).orElseThrow();
+        WordEntry updated = repository.findById(0L).orElseThrow();
         assertThat(updated.getCurrentInterval()).isEqualTo(INTERVAL_3_DAYS);
     }
 
