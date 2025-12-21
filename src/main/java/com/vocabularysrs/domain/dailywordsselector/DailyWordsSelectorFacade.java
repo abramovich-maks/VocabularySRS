@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.dailywordsselector;
 
+import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
 import com.vocabularysrs.domain.dictionary.WordEntrySnapshot;
 import lombok.AllArgsConstructor;
@@ -18,8 +19,10 @@ public class DailyWordsSelectorFacade {
     private final WordEntryReadPort wordEntryReadPort;
     private final DailyWordRepository dailyWordRepository;
 
+    private final AdjustableClock clock;
+
     public void retrieveWordsByDate() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = clock.today();
 
         Map<Long, List<WordEntrySnapshot>> wordsByUser = new HashMap<>();
         for (WordEntrySnapshot word : wordEntryReadPort.findWordEntriesByNextReviewDate(today)) {

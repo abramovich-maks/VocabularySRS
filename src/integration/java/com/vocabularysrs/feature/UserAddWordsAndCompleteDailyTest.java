@@ -194,12 +194,11 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest {
         assertThat(allWords).hasSize(3);
 
         // step 10: 15 hours and 1 minute passed (20.12.2025 06:01).
-        clock.plusMinutes((60 * 19) + 1);
-
-
+        clock.plusHours(19);
+        clock.plusMinutes(1);
 //    step 11: the system at 6:00 selected words for the user (3 words).
         dailyWordsSelectorFacade.retrieveWordsByDate();
-        LocalDate targetDate = LocalDate.of(2025, 12, 20);
+        LocalDate targetDate = clock.today();
         List<WordEntrySnapshot> wordEntriesByNextReviewDate = wordEntryReadPort.findWordEntriesByNextReviewDate(targetDate);
         List<DailyWordSnapshot> dailyWordReviewByTaskDate = dailyWordReadPort.findDailyWordReviewByTaskDate(targetDate);
         assertThat(wordEntriesByNextReviewDate).hasSize(3);
@@ -214,7 +213,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest {
 
 //    step 12: the system at 6:05 generated a task with selected words for the date 20.12.2025.
         clock.plusMinutes(4);
-        learningTaskGeneratorFacade.generateTasks();
+        learningTaskGeneratorFacade.generateTasks(clock.today());
         LearningTaskSnapshot learningTaskByDateAndUserId = learningTaskReadPort.findLearningTaskByDateAndUserId(targetDate, 1L);
         assertThat(learningTaskByDateAndUserId.questions())
                 .hasSize(6)

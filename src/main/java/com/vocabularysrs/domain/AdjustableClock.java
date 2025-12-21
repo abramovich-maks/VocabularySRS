@@ -105,6 +105,11 @@ public class AdjustableClock extends Clock {
         advanceInTimeBy(offset);
     }
 
+    public void plusHours(int hours) {
+        Duration offset = Duration.ofHours(hours);
+        advanceInTimeBy(offset);
+    }
+
     public LocalDate today() {
         return LocalDate.now(this);
     }
