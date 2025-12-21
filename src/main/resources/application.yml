@@ -29,3 +29,6 @@ vocabulary:
     scheduler: "0 0 6 * * *"
   learning-task-generator:
     scheduler: "0 05 6 * * *"
+
+scheduler:
+  enabled: false

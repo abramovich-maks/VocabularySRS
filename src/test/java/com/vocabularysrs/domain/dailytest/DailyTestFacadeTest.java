@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.dailytest;
 
+import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.UserAnswerRequestDto;
@@ -8,16 +9,24 @@ import com.vocabularysrs.domain.security.CurrentUserProvider;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DailyTestFacadeTest {
 
+    AdjustableClock clock = AdjustableClock.ofLocalDateAndLocalTime(
+            LocalDate.of(2025, 1, 1),
+            LocalTime.of(12, 0),
+            ZoneId.systemDefault()
+    );
+
     DictionaryUpdatePort dictionaryUpdatePort = new DictionaryUpdatePortTestImpl();
     LearningTaskReadPort learningTaskReadPort = new LearningTaskReadPortTestImpl();
     CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
-    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort, dictionaryUpdatePort, currentUserProvider);
+    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort, dictionaryUpdatePort, currentUserProvider,clock);
 
     @Test
     void should_count_correct_and_incorrect_answers() {

@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.learningtaskgenerator;
 
 import lombok.AllArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -9,8 +10,8 @@ public class LearningTaskGeneratorFacade {
 
     private final LearningTaskAdder learningTaskAdder;
 
-    public List<LearningTask> generateTasks() {
-        return learningTaskAdder.generateTasks();
+    public List<LearningTask> generateTasks(LocalDate taskDate) {
+        return learningTaskAdder.generateTasks(taskDate);
     }
 
 }

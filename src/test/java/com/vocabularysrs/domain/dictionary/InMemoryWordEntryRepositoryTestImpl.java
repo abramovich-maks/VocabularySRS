@@ -1,8 +1,11 @@
 package com.vocabularysrs.domain.dictionary;
 
+import com.vocabularysrs.domain.AdjustableClock;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +15,26 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
 
+
+    AdjustableClock clock = AdjustableClock.ofLocalDateAndLocalTime(
+            LocalDate.of(2025, 1, 1),
+            LocalTime.of(12, 0),
+            ZoneId.systemDefault()
+    );
+
     Map<Long, WordEntry> database = new ConcurrentHashMap<>();
     AtomicInteger index = new AtomicInteger(0);
 
+    @Override
     public WordEntry save(final WordEntry wordEntry) {
-        wordEntry.onCreate();
-        long index = this.index.getAndIncrement();
-        database.put(index, wordEntry);
-        wordEntry.setId(index);
+        if (wordEntry.getId() == null) {
+            wordEntry.initialize(clock.today());
+            long id = index.getAndIncrement();
+            wordEntry.setId(id);
+            database.put(id, wordEntry);
+        } else {
+            database.put(wordEntry.getId(), wordEntry);
+        }
         return wordEntry;
     }
 

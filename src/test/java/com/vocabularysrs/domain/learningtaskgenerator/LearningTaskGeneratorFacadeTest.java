@@ -1,15 +1,24 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
+import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 class LearningTaskGeneratorFacadeTest {
+
+    AdjustableClock clock = AdjustableClock.ofLocalDateAndLocalTime(
+            LocalDate.of(2025, 1, 1),
+            LocalTime.of(12, 0),
+            ZoneId.systemDefault()
+    );
 
     @Test
     void should_generate_two_questions_for_single_word() {
@@ -19,7 +28,7 @@ class LearningTaskGeneratorFacadeTest {
         LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordReadPort, dailyWordRepository);
         LocalDate today = LocalDate.now();
         // when
-        List<LearningTask> learningTasks = learningTaskGeneratorFacade.generateTasks();
+        List<LearningTask> learningTasks = learningTaskGeneratorFacade.generateTasks(clock.today());
         // then
         assertThat(learningTasks).hasSize(1);
         LearningTask task = learningTasks.get(0);
@@ -40,7 +49,7 @@ class LearningTaskGeneratorFacadeTest {
         LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordReadPortWithTwoUsers, dailyWordRepository);
         LocalDate today = LocalDate.now();
         // when
-        List<LearningTask> tasks = learningTaskGeneratorFacade.generateTasks();
+        List<LearningTask> tasks = learningTaskGeneratorFacade.generateTasks(clock.today());
         // then
         assertThat(tasks).hasSize(2);
         // USER1
