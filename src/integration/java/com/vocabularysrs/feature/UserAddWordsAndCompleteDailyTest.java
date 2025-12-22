@@ -3,6 +3,7 @@ package com.vocabularysrs.feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
+import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
 import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
 import com.vocabularysrs.domain.dailywordsselector.DailyWordSnapshot;
 import com.vocabularysrs.domain.dailywordsselector.DailyWordsSelectorFacade;
@@ -207,10 +208,12 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 );
 
 //    step 12: the system at 6:05 generated a task with selected words for the date 20.12.2025.
+        // given
         clock.plusMinutes(4);
         assertThat(clock.instant()).isEqualTo("2025-12-20T06:05:00Z");
-
+        // when
         learningTaskGeneratorFacade.generateTasks(clock.today());
+        // then
         LearningTaskSnapshot taskDay1 = learningTaskReadPort.findLearningTaskByDateAndUserId(day1, 1L);
         assertThat(taskDay1.questions())
                 .hasSize(6)
@@ -223,6 +226,20 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                         tuple(4L, CAR, WORD_TO_TRANSLATION, CAR_RU),
                         tuple(4L, CAR_RU, TRANSLATION_TO_WORD, CAR)
                 );
+
+
+//    step 12.1: user made GET /dailytest and the server returned daily test.
+        // given && when
+        ResultActions performGetTest = mockMvc.perform(get("/dailytest"));
+        // then
+        MvcResult getTest = performGetTest.andExpect(status().isOk()).andReturn();
+        String jsonGetResponse = getTest.getResponse().getContentAsString();
+        DailyTestShowResponseDto getResponse = objectMapper.readValue(jsonGetResponse, DailyTestShowResponseDto.class);
+
+        assertThat(getResponse.userId()).isEqualTo(1);
+        assertThat(getResponse.id()).isNotNull();
+        assertThat(getResponse.taskDate()).isEqualTo(clock.today());
+        assertThat(getResponse.questions().size()).isEqualTo(6);
 
 
 //    step 13: user made POST /dailytest and requested 2 true and 4 false questions, and the server returned test statistics.
