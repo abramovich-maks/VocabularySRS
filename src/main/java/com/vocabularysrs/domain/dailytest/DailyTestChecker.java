@@ -2,13 +2,13 @@ package com.vocabularysrs.domain.dailytest;
 
 import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.dailytest.dto.DailyTestShowRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.UserAnswerRequestDto;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskSnapshot;
 import com.vocabularysrs.domain.learningtaskgenerator.QuestionSnapshot;
 import lombok.AllArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +19,8 @@ class DailyTestChecker {
 
     private final LearningTaskReadPort learningTaskReadPort;
 
-    DailyTestResponseDto checkResult(Long userId, LocalDate date, List<UserAnswerRequestDto> answers) {
-        LearningTaskSnapshot task = learningTaskReadPort.findLearningTaskByDateAndUserId(date, userId);
+    DailyTestResponseDto checkResult(DailyTestShowRequestDto requestDto, List<UserAnswerRequestDto> answers) {
+        LearningTaskSnapshot task = learningTaskReadPort.findLearningTaskByDateAndUserId(requestDto.date(), requestDto.userId());
 
         Map<Long, QuestionSnapshot> questionsById = task.questions()
                 .stream()
@@ -48,7 +48,7 @@ class DailyTestChecker {
         }
 
         return DailyTestResponseDto.builder()
-                .userId(userId)
+                .userId(requestDto.userId())
                 .total(task.questions().size())
                 .correct(correct)
                 .incorrect(incorrect)

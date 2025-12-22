@@ -12,6 +12,7 @@ class DailyTestConfiguration {
     @Bean
     DailyTestFacade dailyTestFacade(LearningTaskReadPort learningTaskReadPort, DictionaryUpdatePort dictionaryUpdatePort, CurrentUserProvider currentUserProvider, AdjustableClock clock) {
         DailyTestChecker dailyTestChecker = new DailyTestChecker(learningTaskReadPort);
-        return new DailyTestFacade(dailyTestChecker, currentUserProvider, dictionaryUpdatePort, clock);
+        DailyTestRetriever dailyTestRetriever = new DailyTestRetriever(learningTaskReadPort);
+        return new DailyTestFacade(dailyTestChecker, currentUserProvider, dictionaryUpdatePort, dailyTestRetriever, clock);
     }
 }
