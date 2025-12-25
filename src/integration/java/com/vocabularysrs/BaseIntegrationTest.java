@@ -32,6 +32,10 @@ public class BaseIntegrationTest {
     @Autowired
     public ObjectMapper objectMapper;
 
+    protected String authenticatedUser() {
+        return "Bearer test-token";
+    }
+
     @DynamicPropertySource
     public static void propertyOverride(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);

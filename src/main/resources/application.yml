@@ -23,12 +23,17 @@ spring:
       hibernate:
         format_sql: true
 
-
+    ## Scheduler
 vocabulary:
   daily-words:
     scheduler: "0 0 6 * * *"
   learning-task-generator:
     scheduler: "0 05 6 * * *"
-
 scheduler:
   enabled: true
+
+  ## Token jwt
+auth:
+  jwt:
+    expirationSeconds: 1800
+    issuer: VocabularySRS-backend

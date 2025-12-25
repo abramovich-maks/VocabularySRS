@@ -2,7 +2,7 @@ package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
-import com.vocabularysrs.infrastructure.security.StubCurrentUserProvider;
+import com.vocabularysrs.infrastructure.security.JwtCurrentUserProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,8 +19,8 @@ class WordEntryConfiguration {
     }
 
     @Bean
-    CurrentUserProvider currentUserProvider() {
-        return new StubCurrentUserProvider();
+    JwtCurrentUserProvider currentUserProvider() {
+        return new JwtCurrentUserProvider();
     }
 
     @Bean

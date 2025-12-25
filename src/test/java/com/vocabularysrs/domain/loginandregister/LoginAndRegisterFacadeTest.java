@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class LoginAndRegisterFacadeTest {
 
     UserRepository userRepository = new InMemoryUserRepository();
-    PasswordEncoder encodedPassword = new LoginAndRegisterConfiguration().passwordEncoder();
+    PasswordEncoder encodedPassword = new InMemoryPasswordEncoder();
     LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterConfiguration().loginAndRegisterFacade(userRepository, encodedPassword);
 
     @Test
@@ -88,7 +88,7 @@ class LoginAndRegisterFacadeTest {
         // when
         UserLoginResponseDto login = loginAndRegisterFacade.login(requestDto);
         // then
-     assertThat(login.message()).isEqualTo("Login successful");
+        assertThat(login.message()).isEqualTo("Login successful");
     }
 
     @Test
