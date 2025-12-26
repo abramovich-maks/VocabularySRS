@@ -25,6 +25,7 @@ The core idea is to model the **learning process itself as domain logic**, not j
 - **Daily Test** - generates a daily vocabulary test for the user
 - **SRS Logic** - interval‑based repetition strategy
 - **Integration Tests** - end‑to‑end business scenario coverage
+- **User Authentication (JWT)** - stateless authentication using access tokens, token delivery via HTTP-only secure cookies and Authorization header
 
 ---
 
@@ -38,6 +39,8 @@ The core idea is to model the **learning process itself as domain logic**, not j
 - Testcontainers
 - REST (JSON)
 - Lombok
+- Spring Security
+- JWT (RSA)
 
 ---
 
@@ -57,7 +60,6 @@ The project focuses on **integration testing of real business scenarios**:
 ## 🗺 Roadmap
 
 - Frontend (React)
-- JWT‑based authentication
 - User accounts and personalization
 - Learning statistics and analytics
 - Adaptive learning algorithms
