@@ -10,14 +10,13 @@ import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants
 
 
 public record TokenRequestDto(
-        @NotNull(message = "{login.not.null}")
-        @NotEmpty(message = "{login.not.empty}")
-        @Email(message = "{login.email}")
-        String login,
+        @NotNull(message = "{email.not.null}")
+        @NotEmpty(message = "{email.not.empty}")
+        @Email(message = "{email.email}")
+        String email,
 
         @NotNull(message = "{password.not.null}")
         @NotEmpty(message = "{password.not.empty}")
-        @Size(min = PASSWORD_MIN_SIZE, max = PASSWORD_MAX_SIZE, message = "{password.size}")
         String password
 ) {
 }
