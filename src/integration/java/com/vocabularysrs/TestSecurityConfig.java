@@ -15,6 +15,8 @@ public class TestSecurityConfig {
     SecurityFilterChain testSecurityFilterChain(HttpSecurity http, TestJwtAuthTokenFilter filter) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/token/**").permitAll())
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .build();

@@ -22,6 +22,7 @@ import com.vocabularysrs.infrastructure.dictionary.dto.DeletedWordEntryControlle
 import com.vocabularysrs.infrastructure.dictionary.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,7 @@ import static com.vocabularysrs.domain.learningtaskgenerator.TranslationDirectio
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,6 +68,13 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
     @MockitoBean
     private CurrentUserProvider currentUserProvider;
+
+    @BeforeEach
+    void setupJwt() throws Exception {
+        when(jwtTokenGenerator.authenticateAndGenerateToken(any(), any()))
+                .thenReturn("integration-test-token");
+    }
+
 
     @Test
     public void happyPath() throws Exception {
