@@ -33,7 +33,7 @@ class WordAdder {
         wordRetriever.isExistByWord(dtoRequest.word());
         WordEntry newWord = mapFromWordAddDtoRequestToWordEntry(dtoRequest);
         newWord.initialize(today);
-        newWord.setUserId(currentUserProvider.getCurrentUserId());  // todo change setUserId for real user
+        newWord.setUserId(currentUserProvider.getCurrentUserId());
         WordEntry save = wordRepository.save(newWord);
         log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
         return mapFromWordEntryToWordEntryDtoResponse(save);

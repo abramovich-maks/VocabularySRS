@@ -16,15 +16,18 @@ import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacad
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskSnapshot;
 import com.vocabularysrs.domain.learningtaskgenerator.QuestionSnapshot;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.infrastructure.dailytest.DailyTestControllerResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -36,6 +39,8 @@ import static com.vocabularysrs.domain.learningtaskgenerator.TranslationDirectio
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -61,6 +66,16 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
     @Autowired
     LearningTaskGeneratorFacade learningTaskGeneratorFacade;
 
+    @MockitoBean
+    private CurrentUserProvider currentUserProvider;
+
+    @BeforeEach
+    void setupJwt() throws Exception {
+        when(jwtTokenGenerator.authenticateAndGenerateToken(any(), any()))
+                .thenReturn("integration-test-token");
+    }
+
+
     @Test
     public void happyPath() throws Exception {
 
@@ -71,7 +86,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
         //    step 1: user made GET /words and sees 0 words.
         // given && when
-        ResultActions performEmptyResults = mockMvc.perform(get("/words"));
+        ResultActions performEmptyResults = mockMvc.perform(get("/words")
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult mvcResultZeroWords = performEmptyResults.andExpect(status().isOk()).andReturn();
         String jsonEmptyWords = mvcResultZeroWords.getResponse().getContentAsString();
@@ -83,10 +99,12 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         //    step 2: user made POST /words with body (word: cat, translate: кот) at 19-12-2025 12:00, and the system returned OK (200) with message: "Success. New word added" and word: "cat", translate: "кот".
         // given
         // when
+        when(currentUserProvider.getCurrentUserId()).thenReturn(1L);
         ResultActions perform = mockMvc.perform(post("/words")
                 .content(requestBodyWithAddCat().trim()
                 )
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult mvcResult = perform.andExpect(status().isOk()).andReturn();
         String json = mvcResult.getResponse().getContentAsString();
@@ -100,7 +118,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
         //    step 3: user made GET /words and sees 1 word.
         // given && when
-        ResultActions performGetResults = mockMvc.perform(get("/words"));
+        ResultActions performGetResults = mockMvc.perform(get("/words")
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult mvcResultOneWord = performGetResults.andExpect(status().isOk()).andReturn();
         String jsonWithOneWord = mvcResultOneWord.getResponse().getContentAsString();
@@ -120,7 +139,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         mockMvc.perform(post("/words")
                 .content(requestBodeWithAddDog().trim()
                 )
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", authenticatedUser()));
 
 
         //    step 5: user made POST /words with body (word: sun, translate: солнце) at 19-12-2025 14:00, and the system returned OK (200) with message: "Success. New word added" and word: "sun", translate: "солнце".
@@ -128,7 +148,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         mockMvc.perform(post("/words")
                 .content(requestBodeWithAddSun().trim()
                 )
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", authenticatedUser()));
 
 
         //    step 6: user made POST /words with body (word: car, translate: машина) at 19-12-2025 15:00, and the system returned OK (200) with message: "Success. New word added" and word: "car", translate: "машина".
@@ -136,12 +157,14 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         mockMvc.perform(post("/words")
                 .content(requestBodeWithAddCar().trim()
                 )
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", authenticatedUser()));
 
 
         //    step 7: user made GET /words and sees 4 words.
         // given && when
-        ResultActions performGetResultsWithFourWords = mockMvc.perform(get("/words"));
+        ResultActions performGetResultsWithFourWords = mockMvc.perform(get("/words")
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult mvcResultFourWords = performGetResultsWithFourWords.andExpect(status().isOk()).andReturn();
         String jsonWithFourWords = mvcResultFourWords.getResponse().getContentAsString();
@@ -160,7 +183,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
         //    step 8: user made GET /words/2, and the system returned id: "2", word: "dog", translate: "собака".
         // given && when
-        ResultActions performGetResultsWordIdTwo = mockMvc.perform(get("/words/2"));
+        ResultActions performGetResultsWordIdTwo = mockMvc.perform(get("/words/2")
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult mvcResultWordIdTwo = performGetResultsWordIdTwo.andExpect(status().isOk()).andReturn();
         String jsonWithWordIdTwo = mvcResultWordIdTwo.getResponse().getContentAsString();
@@ -175,7 +199,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 //    step 9: user made DELETE /words/3, and the system deleted the word with id 3 and returned the message: "Deleted word by id: 3".
         // given && when
-        ResultActions performDelete = mockMvc.perform(delete("/words/3"));
+        ResultActions performDelete = mockMvc.perform(delete("/words/3")
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult mvcDeleteResponse = performDelete.andExpect(status().isOk()).andReturn();
         String jsonDelete = mvcDeleteResponse.getResponse().getContentAsString();
@@ -230,7 +255,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 //    step 12.1: user made GET /dailytest and the server returned daily test.
         // given && when
-        ResultActions performGetTest = mockMvc.perform(get("/dailytest"));
+        ResultActions performGetTest = mockMvc.perform(get("/dailytest")
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult getTest = performGetTest.andExpect(status().isOk()).andReturn();
         String jsonGetResponse = getTest.getResponse().getContentAsString();
@@ -248,7 +274,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .content(getRequestWithOneTrueAnswerCat()
                         .trim()
                 )
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult testResult = performResult.andExpect(status().isOk()).andReturn();
         String jsonResponse = testResult.getResponse().getContentAsString();
@@ -305,7 +332,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .content(getRequestWithTrueAnswersDogAndCar()
                         .trim()
                 )
-                .contentType(MediaType.APPLICATION_JSON));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", authenticatedUser()));
         // then
         MvcResult actionResult = lastPerform.andExpect(status().isOk()).andReturn();
         String jsonWithTrueAnswersDogAndCar = actionResult.getResponse().getContentAsString();
