@@ -17,7 +17,8 @@ class WordRetriever {
     private final CurrentUserProvider currentUserProvider;
 
     public boolean isExistByWord(String word) {
-        if (wordEntryRepository.existsByWord(word)) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        if (wordEntryRepository.existsByWordAndUserId(word, userId)) {
             throw new WordAlreadyExistsException(word);
         }
         return false;

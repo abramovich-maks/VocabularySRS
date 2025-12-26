@@ -39,9 +39,9 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public boolean existsByWord(final String word) {
+    public boolean existsByWordAndUserId(final String word, final Long userId) {
         for (WordEntry entry : database.values()) {
-            if (entry.getWord().equals(word)) {
+            if (entry.getWord().equals(word) && entry.getUserId().equals(userId) ) {
                 return true;
             }
         }

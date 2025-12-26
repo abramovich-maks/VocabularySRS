@@ -12,7 +12,7 @@ import java.util.Optional;
 interface WordEntryRepository extends Repository<WordEntry, Long> {
     WordEntry save(WordEntry newWord);
 
-    boolean existsByWord(String word);
+    boolean existsByWordAndUserId(String word, Long userId);
 
     boolean existsById(Long id);
 
