@@ -11,7 +11,7 @@ class WordEntryConfiguration {
 
     @Bean
     DictionaryFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, AdjustableClock clock) {
-        WordRetriever wordRetriever = new WordRetriever(wordRepository);
+        WordRetriever wordRetriever = new WordRetriever(wordRepository, currentUserProvider);
         WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, clock);
         WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever);
         WordUpdater wordUpdater = new WordUpdater(wordRetriever);
@@ -19,13 +19,13 @@ class WordEntryConfiguration {
     }
 
     @Bean
-    JwtCurrentUserProvider currentUserProvider() {
+    CurrentUserProvider currentUserProvider() {
         return new JwtCurrentUserProvider();
     }
 
     @Bean
-    DictionaryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator, AdjustableClock clock) {
-        WordRetriever wordRetriever = new WordRetriever(wordEntryRepository);
+    DictionaryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator, AdjustableClock clock, CurrentUserProvider currentUserProvider) {
+        WordRetriever wordRetriever = new WordRetriever(wordEntryRepository, currentUserProvider);
         return new DictionaryUpdateAdapter(wordEntryRepository, wordRetriever, calculator, clock);
     }
 }

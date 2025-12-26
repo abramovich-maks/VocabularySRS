@@ -59,8 +59,15 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public List<WordEntry> findAll(final Pageable pageable) {
-        return new ArrayList<>(database.values());
+    public List<WordEntry> findAllByUserId(final Long userId, final Pageable pageable) {
+        List<WordEntry> result = new ArrayList<>();
+
+        for (WordEntry entry : database.values()) {
+            if (userId.equals(entry.getUserId())) {
+                result.add(entry);
+            }
+        }
+        return result;
     }
 
     @Override

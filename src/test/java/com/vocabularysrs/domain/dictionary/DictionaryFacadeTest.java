@@ -41,7 +41,7 @@ class DictionaryFacadeTest {
     WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
     CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
     DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock);
-    DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock);
+    DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
 
     @Test
     public void should_return_success_when_user_gave_new_word_and_translate() {
@@ -319,5 +319,25 @@ class DictionaryFacadeTest {
         assertThat(calculator.back(INTERVAL_5_DAYS)).isEqualTo(INTERVAL_3_DAYS);
         assertThat(calculator.back(INTERVAL_3_DAYS)).isEqualTo(INTERVAL_1_DAY);
         assertThat(calculator.back(INTERVAL_1_DAY)).isEqualTo(INTERVAL_1_DAY);
+    }
+
+    @Test
+    void should_return_only_current_user_words() {
+        // given
+        ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
+        dictionaryFacade.addWord(new WordAddDtoRequest("cat", "кот"));
+        dictionaryFacade.addWord(new WordAddDtoRequest("dog", "собака"));
+
+        ((TestCurrentUserProvider) currentUserProvider).setUserId(2L);
+        dictionaryFacade.addWord(new WordAddDtoRequest("sun", "солнце"));
+        // when
+        ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
+        List<WordDtoResponse> result =
+                dictionaryFacade.findAllWords(Pageable.unpaged());
+        // then
+        assertThat(result).hasSize(2);
+        assertThat(result)
+                .extracting(WordDtoResponse::word)
+                .containsExactlyInAnyOrder("cat", "dog");
     }
 }

@@ -29,7 +29,7 @@ public class DictionaryFacade {
     }
 
     public List<WordDtoResponse> findAllWords(final Pageable pageable) {
-        return wordRetriever.findAll(pageable);
+        return wordRetriever.findAllByUserId(pageable);
     }
 
     public WordDtoResponse findById(Long id) {

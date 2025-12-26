@@ -20,7 +20,7 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
     @Query("DELETE FROM WordEntry s WHERE s.id = :id")
     void deleteById(Long id);
 
-    List<WordEntry> findAll(Pageable pageable);
+    List<WordEntry> findAllByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT s FROM WordEntry s WHERE s.id = :id")
     Optional<WordEntry> findById(Long id);

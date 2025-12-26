@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 
@@ -13,6 +14,7 @@ import static com.vocabularysrs.domain.dictionary.WordEntryMapper.mapFromWordEnt
 class WordRetriever {
 
     private final WordEntryRepository wordEntryRepository;
+    private final CurrentUserProvider currentUserProvider;
 
     public boolean isExistByWord(String word) {
         if (wordEntryRepository.existsByWord(word)) {
@@ -27,8 +29,9 @@ class WordRetriever {
         }
     }
 
-    List<WordDtoResponse> findAll(final Pageable pageable) {
-        return wordEntryRepository.findAll(pageable)
+    List<WordDtoResponse> findAllByUserId(Pageable pageable) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        return wordEntryRepository.findAllByUserId(userId, pageable)
                 .stream().map(WordEntryMapper::mapFromWordEntryToWordDtoResponse)
                 .collect(Collectors.toList());
     }
