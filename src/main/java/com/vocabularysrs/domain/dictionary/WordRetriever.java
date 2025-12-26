@@ -25,7 +25,8 @@ class WordRetriever {
     }
 
     void existById(Long id) {
-        if (!wordEntryRepository.existsById(id)) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        if (!wordEntryRepository.existsByIdAndUserId(id, userId)) {
             throw new WordNotFoundException(id);
         }
     }

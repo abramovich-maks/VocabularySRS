@@ -14,7 +14,7 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
 
     boolean existsByWordAndUserId(String word, Long userId);
 
-    boolean existsById(Long id);
+    boolean existsByIdAndUserId(Long id, Long userId);
 
     @Modifying
     @Query("DELETE FROM WordEntry s WHERE s.id = :id")

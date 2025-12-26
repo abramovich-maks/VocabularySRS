@@ -41,7 +41,7 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     @Override
     public boolean existsByWordAndUserId(final String word, final Long userId) {
         for (WordEntry entry : database.values()) {
-            if (entry.getWord().equals(word) && entry.getUserId().equals(userId) ) {
+            if (entry.getWord().equals(word) && entry.getUserId().equals(userId)) {
                 return true;
             }
         }
@@ -49,8 +49,10 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public boolean existsById(final Long id) {
-        return database.containsKey(id);
+    public boolean existsByIdAndUserId(final Long id, final Long userId) {
+        return Optional.ofNullable(database.get(id))
+                .map(entry -> entry.getUserId().equals(userId))
+                .orElse(false);
     }
 
     @Override
