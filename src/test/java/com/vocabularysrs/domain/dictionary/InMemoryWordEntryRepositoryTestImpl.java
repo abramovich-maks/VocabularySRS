@@ -73,7 +73,7 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public Optional<WordEntry> findById(final Long id) {
+    public Optional<WordEntry> findByIdAndUserId(final Long id) {
         return Optional.ofNullable(database.get(id));
     }
 

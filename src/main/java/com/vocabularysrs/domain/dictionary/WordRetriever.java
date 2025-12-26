@@ -39,13 +39,15 @@ class WordRetriever {
     }
 
     WordDtoResponse findById(Long id) {
-        WordEntry wordEntry = wordEntryRepository.findById(id)
+        Long userId = currentUserProvider.getCurrentUserId();
+        WordEntry wordEntry = wordEntryRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new WordNotFoundException(id));
         return mapFromWordEntryToWordDtoResponse(wordEntry);
     }
 
     WordEntry findEntityById(Long id) {
-        return wordEntryRepository.findById(id)
+        Long userId = currentUserProvider.getCurrentUserId();
+        return wordEntryRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new WordNotFoundException(id));
     }
 }

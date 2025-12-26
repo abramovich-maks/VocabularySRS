@@ -297,7 +297,7 @@ class DictionaryFacadeTest {
         // when
         adapter.update(response);
         // then
-        WordEntry updated = repository.findById(0L).orElseThrow();
+        WordEntry updated = repository.findByIdAndUserId(0L).orElseThrow();
         assertThat(updated.getCurrentInterval()).isEqualTo(INTERVAL_3_DAYS);
     }
 
