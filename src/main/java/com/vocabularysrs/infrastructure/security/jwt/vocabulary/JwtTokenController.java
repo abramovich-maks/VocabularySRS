@@ -69,13 +69,6 @@ class JwtTokenController {
         }
     }
 
-    @GetMapping("/status")
-    public ResponseEntity<Map<String, Boolean>> status(Authentication authentication) {
-        return ResponseEntity.ok(Map.of(
-                "loggedIn", authentication != null && authentication.isAuthenticated()
-        ));
-    }
-
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         Cookie refreshCookie = new Cookie("refreshToken", "");
