@@ -1,16 +1,21 @@
 package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 
+import com.vocabularysrs.domain.loginandregister.UserDetailsService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +28,7 @@ class JwtTokenController {
         String token = tokenGenerator.authenticateAndGenerateToken(dto.email(), dto.password());
         Cookie cookie = new Cookie("accessToken", token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60);
         response.addCookie(cookie);
@@ -32,5 +37,12 @@ class JwtTokenController {
                         .token(token)
                         .build()
         );
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<Map<String, Boolean>> status(Authentication authentication) {
+        return ResponseEntity.ok(Map.of(
+                "loggedIn", authentication != null && authentication.isAuthenticated()
+        ));
     }
 }

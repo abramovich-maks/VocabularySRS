@@ -35,5 +35,5 @@ scheduler:
   ## Token jwt
 auth:
   jwt:
-    expirationSeconds: 1800
+    expirationSeconds: 3600
     issuer: VocabularySRS-backend
