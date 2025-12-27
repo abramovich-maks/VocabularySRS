@@ -1,8 +1,6 @@
 package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 
-import com.vocabularysrs.domain.loginandregister.UserDetailsService;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +42,16 @@ class JwtTokenController {
         return ResponseEntity.ok(Map.of(
                 "loggedIn", authentication != null && authentication.isAuthenticated()
         ));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("accessToken", "");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return ResponseEntity.ok().build();
     }
 }
