@@ -284,6 +284,7 @@ class DictionaryFacadeTest {
     void should_update_word_entry_where_user_request_test() {
         // given
         WordEntry entry = WordEntry.builder()
+                .userId(1L)
                 .currentInterval(INTERVAL_1_DAY)
                 .build();
         entry.initialize(clock.today());
@@ -297,7 +298,7 @@ class DictionaryFacadeTest {
         // when
         adapter.update(response);
         // then
-        WordEntry updated = repository.findByIdAndUserId(0L).orElseThrow();
+        WordEntry updated = repository.findByIdAndUserId(0L,1L).orElseThrow();
         assertThat(updated.getCurrentInterval()).isEqualTo(INTERVAL_3_DAYS);
     }
 

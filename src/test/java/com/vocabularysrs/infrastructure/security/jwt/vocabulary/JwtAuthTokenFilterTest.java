@@ -77,18 +77,19 @@ class JwtAuthTokenFilterTest {
     }
 
     @Test
-    void shouldReadTokenFromCookie() throws Exception {
+    void shouldReadTokenFromAuthorizationHeader() throws Exception {
         // given
         String username = "user@u";
 
         String token = JWT.create()
                 .withSubject(username)
+                .withClaim("type", "access")
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         when(userDetailsService.loadUserByUsername(username)).thenReturn(mock(UserDetails.class));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setCookies(new Cookie("accessToken", token));
+        request.addHeader("Authorization", "Bearer " + token);
         // when
         filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
         // then

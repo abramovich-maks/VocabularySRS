@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -40,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -70,11 +73,13 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
     private CurrentUserProvider currentUserProvider;
 
     @BeforeEach
-    void setupJwt() throws Exception {
-        when(jwtTokenGenerator.authenticateAndGenerateToken(any(), any()))
-                .thenReturn("integration-test-token");
+    void setupAuth() {
+        when(authenticationManager.authenticate(any()))
+                .thenReturn(mock(Authentication.class));
     }
 
+    @MockitoBean
+    AuthenticationManager authenticationManager;
 
     @Test
     public void happyPath() throws Exception {

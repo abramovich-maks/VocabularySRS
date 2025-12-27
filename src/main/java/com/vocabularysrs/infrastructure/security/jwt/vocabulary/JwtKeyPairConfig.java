@@ -4,41 +4,58 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.security.KeyFactory;
 import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Objects;
 
 @Configuration
 @Log4j2
 class JwtKeyPairConfig {
 
     @Bean
-    KeyPair keyPair() throws NoSuchAlgorithmException, IOException {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        keyPairGenerator.initialize(2048);
-        KeyPair keyPair = keyPairGenerator.generateKeyPair();
-        // Save public key to file
-//        saveKeyToFile("public_key.pem", keyPair.getPublic().getEncoded(), true);
-//        // Save private key to file
-//        saveKeyToFile("private_key.pem", keyPair.getPrivate().getEncoded(), false);
-        return keyPair;
+    KeyPair keyPair() {
+        try {
+            RSAPrivateKey privateKey = loadPrivateKey("private_key.pem");
+            RSAPublicKey publicKey = loadPublicKey("public_key.pem");
+            return new KeyPair(publicKey, privateKey);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to load RSA key pair", e);
+        }
     }
 
-//    private void saveKeyToFile(String fileName, byte[] keyBytes, boolean isPublicKey) throws IOException {
-//        try (FileOutputStream fos = new FileOutputStream(Paths.get("src", "main", "resources", fileName).toString())) {
-//            fos.write(getPemEncoded(keyBytes, isPublicKey));
-//        }
-//    }
+    private RSAPrivateKey loadPrivateKey(String path) throws Exception {
+        String key = readKey(path)
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", "");
 
-//    private byte[] getPemEncoded(byte[] keyBytes, boolean isPublicKey) {
-//        String pemHeader = isPublicKey ? "-----BEGIN PUBLIC KEY-----\n" : "-----BEGIN PRIVATE KEY-----\n";
-//        String pemFooter = isPublicKey ? "\n-----END PUBLIC KEY-----\n" : "\n-----END PRIVATE KEY-----\n";
-//        String pemEncoded = pemHeader + Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(keyBytes) + pemFooter;
-//        return pemEncoded.getBytes();
-//    }
+        byte[] decoded = Base64.getDecoder().decode(key);
+        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(decoded);
+        return (RSAPrivateKey) KeyFactory.getInstance("RSA").generatePrivate(spec);
+    }
 
+    private RSAPublicKey loadPublicKey(String path) throws Exception {
+        String key = readKey(path)
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
+
+        byte[] decoded = Base64.getDecoder().decode(key);
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
+        return (RSAPublicKey) KeyFactory.getInstance("RSA").generatePublic(spec);
+    }
+
+    private String readKey(String path) throws IOException {
+        return new String(
+                Objects.requireNonNull(
+                        getClass().getClassLoader().getResourceAsStream(path)
+                ).readAllBytes()
+        );
+    }
 }
