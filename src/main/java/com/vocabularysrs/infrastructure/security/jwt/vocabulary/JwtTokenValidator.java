@@ -25,4 +25,13 @@ public class JwtTokenValidator {
         }
         return jwt;
     }
+
+    public DecodedJWT verifyAccessToken(String token) {
+        JWTVerifier verifier = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getPublic(), null)).build();
+        DecodedJWT jwt = verifier.verify(token);
+        if (!"access".equals(jwt.getClaim("type").asString())) {
+            throw new JWTVerificationException("Not an access token");
+        }
+        return jwt;
+    }
 }

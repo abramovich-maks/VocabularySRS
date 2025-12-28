@@ -1,10 +1,7 @@
 package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.JWTVerifier;
 import com.vocabularysrs.domain.loginandregister.UserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,17 +16,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.security.KeyPair;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Collections;
 
 @Component
 @Log4j2
 @RequiredArgsConstructor
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
-    private final KeyPair keyPair;
-
+    private final JwtTokenValidator jwtTokenValidator;
     private final UserDetailsService userDetailsService;
 
     @Override
@@ -38,14 +31,11 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         String token = getTokenFromRequest(request);
         if (token != null) {
             try {
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getPublic(), null))
-                        .build();
-                DecodedJWT decodedToken = jwtVerifier.verify(token);
-                String login = decodedToken.getSubject();
-                UserDetails userDetails = userDetailsService.loadUserByUsername(login);
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, Collections.emptyList());
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-
+                DecodedJWT decodedJWT = jwtTokenValidator.verifyAccessToken(token);
+                String username = decodedJWT.getSubject();
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException ex) {
                 log.warn("Invalid or expired JWT token: {}", ex.getMessage());
                 SecurityContextHolder.clearContext();

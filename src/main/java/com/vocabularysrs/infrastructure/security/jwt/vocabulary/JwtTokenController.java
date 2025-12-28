@@ -13,12 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +36,7 @@ class JwtTokenController {
         Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
         refreshCookie.setHttpOnly(true);
         refreshCookie.setSecure(false);
-        refreshCookie.setPath("/token/refresh");
+        refreshCookie.setPath("/");
         refreshCookie.setMaxAge((int) properties.refreshExpirationSeconds());
         response.addCookie(refreshCookie);
         return ResponseEntity.ok(
@@ -74,7 +71,7 @@ class JwtTokenController {
         Cookie refreshCookie = new Cookie("refreshToken", "");
         refreshCookie.setHttpOnly(true);
         refreshCookie.setSecure(false);
-        refreshCookie.setPath("/token/refresh");
+        refreshCookie.setPath("/");
         refreshCookie.setMaxAge(0);
         response.addCookie(refreshCookie);
         return ResponseEntity.ok().build();

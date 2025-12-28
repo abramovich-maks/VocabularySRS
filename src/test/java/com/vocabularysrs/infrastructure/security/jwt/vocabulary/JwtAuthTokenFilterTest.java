@@ -3,7 +3,6 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.vocabularysrs.domain.loginandregister.UserDetailsService;
-import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,13 +36,17 @@ class JwtAuthTokenFilterTest {
     KeyPair keyPair;
 
     JwtAuthTokenFilter filter;
+    JwtTokenValidator jwtTokenValidator;
+    JwtConfigurationProperties properties;
 
     @BeforeEach
     void setUp() throws Exception {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048);
         keyPair = generator.generateKeyPair();
-        filter = new JwtAuthTokenFilter(keyPair, userDetailsService);
+        properties = new JwtConfigurationProperties(60, "VocabularySRS-backend", 600);
+        jwtTokenValidator = new JwtTokenValidator(keyPair);
+        filter = new JwtAuthTokenFilter(jwtTokenValidator, userDetailsService);
     }
 
     @AfterEach
@@ -58,6 +61,8 @@ class JwtAuthTokenFilterTest {
 
         String token = JWT.create()
                 .withSubject(username)
+                .withIssuer("VocabularySRS-backend")
+                .withClaim("type", "access")
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         UserDetails userDetails = mock(UserDetails.class);
@@ -83,11 +88,12 @@ class JwtAuthTokenFilterTest {
 
         String token = JWT.create()
                 .withSubject(username)
+                .withIssuer("VocabularySRS-backend")
                 .withClaim("type", "access")
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
-        when(userDetailsService.loadUserByUsername(username)).thenReturn(mock(UserDetails.class));
-
+        UserDetails userDetails = mock(UserDetails.class);
+        when(userDetailsService.loadUserByUsername(username)).thenReturn(userDetails);
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer " + token);
         // when
