@@ -1,17 +1,17 @@
 package com.vocabularysrs.infrastructure.clock;
 
-import com.vocabularysrs.domain.AdjustableClock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
-import java.time.Instant;
-import java.time.ZoneId;
+import java.time.Clock;
 
 @Configuration
+@Profile("!integration")
 class ClockConfig {
 
     @Bean
-    AdjustableClock clock() {
-        return new AdjustableClock(Instant.now(), ZoneId.systemDefault());
+    public Clock clock() {
+        return Clock.systemUTC();
     }
 }

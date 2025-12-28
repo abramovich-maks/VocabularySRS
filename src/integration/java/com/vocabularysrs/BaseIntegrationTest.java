@@ -16,6 +16,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.Clock;
+
 @SpringBootTest(classes = {VocabularySrsApplication.class, IntegrationConfiguration.class})
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
@@ -26,7 +28,11 @@ public class BaseIntegrationTest {
     public MockMvc mockMvc;
 
     @Autowired
-    public AdjustableClock clock;
+    Clock clock;
+
+    protected AdjustableClock adjustableClock() {
+        return (AdjustableClock) clock;
+    }
 
     @MockitoBean
     public JwtTokenGenerator jwtTokenGenerator;

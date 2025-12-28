@@ -1,16 +1,17 @@
 package com.vocabularysrs.domain.dictionary;
 
-import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.infrastructure.security.JwtCurrentUserProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Clock;
+
 @Configuration
 class WordEntryConfiguration {
 
     @Bean
-    DictionaryFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, AdjustableClock clock) {
+    DictionaryFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock) {
         WordRetriever wordRetriever = new WordRetriever(wordRepository, currentUserProvider);
         WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, clock);
         WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever);
@@ -24,7 +25,7 @@ class WordEntryConfiguration {
     }
 
     @Bean
-    DictionaryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator, AdjustableClock clock, CurrentUserProvider currentUserProvider) {
+    DictionaryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator, Clock clock, CurrentUserProvider currentUserProvider) {
         WordRetriever wordRetriever = new WordRetriever(wordEntryRepository, currentUserProvider);
         return new DictionaryUpdateAdapter(wordEntryRepository, wordRetriever, calculator, clock);
     }

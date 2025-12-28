@@ -1,11 +1,11 @@
 package com.vocabularysrs.domain.dailywordsselector;
 
-import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
 import com.vocabularysrs.domain.dictionary.WordEntrySnapshot;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,10 +19,10 @@ public class DailyWordsSelectorFacade {
     private final WordEntryReadPort wordEntryReadPort;
     private final DailyWordRepository dailyWordRepository;
 
-    private final AdjustableClock clock;
+    private final Clock clock;
 
     public void retrieveWordsByDate() {
-        LocalDate today = clock.today();
+        LocalDate today = LocalDate.now(clock);
 
         Map<Long, List<WordEntrySnapshot>> wordsByUser = new HashMap<>();
         for (WordEntrySnapshot word : wordEntryReadPort.findWordEntriesByNextReviewDate(today)) {

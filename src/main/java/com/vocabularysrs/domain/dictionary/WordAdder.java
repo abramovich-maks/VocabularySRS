@@ -1,12 +1,12 @@
 package com.vocabularysrs.domain.dictionary;
 
-import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.Clock;
 import java.time.LocalDate;
 
 import static com.vocabularysrs.domain.dictionary.WordEntryMapper.mapFromWordAddDtoRequestToWordEntry;
@@ -20,11 +20,11 @@ class WordAdder {
     private final WordRetriever wordRetriever;
     private final CurrentUserProvider currentUserProvider;
 
-    private final AdjustableClock clock;
+    private final Clock clock;
 
 
     WordEntryDtoResponse addWord(final WordAddDtoRequest dtoRequest) {
-        LocalDate today = clock.today();
+        LocalDate today = LocalDate.now(clock);
 
         if (dtoRequest.word() == null || dtoRequest.translate() == null) {
             log.info("Error: word({}) or translate({}) can't be null", dtoRequest.word(), dtoRequest.translate());

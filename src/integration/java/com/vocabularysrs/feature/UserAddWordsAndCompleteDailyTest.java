@@ -217,14 +217,14 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(allWords).hasSize(3);
 
         // step 10: 19 hours and 1 minute passed (20.12.2025 06:01).
-        clock.plusHours(19);
-        clock.plusMinutes(1);
-        assertThat(clock.instant()).isEqualTo("2025-12-20T06:01:00Z");
+        adjustableClock().plusHours(19);
+        adjustableClock().plusMinutes(1);
+        assertThat(adjustableClock().instant()).isEqualTo("2025-12-20T06:01:00Z");
 
 
 //    step 11: the system at 6:00 selected words for the user (3 words).
         dailyWordsSelectorFacade.retrieveWordsByDate();
-        LocalDate day1 = clock.today();
+        LocalDate day1 = adjustableClock().today();
         List<WordEntrySnapshot> wordEntriesByDay1 = wordEntryReadPort.findWordEntriesByNextReviewDate(day1);
         List<DailyWordSnapshot> dailyWordsByDay1 = dailyWordReadPort.findDailyWordReviewByTaskDate(day1);
         assertThat(wordEntriesByDay1).hasSize(3);
@@ -239,10 +239,10 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 //    step 12: the system at 6:05 generated a task with selected words for the date 20.12.2025.
         // given
-        clock.plusMinutes(4);
-        assertThat(clock.instant()).isEqualTo("2025-12-20T06:05:00Z");
+        adjustableClock().plusMinutes(4);
+        assertThat(adjustableClock().instant()).isEqualTo("2025-12-20T06:05:00Z");
         // when
-        learningTaskGeneratorFacade.generateTasks(clock.today());
+        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
         // then
         LearningTaskSnapshot taskDay1 = learningTaskReadPort.findLearningTaskByDateAndUserId(day1, 1L);
         assertThat(taskDay1.questions())
@@ -269,7 +269,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
         assertThat(getResponse.userId()).isEqualTo(1);
         assertThat(getResponse.id()).isNotNull();
-        assertThat(getResponse.taskDate()).isEqualTo(clock.today());
+        assertThat(getResponse.taskDate()).isEqualTo(adjustableClock().today());
         assertThat(getResponse.questions().size()).isEqualTo(6);
 
 
@@ -293,13 +293,13 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 
 //    step 14: 1 day passed (21.12.2025 06:05).
-        clock.plusDays(1);
-        assertThat(clock.instant()).isEqualTo("2025-12-21T06:05:00Z");
+        adjustableClock().plusDays(1);
+        assertThat(adjustableClock().instant()).isEqualTo("2025-12-21T06:05:00Z");
 
 
 //    step 15: the system at 6:00 selected words for the user (4 words).
         // given
-        LocalDate day2 = clock.today();
+        LocalDate day2 = adjustableClock().today();
         // when
         dailyWordsSelectorFacade.retrieveWordsByDate();
         List<WordEntrySnapshot> wordEntriesByDay2 = wordEntryReadPort.findWordEntriesByNextReviewDate(day2);
@@ -317,7 +317,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 //    step 16: the system at 6:05 generated a task with selected words for the date 21.12.2025.
         // given && when
-        learningTaskGeneratorFacade.generateTasks(clock.today());
+        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
         // then
         LearningTaskSnapshot taskDay2 = learningTaskReadPort.findLearningTaskByDateAndUserId(day2, 1L);
         assertThat(taskDay2.questions())
@@ -351,13 +351,13 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 
 //    step 18: 2 days passed (23.12.2025 06:05).
-        clock.plusDays(2);
-        assertThat(clock.instant()).isEqualTo("2025-12-23T06:05:00Z");
+        adjustableClock().plusDays(2);
+        assertThat(adjustableClock().instant()).isEqualTo("2025-12-23T06:05:00Z");
 
 
 //    step 19: the system at 6:00 selected words for the user (1 word).
         // given
-        LocalDate day3 = clock.today();
+        LocalDate day3 = adjustableClock().today();
         // when
         dailyWordsSelectorFacade.retrieveWordsByDate();
         // then
@@ -374,7 +374,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 //    step 20: the system at 6:05 generated a task with selected words for the date 23.12.2025.
         // given && when
-        learningTaskGeneratorFacade.generateTasks(clock.today());
+        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
         // then
         LearningTaskSnapshot taskDay3 = learningTaskReadPort.findLearningTaskByDateAndUserId(day3, 1L);
         assertThat(taskDay3.questions())
