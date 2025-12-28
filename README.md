@@ -58,8 +58,7 @@ The project focuses on **integration testing of real business scenarios**:
 ---
 
 ## 🗺 Roadmap
-
-- Frontend (React)
+- ~~Frontend (React)~~ — minimal frontend implemented: https://github.com/abramovich-maks/vocabulary-frontend
 - User accounts and personalization
 - Learning statistics and analytics
 - Adaptive learning algorithms
