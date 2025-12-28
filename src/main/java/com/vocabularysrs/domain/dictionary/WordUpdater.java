@@ -14,16 +14,23 @@ class WordUpdater {
     private final WordRetriever wordRetriever;
 
     WordEntryUpdateDtoResponse updateById(final Long id, final WordUpdatePartiallyDtoRequest dtoRequest) {
-        wordRetriever.existById(id);
+        wordRetriever.assertExistsById(id);
         WordEntry wordEntry = wordRetriever.findEntityById(id);
         if (dtoRequest.word() != null) {
-            wordEntry.setWord(dtoRequest.word());
-            log.info("Entry with id: {} updated word: \"{}\"", wordEntry.getId(), wordEntry.getWord());
+            String normalizedWord = WordNormalizer.normalizeWord(dtoRequest.word());
+            if (!normalizedWord.equals(wordEntry.getWord())) {
+                wordRetriever.assertNotExistsByWord(normalizedWord);
+            }
+            wordEntry.setWord(normalizedWord);
+            log.info("Entry with id: {} updated word: \"{}\"", wordEntry.getId(), normalizedWord);
         }
 
         if (dtoRequest.translate() != null) {
-            wordEntry.setTranslate(dtoRequest.translate());
-            log.info("Entry with id: {} updated translate: \"{}\"", wordEntry.getId(), wordEntry.getTranslate());
+            String normalizedTranslate =
+                    WordNormalizer.normalizeTranslate(dtoRequest.translate());
+
+            wordEntry.setTranslate(normalizedTranslate);
+            log.info("Entry with id: {} updated translate: \"{}\"", wordEntry.getId(), normalizedTranslate);
         }
         return mapFromWordEntryToWordEntryUpdateDtoResponse(id, wordEntry);
     }

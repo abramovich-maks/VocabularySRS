@@ -9,7 +9,6 @@ import lombok.extern.log4j.Log4j2;
 import java.time.Clock;
 import java.time.LocalDate;
 
-import static com.vocabularysrs.domain.dictionary.WordEntryMapper.mapFromWordAddDtoRequestToWordEntry;
 import static com.vocabularysrs.domain.dictionary.WordEntryMapper.mapFromWordEntryToWordEntryDtoResponse;
 
 @AllArgsConstructor
@@ -26,12 +25,23 @@ class WordAdder {
     WordEntryDtoResponse addWord(final WordAddDtoRequest dtoRequest) {
         LocalDate today = LocalDate.now(clock);
 
-        if (dtoRequest.word() == null || dtoRequest.translate() == null) {
-            log.info("Error: word({}) or translate({}) can't be null", dtoRequest.word(), dtoRequest.translate());
-            return new WordEntryDtoResponse(null, null, "Word or translate can't be null");
+        if (dtoRequest.word() == null) {
+            throw InvalidWordException.wordIsNull();
         }
-        wordRetriever.isExistByWord(dtoRequest.word());
-        WordEntry newWord = mapFromWordAddDtoRequestToWordEntry(dtoRequest);
+        if (dtoRequest.translate() == null) {
+            throw InvalidWordException.translateIsNull();
+        }
+
+        String word = WordNormalizer.normalizeWord(dtoRequest.word());
+        String translate = WordNormalizer.normalizeTranslate(dtoRequest.translate());
+
+        wordRetriever.assertNotExistsByWord(word);
+
+        WordEntry newWord = WordEntry.builder()
+                .word(word)
+                .translate(translate)
+                .build();
+
         newWord.initialize(today);
         newWord.setUserId(currentUserProvider.getCurrentUserId());
         WordEntry save = wordRepository.save(newWord);

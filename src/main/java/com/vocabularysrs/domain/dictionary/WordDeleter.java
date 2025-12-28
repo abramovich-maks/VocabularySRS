@@ -16,7 +16,7 @@ class WordDeleter {
     private final WordRetriever wordRetriever;
 
     WordEntryDtoResponse deleteById(final Long id) {
-        wordRetriever.existById(id);
+        wordRetriever.assertExistsById(id);
         wordEntryRepository.deleteById(id);
         log.info("Deleted word by id: {}", id);
         return WordEntryDtoResponse.builder()

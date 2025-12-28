@@ -58,15 +58,14 @@ class DictionaryFacadeTest {
     @Test
     public void should_return_error_when_user_gave_null_word_or_null_translate() {
         // given
-        WordAddDtoRequest word_1 = new WordAddDtoRequest(null, "кот");
-        WordAddDtoRequest word_2 = new WordAddDtoRequest("cat", null);
-        // when
-        WordEntryDtoResponse result_1 = dictionaryFacade.addWord(word_1);
-        WordEntryDtoResponse result_2 = dictionaryFacade.addWord(word_2);
-        // then
-        assertThat(result_1.message()).isEqualTo("Word or translate can't be null");
-        assertThat(result_1.word()).isNull();
-        assertThat(result_2.translate()).isNull();
+        WordAddDtoRequest wordIsNull = new WordAddDtoRequest(null, "кот");
+        WordAddDtoRequest translateIsNull = new WordAddDtoRequest("cat", null);
+        // when && then
+        InvalidWordException word = assertThrows(InvalidWordException.class, () -> dictionaryFacade.addWord(wordIsNull));
+        assertThat(word.getMessage()).isEqualTo("Word must not be null");
+
+        InvalidWordException translate = assertThrows(InvalidWordException.class, () -> dictionaryFacade.addWord(translateIsNull));
+        assertThat(translate.getMessage()).isEqualTo("Translate must not be null");
     }
 
     @Test
@@ -298,7 +297,7 @@ class DictionaryFacadeTest {
         // when
         adapter.update(response);
         // then
-        WordEntry updated = repository.findByIdAndUserId(0L,1L).orElseThrow();
+        WordEntry updated = repository.findByIdAndUserId(0L, 1L).orElseThrow();
         assertThat(updated.getCurrentInterval()).isEqualTo(INTERVAL_3_DAYS);
     }
 

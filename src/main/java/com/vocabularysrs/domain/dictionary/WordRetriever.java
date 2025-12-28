@@ -16,15 +16,14 @@ class WordRetriever {
     private final WordEntryRepository wordEntryRepository;
     private final CurrentUserProvider currentUserProvider;
 
-    public boolean isExistByWord(String word) {
+    void assertNotExistsByWord(String word) {
         Long userId = currentUserProvider.getCurrentUserId();
         if (wordEntryRepository.existsByWordAndUserId(word, userId)) {
             throw new WordAlreadyExistsException(word);
         }
-        return false;
     }
 
-    void existById(Long id) {
+    void assertExistsById(Long id) {
         Long userId = currentUserProvider.getCurrentUserId();
         if (!wordEntryRepository.existsByIdAndUserId(id, userId)) {
             throw new WordNotFoundException(id);
