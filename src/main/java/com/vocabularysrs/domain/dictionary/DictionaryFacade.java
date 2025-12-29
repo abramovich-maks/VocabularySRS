@@ -19,6 +19,7 @@ public class DictionaryFacade {
     private final WordDeleter wordDeleter;
     private final WordRetriever wordRetriever;
     private final WordUpdater wordUpdater;
+    private final WordDetailsReader wordDetailsReader;
 
     public WordEntryDtoResponse addWord(WordAddDtoRequest dtoRequest) {
         return wordAdder.addWord(dtoRequest);
@@ -36,7 +37,11 @@ public class DictionaryFacade {
         return wordRetriever.findById(id);
     }
 
-    public WordEntryUpdateDtoResponse updatePartiallyById(Long id, WordUpdatePartiallyDtoRequest dtoRequest){
+    public WordEntryUpdateDtoResponse updatePartiallyById(Long id, WordUpdatePartiallyDtoRequest dtoRequest) {
         return wordUpdater.updateById(id, dtoRequest);
+    }
+
+    public WordHttpDto getWordDetails(Long id) {
+        return wordDetailsReader.getDetails(id);
     }
 }

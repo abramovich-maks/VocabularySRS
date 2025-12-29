@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
+import com.vocabularysrs.domain.dictionary.WordHttpDto;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
@@ -58,6 +59,17 @@ class DictionaryControllerMapper {
                 .word(wordEntryById.word())
                 .translate(wordEntryById.translate())
                 .message(wordEntryById.message())
+                .build();
+    }
+
+    public  static WordDetailsControllerDto mapFromWordHttpDtoToWordDetailsControllerDto(final WordHttpDto wordDetails) {
+        return WordDetailsControllerDto.builder()
+                .word(wordDetails.word())
+                .phonetic(wordDetails.phonetic())
+                .audioUrl(wordDetails.audioUrl())
+                .partOfSpeech(wordDetails.details().partOfSpeech())
+                .definition(wordDetails.details().definition())
+                .example(wordDetails.details().example())
                 .build();
     }
 }

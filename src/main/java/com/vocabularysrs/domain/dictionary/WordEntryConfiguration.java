@@ -11,12 +11,14 @@ import java.time.Clock;
 class WordEntryConfiguration {
 
     @Bean
-    DictionaryFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock) {
+    DictionaryFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock, WordDetailsRepository wordDetailsRepository, WordDetailsFetchable wordDetailsFetchable) {
         WordRetriever wordRetriever = new WordRetriever(wordRepository, currentUserProvider);
-        WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, clock);
+        WordDetailsEnricher wordDetailsEnricher = new WordDetailsEnricher(wordDetailsFetchable, wordDetailsRepository, wordRetriever);
+        WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, wordDetailsEnricher, currentUserProvider, clock);
         WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever);
         WordUpdater wordUpdater = new WordUpdater(wordRetriever);
-        return new DictionaryFacade(wordAdder, wordDeleter, wordRetriever, wordUpdater);
+        WordDetailsReader wordDetailsReader = new WordDetailsReader(wordDetailsRepository, wordRetriever);
+        return new DictionaryFacade(wordAdder, wordDeleter, wordRetriever, wordUpdater, wordDetailsReader);
     }
 
     @Bean

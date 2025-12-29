@@ -1,11 +1,12 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.dictionary.DictionaryFacade;
-import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
-import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.dictionary.WordHttpDto;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
@@ -32,6 +33,7 @@ import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryC
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordHttpDtoToWordDetailsControllerDto;
 
 @AllArgsConstructor
 @RestController()
@@ -73,6 +75,13 @@ class DictionaryController {
     public ResponseEntity<WordUpdatePartiallyDtoResponse> partiallyUpdateWordEntry(@PathVariable Long wordEntryId, @RequestBody WordUpdatePartiallyDtoRequest requestDto) {
         WordEntryUpdateDtoResponse wordEntryById = dictionaryFacade.updatePartiallyById(wordEntryId, requestDto);
         WordUpdatePartiallyDtoResponse response = mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse(wordEntryById);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{wordEntryId}/details")
+    public ResponseEntity<WordDetailsControllerDto> getDetailsWord(@PathVariable Long wordEntryId) {
+        WordHttpDto wordDetails = dictionaryFacade.getWordDetails(wordEntryId);
+        WordDetailsControllerDto response = mapFromWordHttpDtoToWordDetailsControllerDto(wordDetails);
         return ResponseEntity.ok().body(response);
     }
 }
