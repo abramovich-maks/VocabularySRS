@@ -13,10 +13,12 @@ import static java.lang.String.format;
 class WordDeleter {
 
     private final WordEntryRepository wordEntryRepository;
+    private final WordDetailsRepository wordDetailsRepository;
     private final WordRetriever wordRetriever;
 
     WordEntryDtoResponse deleteById(final Long id) {
         WordEntry word = wordRetriever.findEntityById(id);
+        wordDetailsRepository.deleteById(id);
         wordEntryRepository.delete(word);
         log.info("Deleted word by id: {}, userId: {}", id, word.getUserId());
         return WordEntryDtoResponse.builder()

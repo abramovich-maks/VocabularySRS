@@ -14,4 +14,7 @@ interface WordDetailsRepository extends Repository<WordDetailsEntry, Long> {
                 where d.id = :id and w.userId = :userId
             """)
     Optional<WordDetailsEntry> findByIdAndUserId(Long id, Long userId);
+
+    void deleteById(Long id);
+
 }
