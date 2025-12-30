@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.dictionary;
 
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 
 import java.util.Optional;
@@ -8,14 +9,14 @@ import java.util.Optional;
 class WordDetailsReader {
 
     private final WordDetailsRepository wordDetailsRepository;
-    private final WordRetriever wordRetriever;
+    private final CurrentUserProvider currentUserProvider;
 
     Optional<WordHttpDto> getDetails(Long id) {
-        WordEntry wordEntry = wordRetriever.findEntityById(id);
+        Long userId = currentUserProvider.getCurrentUserId();
 
-        return wordDetailsRepository.findById(id)
+        return wordDetailsRepository.findByIdAndUserId(id, userId)
                 .map(details -> new WordHttpDto(
-                        wordEntry.getWord(),
+                        details.getWordEntry().getWord(),
                         details.getPhonetic(),
                         details.getAudioUrl(),
                         new WordHttpDetailsDto(

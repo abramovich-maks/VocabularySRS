@@ -357,6 +357,7 @@ class DictionaryFacadeTest {
     @Test
     void should_enrich_word_and_save_details() {
         // given
+        ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
         WordEntry entry = WordEntry.builder()
                 .word("mother")
                 .userId(1L)
@@ -369,7 +370,7 @@ class DictionaryFacadeTest {
         enricher.enrich(entry.getId());
 
         // then
-        WordDetailsEntry saved = detailsRepo.findById(entry.getId()).orElseThrow();
+        WordDetailsEntry saved = detailsRepo.findByIdAndUserId(entry.getId(), entry.getUserId()).orElseThrow();
 
         assertThat(saved.getPhonetic()).isEqualTo("/ˈmʌðə/");
         assertThat(saved.getAudioUrl()).isEqualTo("audio.mp3");

@@ -23,8 +23,9 @@ class InMemoryWordDetailsRepositoryTestImpl implements WordDetailsRepository {
     }
 
     @Override
-    public Optional<WordDetailsEntry> findById(final Long id) {
-        return Optional.ofNullable(database.get(id));
+    public Optional<WordDetailsEntry> findByIdAndUserId(final Long id, final Long userId) {
+        return Optional.ofNullable(database.get(id))
+                .filter(entry -> userId.equals(entry.getWordEntry().getUserId()));
     }
 
 }
