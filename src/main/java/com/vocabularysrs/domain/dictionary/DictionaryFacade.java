@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @AllArgsConstructor
@@ -41,7 +42,7 @@ public class DictionaryFacade {
         return wordUpdater.updateById(id, dtoRequest);
     }
 
-    public WordHttpDto getWordDetails(Long id) {
+    public Optional<WordHttpDto> getWordDetails(Long id) {
         return wordDetailsReader.getDetails(id);
     }
 }

@@ -1,7 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.dictionary.DictionaryFacade;
-import com.vocabularysrs.domain.dictionary.WordHttpDto;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
@@ -80,9 +79,9 @@ class DictionaryController {
 
     @GetMapping("/{wordEntryId}/details")
     public ResponseEntity<WordDetailsControllerDto> getDetailsWord(@PathVariable Long wordEntryId) {
-        WordHttpDto wordDetails = dictionaryFacade.getWordDetails(wordEntryId);
-        WordDetailsControllerDto response = mapFromWordHttpDtoToWordDetailsControllerDto(wordDetails);
-        return ResponseEntity.ok().body(response);
+        return dictionaryFacade.getWordDetails(wordEntryId)
+                .map(dto -> ResponseEntity.ok(mapFromWordHttpDtoToWordDetailsControllerDto(dto)))
+                .orElseGet(() -> ResponseEntity.noContent().build());
     }
 }
 

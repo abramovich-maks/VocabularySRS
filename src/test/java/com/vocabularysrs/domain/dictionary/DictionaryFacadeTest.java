@@ -411,7 +411,7 @@ class DictionaryFacadeTest {
                 .build();
         detailsRepo.save(details);
         // when
-        WordHttpDto result = dictionaryFacade.getWordDetails(entry.getId());
+        WordHttpDto result = dictionaryFacade.getWordDetails(entry.getId()).orElseThrow();
         // then
         assertThat(result.word()).isEqualTo("mother");
         assertThat(result.phonetic()).isEqualTo("/ˈmʌðə/");
