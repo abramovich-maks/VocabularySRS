@@ -17,6 +17,7 @@ class WordAdder {
 
     private final WordEntryRepository wordRepository;
     private final WordRetriever wordRetriever;
+    private final WordDetailsEnricher wordDetailsEnricher;
     private final CurrentUserProvider currentUserProvider;
 
     private final Clock clock;
@@ -45,6 +46,7 @@ class WordAdder {
         newWord.initialize(today);
         newWord.setUserId(currentUserProvider.getCurrentUserId());
         WordEntry save = wordRepository.save(newWord);
+        wordDetailsEnricher.enrich(save.getId());
         log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
         return mapFromWordEntryToWordEntryDtoResponse(save);
     }

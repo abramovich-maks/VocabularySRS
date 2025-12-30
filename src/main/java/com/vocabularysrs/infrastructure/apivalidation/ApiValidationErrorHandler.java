@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.apivalidation;
 
+import com.vocabularysrs.domain.dictionary.WordAlreadyExistsException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,17 @@ public class ApiValidationErrorHandler {
         final List<String> errors = getErrorsFromException(exception);
         log.error(errors);
         return new ApiValidationErrorDto(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(WordAlreadyExistsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiValidationErrorDto handleWordAlreadyExists(WordAlreadyExistsException exception) {
+        log.warn(exception.getMessage());
+        return new ApiValidationErrorDto(
+                List.of(exception.getMessage()),
+                HttpStatus.CONFLICT
+        );
     }
 
     private List<String> getErrorsFromException(final MethodArgumentNotValidException exception) {

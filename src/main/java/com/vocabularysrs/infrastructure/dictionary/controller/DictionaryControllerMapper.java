@@ -1,15 +1,16 @@
-package com.vocabularysrs.infrastructure.dictionary;
+package com.vocabularysrs.infrastructure.dictionary.controller;
 
+import com.vocabularysrs.domain.dictionary.WordHttpDto;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.DeletedWordEntryControllerDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.GetAllWordsResponseDto;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordDtoControllerResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoRequest;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordUpdatePartiallyDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,6 +59,17 @@ class DictionaryControllerMapper {
                 .word(wordEntryById.word())
                 .translate(wordEntryById.translate())
                 .message(wordEntryById.message())
+                .build();
+    }
+
+    public  static WordDetailsControllerDto mapFromWordHttpDtoToWordDetailsControllerDto(final WordHttpDto wordDetails) {
+        return WordDetailsControllerDto.builder()
+                .word(wordDetails.word())
+                .phonetic(wordDetails.phonetic())
+                .audioUrl(wordDetails.audioUrl())
+                .partOfSpeech(wordDetails.details().partOfSpeech())
+                .definition(wordDetails.details().definition())
+                .example(wordDetails.details().example())
                 .build();
     }
 }

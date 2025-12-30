@@ -36,11 +36,24 @@ class DictionaryFacadeTest {
             ZoneId.systemDefault()
     );
 
+    private final InMemoryFetcherTestImpl fetcherTest = new InMemoryFetcherTestImpl(
+            new WordHttpDto(
+                    "mother",
+                    "/ˈmʌðə/",
+                    "audio.mp3",
+                    new WordHttpDetailsDto(
+                            "noun",
+                            "A female parent",
+                            "She is my mother."
+                    ))
+    );
+
+    InMemoryWordDetailsRepositoryTestImpl detailsRepo = new InMemoryWordDetailsRepositoryTestImpl();
     private final RepetitionIntervalCalculator calculator = new RepetitionIntervalCalculator();
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
     WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
     CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
-    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock);
+    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, detailsRepo, fetcherTest);
     DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
 
     @Test
@@ -340,4 +353,68 @@ class DictionaryFacadeTest {
                 .extracting(WordDtoResponse::word)
                 .containsExactlyInAnyOrder("cat", "dog");
     }
+
+    @Test
+    void should_enrich_word_and_save_details() {
+        // given
+        WordEntry entry = WordEntry.builder()
+                .word("mother")
+                .userId(1L)
+                .build();
+        repository.save(entry);
+
+        WordDetailsEnricher enricher = new WordDetailsEnricher(fetcherTest, detailsRepo, new WordRetriever(repository, currentUserProvider));
+
+        // when
+        enricher.enrich(entry.getId());
+
+        // then
+        WordDetailsEntry saved = detailsRepo.findById(entry.getId()).orElseThrow();
+
+        assertThat(saved.getPhonetic()).isEqualTo("/ˈmʌðə/");
+        assertThat(saved.getAudioUrl()).isEqualTo("audio.mp3");
+        assertThat(saved.getPartOfSpeech()).isEqualTo("noun");
+        assertThat(saved.getDefinition()).isEqualTo("A female parent");
+    }
+
+
+    @Test
+    void should_add_word_even_when_dictionary_api_fails() {
+        // given
+        WordDetailsFetchable failingFetcher = word -> {
+            throw new RuntimeException("API DOWN");
+        };
+        DictionaryFacade facade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, detailsRepo, failingFetcher);
+        // when
+        WordEntryDtoResponse result = facade.addWord(new WordAddDtoRequest("mother", "мать"));
+        // then
+        assertThat(result.word()).isEqualTo("mother");
+        assertThat(detailsRepo.database).isEmpty();
+    }
+
+    @Test
+    void should_read_word_details_from_database() {
+        // given
+        WordEntry entry = WordEntry.builder()
+                .word("mother")
+                .userId(1L)
+                .build();
+        repository.save(entry);
+
+        WordDetailsEntry details = WordDetailsEntry.builder()
+                .wordEntry(entry)
+                .phonetic("/ˈmʌðə/")
+                .audioUrl("audio.mp3")
+                .partOfSpeech("noun")
+                .definition("A female parent")
+                .example("She is my mother.")
+                .build();
+        detailsRepo.save(details);
+        // when
+        WordHttpDto result = dictionaryFacade.getWordDetails(entry.getId());
+        // then
+        assertThat(result.word()).isEqualTo("mother");
+        assertThat(result.phonetic()).isEqualTo("/ˈmʌðə/");
+    }
+
 }

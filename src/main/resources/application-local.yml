@@ -1,5 +1,9 @@
-vocabulary:
-  daily-words:
-    scheduler: "*/10 * * * * *"
-  learning-task-generator:
-    scheduler: "*/13 * * * * *"
+#vocabulary:
+#  daily-words:
+#    scheduler: "*/10 * * * * *"
+#  learning-task-generator:
+#    scheduler: "*/13 * * * * *"
+
+auth:
+  jwt:
+    expirationSeconds: 99999999

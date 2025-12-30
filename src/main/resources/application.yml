@@ -35,6 +35,15 @@ scheduler:
   ## Token jwt
 auth:
   jwt:
-    expirationSeconds: 900
+    expirationSeconds: 90
     issuer: VocabularySRS-backend
     refresh-expiration-seconds: 604800
+
+  ## Http Dictionary Api
+dictionary:
+  http:
+    client:
+      config:
+        connection-timeout: 5000
+        read-timeout: 5000
+        uri: https://api.dictionaryapi.dev/api/v2/entries/en/

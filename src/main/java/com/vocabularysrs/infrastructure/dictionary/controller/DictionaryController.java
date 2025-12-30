@@ -1,17 +1,18 @@
-package com.vocabularysrs.infrastructure.dictionary;
+package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.dictionary.DictionaryFacade;
-import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
-import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.dictionary.WordHttpDto;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.DeletedWordEntryControllerDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.GetAllWordsResponseDto;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordDtoControllerResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoRequest;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordEntryControllerDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.dto.WordUpdatePartiallyDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordDtoResponseToWordDtoControllerResponse;
-import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordDtoresponseToGetAllWordsResponseDto;
-import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordEntryControllerDtoRequestToWordAddDtoRequest;
-import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
-import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse;
-import static com.vocabularysrs.infrastructure.dictionary.DictionaryControllerMapper.mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordDtoResponseToWordDtoControllerResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordDtoresponseToGetAllWordsResponseDto;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryControllerDtoRequestToWordAddDtoRequest;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordHttpDtoToWordDetailsControllerDto;
 
 @AllArgsConstructor
 @RestController()
@@ -73,6 +75,13 @@ class DictionaryController {
     public ResponseEntity<WordUpdatePartiallyDtoResponse> partiallyUpdateWordEntry(@PathVariable Long wordEntryId, @RequestBody WordUpdatePartiallyDtoRequest requestDto) {
         WordEntryUpdateDtoResponse wordEntryById = dictionaryFacade.updatePartiallyById(wordEntryId, requestDto);
         WordUpdatePartiallyDtoResponse response = mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse(wordEntryById);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{wordEntryId}/details")
+    public ResponseEntity<WordDetailsControllerDto> getDetailsWord(@PathVariable Long wordEntryId) {
+        WordHttpDto wordDetails = dictionaryFacade.getWordDetails(wordEntryId);
+        WordDetailsControllerDto response = mapFromWordHttpDtoToWordDetailsControllerDto(wordDetails);
         return ResponseEntity.ok().body(response);
     }
 }

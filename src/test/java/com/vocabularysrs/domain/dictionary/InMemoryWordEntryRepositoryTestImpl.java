@@ -56,11 +56,6 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public void deleteById(final Long id) {
-        database.remove(id);
-    }
-
-    @Override
     public List<WordEntry> findAllByUserId(final Long userId, final Pageable pageable) {
         List<WordEntry> result = new ArrayList<>();
 
@@ -87,5 +82,10 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
             }
         }
         return findWordEntry;
+    }
+
+    @Override
+    public void delete(final WordEntry word) {
+        database.remove(word.getId());
     }
 }
