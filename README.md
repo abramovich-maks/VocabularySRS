@@ -57,12 +57,39 @@ The project focuses on **integration testing of real business scenarios**:
 
 ---
 
+## 🖥 Frontend
+
+This project is **backend-focused**.
+
+A minimal frontend exists only to manually test and demonstrate backend functionality
+(authentication, dictionary management, and basic flows).
+
+👉 Frontend repository:  
+https://github.com/abramovich-maks/vocabulary-frontend
+
+---
+
+## 📘 Dictionary Enrichment
+
+The application supports **optional word enrichment** (phonetics, audio, basic definitions).
+
+External dictionary APIs are treated as **non-critical data sources**:
+- absence of enrichment data does not affect core learning flows;
+- users can add and review any words regardless of external API availability.
+
+Dictionary enrichment is implemented as an **infrastructure-level concern** and does not influence the core SRS domain logic.
+
+Currently, word enrichment data is fetched from the public Dictionary API  
+https://dictionaryapi.dev/, which is based on Wiktionary data and may have limited coverage.
+
+The system is designed so that this integration is **replaceable** and **non-blocking**.
+
+---
+
 ## 🗺 Roadmap
-- ~~Frontend (React)~~ — minimal frontend implemented: https://github.com/abramovich-maks/vocabulary-frontend
 - User accounts and personalization
 - Learning statistics and analytics
 - Adaptive learning algorithms
-- Integration with https://dictionaryapi.dev/
 - Integration with Google Translate API
 
 ---
