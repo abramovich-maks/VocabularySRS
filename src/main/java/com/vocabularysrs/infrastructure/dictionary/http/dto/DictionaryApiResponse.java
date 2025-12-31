@@ -7,4 +7,5 @@ public record DictionaryApiResponse(
         String phonetic,
         List<PhoneticDto> phonetics,
         List<MeaningDto> meanings
-) {}
+) {
+}

@@ -1,31 +1,36 @@
 # Vocabulary SRS
 
-A backend‑focused application for learning English vocabulary using a **Spaced Repetition System (SRS)**.
-Users maintain their own vocabulary: they add words with translations, and the system generates a daily test based on the word creation date and the results of previous tests.
+A backend-focused application for learning English vocabulary using a **Spaced Repetition System (SRS)**.
+
+Users maintain their own vocabulary by adding words with translations.  
+The system generates learning tasks **on demand** using a **user-driven Spaced Repetition System**.  
+Words are scheduled dynamically based on previous test results and individual repetition intervals.
 
 ---
 
 ## 🚀 Project Overview
 
-The application automatically:
+The application models the **learning process itself as domain logic**, not just data storage.
 
-- selects daily vocabulary items;
-- generates learning and review tasks;
-- builds a **daily test** for the user;
-- adapts repetition intervals based on learning history.
+It:
 
-The core idea is to model the **learning process itself as domain logic**, not just data storage.
+- dynamically schedules vocabulary based on learning performance;
+- generates learning and review tasks on demand;
+- builds a **daily test snapshot** for the user;
+- adapts repetition intervals using an adaptive SRS algorithm.
+
+There are **no schedulers** - learning tasks are created only when the user explicitly requests a daily test.
 
 ---
 
 ## 🧩 Key Features
 
-- **Daily Words Selector** - selects words scheduled for the current day
-- **Learning Task Generator** - creates tasks based on progress and past results
-- **Daily Test** - generates a daily vocabulary test for the user
-- **SRS Logic** - interval‑based repetition strategy
-- **Integration Tests** - end‑to‑end business scenario coverage
-- **User Authentication (JWT)** - stateless authentication using access tokens, token delivery via HTTP-only secure cookies and Authorization header
+- **Adaptive Learning Algorithm** - dynamically adjusts repetition intervals based on user performance
+- **User-driven SRS** - learning tasks are generated only when requested by the user
+- **On-demand Learning Task Generator** - selects all words that are due for review (`nextReviewDate ≤ today`)
+- **Daily Test** - generates a user-specific test snapshot for a given day
+- **Integration Tests** - end-to-end verification of real business scenarios
+- **User Authentication (JWT)** - stateless authentication using RSA-signed tokens
 
 ---
 
@@ -42,18 +47,29 @@ The core idea is to model the **learning process itself as domain logic**, not j
 - Spring Security
 - JWT (RSA)
 
----
-
 ## 🧪 Testing Strategy
 
 The project focuses on **integration testing of real business scenarios**:
 
-- tests are executed through application facades
-- real database setup via Testcontainers
+- tests are executed through application facades;
+- real database setup via Testcontainers;
 - validation of complete user flows, including:
-  - daily word selection
-  - test generation
-  - result retrieval
+  - adaptive word scheduling;
+  - on-demand test generation;
+  - result evaluation and progress updates.
+
+Tests act as **executable specifications** of the SRS behavior.
+
+---
+
+## 🧠 Adaptive Learning
+
+The application implements a fully **adaptive, user-driven Spaced Repetition System**.
+
+Learning tasks are generated only when the user requests a daily test.  
+If no words are due for review, **no test is generated** — this is a valid and expected state.
+
+Repetition intervals are recalculated after each test based on user answers.
 
 ---
 
@@ -89,7 +105,6 @@ The system is designed so that this integration is **replaceable** and **non-blo
 ## 🗺 Roadmap
 - User accounts and personalization
 - Learning statistics and analytics
-- Adaptive learning algorithms
 - Integration with Google Translate API
 
 ---

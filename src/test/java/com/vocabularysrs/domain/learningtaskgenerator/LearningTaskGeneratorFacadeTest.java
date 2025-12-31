@@ -1,7 +1,7 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
+import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -20,13 +20,13 @@ class LearningTaskGeneratorFacadeTest {
             ZoneId.systemDefault()
     );
 
+
     @Test
     void should_generate_two_questions_for_single_word() {
         // given
-        DailyWordReadPort dailyWordReadPort = new DailyWordReadPortTestImpl();
+        WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
         InMemoryLearningTaskRepositoryTestImpl dailyWordRepository = new InMemoryLearningTaskRepositoryTestImpl();
-        LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordReadPort, dailyWordRepository);
-        LocalDate today = LocalDate.now();
+        LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordRepository, wordEntryReadPort);
         // when
         List<LearningTask> learningTasks = learningTaskGeneratorFacade.generateTasks(clock.today());
         // then
@@ -44,10 +44,9 @@ class LearningTaskGeneratorFacadeTest {
     @Test
     void should_generate_tasks_for_two_users() {
         // given
-        DailyWordReadPort dailyWordReadPortWithTwoUsers = new DailyWordReadPortTwoUsersTestImpl();
+        WordEntryReadPort wordEntryReadPort = new DailyWordReadPortTwoUsersTestImpl();
         InMemoryLearningTaskRepositoryTestImpl dailyWordRepository = new InMemoryLearningTaskRepositoryTestImpl();
-        LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordReadPortWithTwoUsers, dailyWordRepository);
-        LocalDate today = LocalDate.now();
+        LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordRepository, wordEntryReadPort);
         // when
         List<LearningTask> tasks = learningTaskGeneratorFacade.generateTasks(clock.today());
         // then

@@ -1,8 +1,0 @@
-vocabulary:
-  daily-words:
-    scheduler: "*/5 * * * * *"
-  learning-task-generator:
-    scheduler: "*/7 * * * * *"
-
-scheduler:
-  enabled: false

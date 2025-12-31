@@ -13,8 +13,8 @@ class WordEntryJpaAdapter implements WordEntryReadPort {
     private final WordEntryRepository repository;
 
     @Override
-    public List<WordEntrySnapshot> findWordEntriesByNextReviewDate(final LocalDate today) {
-        return repository.findWordEntriesByNextReviewDate(today)
+    public List<WordEntrySnapshot> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate today) {
+        return repository.findWordEntriesByNextReviewDateLessThanEqual(today)
                 .stream()
                 .map(wordEntry -> new WordEntrySnapshot(
                         wordEntry.getId(),

@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 ;
 
-class InMemoryLearningTaskRepositoryTestImpl implements LearningTaskRepository {
+public class InMemoryLearningTaskRepositoryTestImpl implements LearningTaskRepository {
 
     private final Map<Long, LearningTask> database = new ConcurrentHashMap<>();
     AtomicInteger index = new AtomicInteger(0);
@@ -23,6 +23,14 @@ class InMemoryLearningTaskRepositoryTestImpl implements LearningTaskRepository {
 
     @Override
     public Optional<LearningTask> findLearningTaskByTaskDateAndUserId(final LocalDate taskDate, final Long userId) {
-        return Optional.empty();
+        return database.values().stream()
+                .filter(task -> task.getUserId().equals(userId) && task.getTaskDate().equals(taskDate))
+                .findFirst();
+    }
+
+    @Override
+    public boolean existsByUserIdAndTaskDate(final Long userId, final LocalDate taskDate) {
+        return database.values().stream()
+                .anyMatch(task -> task.getUserId().equals(userId) && task.getTaskDate().equals(taskDate));
     }
 }

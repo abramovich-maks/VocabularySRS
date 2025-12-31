@@ -4,6 +4,10 @@ import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.UserAnswerRequestDto;
+import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
+import com.vocabularysrs.domain.learningtaskgenerator.InMemoryLearningTaskRepositoryTestImpl;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorConfiguration;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import org.junit.jupiter.api.Test;
@@ -26,7 +30,10 @@ class DailyTestFacadeTest {
     DictionaryUpdatePort dictionaryUpdatePort = new DictionaryUpdatePortTestImpl();
     LearningTaskReadPort learningTaskReadPort = new LearningTaskReadPortTestImpl();
     CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
-    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort, dictionaryUpdatePort, currentUserProvider,clock);
+    InMemoryLearningTaskRepositoryTestImpl dailyWordRepository = new InMemoryLearningTaskRepositoryTestImpl();
+    WordEntryReadPort wordEntryReadPort;
+    LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordRepository, wordEntryReadPort);
+    DailyTestFacade dailyTestFacade = new DailyTestConfiguration().dailyTestFacade(learningTaskReadPort, learningTaskGeneratorFacade, dictionaryUpdatePort, currentUserProvider, clock);
 
     @Test
     void should_count_correct_and_incorrect_answers() {

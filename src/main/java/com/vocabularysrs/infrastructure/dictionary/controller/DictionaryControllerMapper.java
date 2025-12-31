@@ -1,10 +1,10 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.dictionary.WordHttpDto;
-import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
+import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
@@ -62,7 +62,7 @@ class DictionaryControllerMapper {
                 .build();
     }
 
-    public  static WordDetailsControllerDto mapFromWordHttpDtoToWordDetailsControllerDto(final WordHttpDto wordDetails) {
+    public static WordDetailsControllerDto mapFromWordHttpDtoToWordDetailsControllerDto(final WordHttpDto wordDetails) {
         return WordDetailsControllerDto.builder()
                 .word(wordDetails.word())
                 .phonetic(wordDetails.phonetic())

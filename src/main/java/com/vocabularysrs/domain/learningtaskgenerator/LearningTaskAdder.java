@@ -1,7 +1,7 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
-import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
-import com.vocabularysrs.domain.dailywordsselector.DailyWordSnapshot;
+import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
+import com.vocabularysrs.domain.dictionary.WordEntrySnapshot;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;
@@ -16,16 +16,17 @@ import static com.vocabularysrs.domain.learningtaskgenerator.TranslationDirectio
 @AllArgsConstructor
 class LearningTaskAdder {
 
-    private final DailyWordReadPort dailyWordReadPort;
     private final LearningTaskRepository learningTaskRepository;
+    private final WordEntryReadPort wordEntryReadPort;
 
     public List<LearningTask> generateTasks(LocalDate taskDate) {
-        List<DailyWordSnapshot> snapshots =
-                dailyWordReadPort.findDailyWordReviewByTaskDate(taskDate);
 
-        Map<Long, List<DailyWordSnapshot>> byUser =
-                snapshots.stream()
-                        .collect(Collectors.groupingBy(DailyWordSnapshot::userId));
+        List<WordEntrySnapshot> entries =
+                wordEntryReadPort.findWordEntriesByNextReviewDateLessThanEqual(taskDate);
+
+        Map<Long, List<WordEntrySnapshot>> byUser =
+                entries.stream()
+                        .collect(Collectors.groupingBy(WordEntrySnapshot::userId));
 
         List<LearningTask> result = new ArrayList<>();
 
@@ -34,12 +35,21 @@ class LearningTaskAdder {
 
             LearningTask task = new LearningTask(userId, taskDate, new ArrayList<>());
 
-            for (DailyWordSnapshot snapshot : entry.getValue()) {
-                snapshot.items().forEach(item -> {
-                    task.addQuestion(new Question(item.wordEntryId(), item.word(), WORD_TO_TRANSLATION, item.translation()));
-                    task.addQuestion(new Question(item.wordEntryId(), item.translation(), TRANSLATION_TO_WORD, item.word()));
-                });
+            for (WordEntrySnapshot word : entry.getValue()) {
+                task.addQuestion(new Question(
+                        word.id(),
+                        word.word(),
+                        WORD_TO_TRANSLATION,
+                        word.translate()
+                ));
+                task.addQuestion(new Question(
+                        word.id(),
+                        word.translate(),
+                        TRANSLATION_TO_WORD,
+                        word.word()
+                ));
             }
+
             result.add(learningTaskRepository.save(task));
         }
 

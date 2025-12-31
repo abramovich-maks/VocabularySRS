@@ -17,5 +17,8 @@ interface LearningTaskRepository extends Repository<LearningTask, Long> {
                         and task.taskDate = :taskDate
             """)
     Optional<LearningTask> findLearningTaskByTaskDateAndUserId(LocalDate taskDate, Long userId);
+
+    boolean existsByUserIdAndTaskDate(Long userId, LocalDate taskDate);
+
 }
 

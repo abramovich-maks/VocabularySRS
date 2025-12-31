@@ -24,28 +24,19 @@ import java.time.Clock;
 @Testcontainers
 public class BaseIntegrationTest {
 
-    @Autowired
-    public MockMvc mockMvc;
-
-    @Autowired
-    Clock clock;
-
-    protected AdjustableClock adjustableClock() {
-        return (AdjustableClock) clock;
-    }
-
-    @MockitoBean
-    public JwtTokenGenerator jwtTokenGenerator;
-
     @Container
     public static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:15"));
 
     @Autowired
-    public ObjectMapper objectMapper;
+    public MockMvc mockMvc;
 
-    protected String authenticatedUser() {
-        return "Bearer test-token";
-    }
+    @MockitoBean
+    public JwtTokenGenerator jwtTokenGenerator;
+
+    @Autowired
+    public ObjectMapper objectMapper;
+    @Autowired
+    Clock clock;
 
     @DynamicPropertySource
     public static void propertyOverride(DynamicPropertyRegistry registry) {
@@ -53,6 +44,14 @@ public class BaseIntegrationTest {
         registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
         registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
 
+    }
+
+    protected AdjustableClock adjustableClock() {
+        return (AdjustableClock) clock;
+    }
+
+    protected String authenticatedUser() {
+        return "Bearer test-token";
     }
 }
 

@@ -5,5 +5,6 @@ public record WordHttpDto(
         String phonetic,
         String audioUrl,
         WordHttpDetailsDto details
-) {}
+) {
+}
 
