@@ -5,10 +5,7 @@ import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
 import com.vocabularysrs.domain.dictionary.DictionaryFacade;
-import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.infrastructure.dailytest.DailyTestControllerResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
@@ -44,15 +41,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
     @Autowired
     DictionaryFacade dictionaryFacade;
 
-    @Autowired
-    WordEntryReadPort wordEntryReadPort;
-
-
-    @Autowired
-    LearningTaskReadPort learningTaskReadPort;
-
-    @Autowired
-    LearningTaskGeneratorFacade learningTaskGeneratorFacade;
+    @MockitoBean
+    AuthenticationManager authenticationManager;
 
     @MockitoBean
     private CurrentUserProvider currentUserProvider;
@@ -63,18 +53,16 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .thenReturn(mock(Authentication.class));
     }
 
-    @MockitoBean
-    AuthenticationManager authenticationManager;
-
     @Test
-    public void happyPath() throws Exception {
+    public void should_handle_full_srs_flow_with_skipped_days() throws Exception {
 
         final String CAT = "cat", CAT_RU = "кот";
         final String DOG = "dog", DOG_RU = "собака";
         final String SUN = "sun", SUN_RU = "солнце";
         final String CAR = "car", CAR_RU = "машина";
 
-        //    step 1: user made GET /words and sees 0 words.
+
+// step 1: user made GET /words and sees 0 words.
         // given && when
         ResultActions performEmptyResults = mockMvc.perform(get("/words")
                 .header("Authorization", authenticatedUser()));
@@ -86,17 +74,16 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(emptyWordsResponse.dtoResponse()).isEmpty();
 
 
-        //    step 2: user made POST /words with body (word: cat, translate: кот) at 19-12-2025 12:00, and the system returned OK (200) with message: "Success. New word added" and word: "cat", translate: "кот".
-        // given
-        // when
+// step 2: user made POST /words with body (word: cat, translate: кот) at 19-12-2025 12:00, and the system returned OK (200) with message: "Success. New word added" and word: "cat", translate: "кот".
+        // given && when
         when(currentUserProvider.getCurrentUserId()).thenReturn(1L);
-        ResultActions perform = mockMvc.perform(post("/words")
+        ResultActions addCatRequest = mockMvc.perform(post("/words")
                 .content(requestBodyWithAddCat().trim()
                 )
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult mvcResult = perform.andExpect(status().isOk()).andReturn();
+        MvcResult mvcResult = addCatRequest.andExpect(status().isOk()).andReturn();
         String json = mvcResult.getResponse().getContentAsString();
         WordEntryControllerDtoResponse numberReceiverResponseDto = objectMapper.readValue(json, WordEntryControllerDtoResponse.class);
         assertAll(
@@ -106,12 +93,12 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         );
 
 
-        //    step 3: user made GET /words and sees 1 word.
+// step 3: user made GET /words and sees 1 word.
         // given && when
-        ResultActions performGetResults = mockMvc.perform(get("/words")
+        ResultActions getAllWordsRequest = mockMvc.perform(get("/words")
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult mvcResultOneWord = performGetResults.andExpect(status().isOk()).andReturn();
+        MvcResult mvcResultOneWord = getAllWordsRequest.andExpect(status().isOk()).andReturn();
         String jsonWithOneWord = mvcResultOneWord.getResponse().getContentAsString();
         GetAllWordsResponseDto responseWithOneWord = objectMapper.readValue(jsonWithOneWord, new TypeReference<>() {
         });
@@ -124,7 +111,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         );
 
 
-        //    step 4: user made POST /words with body (word: dog, translate: собака) at 19-12-2025 13:00, and the system returned OK (200) with message: "Success. New word added" and word: "dog", translate: "собака".
+// step 4: user made POST /words with body (word: dog, translate: собака)  and the system returned OK (200) with message: "Success. New word added" and word: "dog", translate: "собака".
         // given && when && then
         mockMvc.perform(post("/words")
                 .content(requestBodeWithAddDog().trim()
@@ -133,7 +120,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .header("Authorization", authenticatedUser()));
 
 
-        //    step 5: user made POST /words with body (word: sun, translate: солнце) at 19-12-2025 14:00, and the system returned OK (200) with message: "Success. New word added" and word: "sun", translate: "солнце".
+// step 5: user made POST /words with body (word: sun, translate: солнце)  and the system returned OK (200) with message: "Success. New word added" and word: "sun", translate: "солнце".
         // given && when && then
         mockMvc.perform(post("/words")
                 .content(requestBodeWithAddSun().trim()
@@ -142,7 +129,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .header("Authorization", authenticatedUser()));
 
 
-        //    step 6: user made POST /words with body (word: car, translate: машина) at 19-12-2025 15:00, and the system returned OK (200) with message: "Success. New word added" and word: "car", translate: "машина".
+// step 6: user made POST /words with body (word: car, translate: машина)  and the system returned OK (200) with message: "Success. New word added" and word: "car", translate: "машина".
         // given && when && then
         mockMvc.perform(post("/words")
                 .content(requestBodeWithAddCar().trim()
@@ -151,12 +138,12 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .header("Authorization", authenticatedUser()));
 
 
-        //    step 7: user made GET /words and sees 4 words.
+// step 7: user made GET /words and sees 4 words.
         // given && when
-        ResultActions performGetResultsWithFourWords = mockMvc.perform(get("/words")
+        ResultActions getAllWordsAfterAddingRequest = mockMvc.perform(get("/words")
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult mvcResultFourWords = performGetResultsWithFourWords.andExpect(status().isOk()).andReturn();
+        MvcResult mvcResultFourWords = getAllWordsAfterAddingRequest.andExpect(status().isOk()).andReturn();
         String jsonWithFourWords = mvcResultFourWords.getResponse().getContentAsString();
         GetAllWordsResponseDto responseWithFourWords = objectMapper.readValue(jsonWithFourWords, new TypeReference<>() {
         });
@@ -171,7 +158,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 );
 
 
-        //    step 8: user made GET /words/2, and the system returned id: "2", word: "dog", translate: "собака".
+// step 8: user made GET /words/2, and the system returned id: "2", word: "dog", translate: "собака".
         // given && when
         ResultActions performGetResultsWordIdTwo = mockMvc.perform(get("/words/2")
                 .header("Authorization", authenticatedUser()));
@@ -187,7 +174,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         );
 
 
-//    step 9: user made DELETE /words/3, and the system deleted the word with id 3 and returned the message: "Deleted word by id: 3".
+// step 9: user made DELETE /words/3, and the system deleted the word with id 3 and returned the message: "Deleted word by id: 3".
         // given && when
         ResultActions performDelete = mockMvc.perform(delete("/words/3")
                 .header("Authorization", authenticatedUser()));
@@ -201,43 +188,19 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         List<WordDtoResponse> allWords = dictionaryFacade.findAllWords(Pageable.unpaged());
         assertThat(allWords).hasSize(3);
 
-        // step 10: 19 hours and 1 minute passed (20.12.2025 06:01).
+
+// step 10: system time is advanced to 2025-12-20T06:01 (next day morning)
         adjustableClock().plusHours(19);
         adjustableClock().plusMinutes(1);
         assertThat(adjustableClock().instant()).isEqualTo("2025-12-20T06:01:00Z");
 
 
-////    step 11: the system at 6:00 selected words for the user (3 words).
-//        LocalDate day1 = adjustableClock().today();
-//
-//
-////    step 12: the system at 6:05 generated a task with selected words for the date 20.12.2025.
-//        // given
-//        adjustableClock().plusMinutes(4);
-//        assertThat(adjustableClock().instant()).isEqualTo("2025-12-20T06:05:00Z");
-//        // when
-////        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
-//        // then
-//        LearningTaskSnapshot taskDay1 = learningTaskReadPort.findLearningTaskByDateAndUserId(day1, 1L);
-//        assertThat(taskDay1.questions())
-//                .hasSize(6)
-//                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
-//                .containsExactly(
-//                        tuple(1L, CAT, WORD_TO_TRANSLATION, CAT_RU),
-//                        tuple(1L, CAT_RU, TRANSLATION_TO_WORD, CAT),
-//                        tuple(2L, DOG, WORD_TO_TRANSLATION, DOG_RU),
-//                        tuple(2L, DOG_RU, TRANSLATION_TO_WORD, DOG),
-//                        tuple(4L, CAR, WORD_TO_TRANSLATION, CAR_RU),
-//                        tuple(4L, CAR_RU, TRANSLATION_TO_WORD, CAR)
-//                );
-
-//        adjustableClock().plusDays(1);
-//    step 12.1: user made GET /dailytest and the server returned daily test.
+// step 11: user made GET /dailytest and the server returned daily test.
         // given && when
-        ResultActions performGetTest = mockMvc.perform(get("/dailytest")
+        ResultActions firstDailyTestRequest = mockMvc.perform(get("/dailytest")
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult getTest = performGetTest.andExpect(status().isOk()).andReturn();
+        MvcResult getTest = firstDailyTestRequest.andExpect(status().isOk()).andReturn();
         String jsonGetResponse = getTest.getResponse().getContentAsString();
         DailyTestShowResponseDto getResponse = objectMapper.readValue(jsonGetResponse, DailyTestShowResponseDto.class);
 
@@ -247,16 +210,16 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(getResponse.questions().size()).isEqualTo(6);
 
 
-//    step 13: user made POST /dailytest and requested 2 true and 4 false questions, and the server returned test statistics.
+// step 12: user made POST /dailytest and requested 2 true and 4 false questions, and the server returned test statistics.
         // given && when
-        ResultActions performResult = mockMvc.perform(post("/dailytest")
+        ResultActions submitFirstTestResult = mockMvc.perform(post("/dailytest")
                 .content(getRequestWithOneTrueAnswerCat()
                         .trim()
                 )
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult testResult = performResult.andExpect(status().isOk()).andReturn();
+        MvcResult testResult = submitFirstTestResult.andExpect(status().isOk()).andReturn();
         String jsonResponse = testResult.getResponse().getContentAsString();
         DailyTestControllerResponseDto response = objectMapper.readValue(jsonResponse, DailyTestControllerResponseDto.class);
 
@@ -266,53 +229,17 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(response.incorrect()).isEqualTo(4);
 
 
-//    step 14: 1 day passed (21.12.2025 06:05).
+// step 13: system time is advanced to 2025-12-21T06:01 (next day morning)
         adjustableClock().plusDays(1);
         assertThat(adjustableClock().instant()).isEqualTo("2025-12-21T06:01:00Z");
 
 
-////    step 15: the system at 6:00 selected words for the user (4 words).
-//        // given
-//        LocalDate day2 = adjustableClock().today();
-//        // when
-//        List<WordEntrySnapshot> wordEntriesByDay2 = wordEntryReadPort.findWordEntriesByNextReviewDateLessThanEqual(day2);
-//        List<DailyWordSnapshot> dailyWordsByDay2 = dailyWordReadPort.findDailyWordReviewByTaskDate(day2);
-//        // then
-//        assertThat(wordEntriesByDay2).hasSize(2);
-//        assertThat(dailyWordsByDay2)
-//                .flatExtracting(DailyWordSnapshot::items)
-//                .extracting(ReviewWordItemSnapshot::wordEntryId, ReviewWordItemSnapshot::word, ReviewWordItemSnapshot::translation)
-//                .containsExactly(
-//                        tuple(2L, DOG, DOG_RU),
-//                        tuple(4L, CAR, CAR_RU)
-//                );
-//
-//
-////    step 16: the system at 6:05 generated a task with selected words for the date 21.12.2025.
-//        // given && when
-//        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
-//        // then
-//        LearningTaskSnapshot taskDay2 = learningTaskReadPort.findLearningTaskByDateAndUserId(day2, 1L);
-//        assertThat(taskDay2.questions())
-//                .hasSize(4)
-//                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
-//                .containsExactly(
-//                        tuple(2L, DOG, WORD_TO_TRANSLATION, DOG_RU),
-//                        tuple(2L, DOG_RU, TRANSLATION_TO_WORD, DOG),
-//                        tuple(4L, CAR, WORD_TO_TRANSLATION, CAR_RU),
-//                        tuple(4L, CAR_RU, TRANSLATION_TO_WORD, CAR)
-//                );
-
-        adjustableClock().plusDays(1);
-        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
-
-
-        //    step 12.1: user made GET /dailytest and the server returned daily test.
+// step 14: user made GET /dailytest and the server returned daily test.
         // given && when
-        ResultActions performGetTest1 = mockMvc.perform(get("/dailytest")
+        ResultActions secondDailyTestRequest = mockMvc.perform(get("/dailytest")
                         .header("Authorization", authenticatedUser()))
                 .andExpect(status().isOk());
-        MvcResult getTest1 = performGetTest1.andExpect(status().isOk()).andReturn();
+        MvcResult getTest1 = secondDailyTestRequest.andExpect(status().isOk()).andReturn();
         String jsonGetResponse1 = getTest1.getResponse().getContentAsString();
         DailyTestShowResponseDto getResponse1 = objectMapper.readValue(jsonGetResponse1, DailyTestShowResponseDto.class);
 
@@ -322,16 +249,16 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(getResponse1.questions().size()).isEqualTo(4);
 
 
-//    step 17: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
+// step 15: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
         // given && when
-        ResultActions lastPerform = mockMvc.perform(post("/dailytest")
+        ResultActions submitSecondTestResult = mockMvc.perform(post("/dailytest")
                 .content(getRequestWithTrueAnswersDogAndCar()
                         .trim()
                 )
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult actionResult = lastPerform.andExpect(status().isOk()).andReturn();
+        MvcResult actionResult = submitSecondTestResult.andExpect(status().isOk()).andReturn();
         String jsonWithTrueAnswersDogAndCar = actionResult.getResponse().getContentAsString();
         DailyTestControllerResponseDto responseWithTrueAnswersDogAndCar = objectMapper.readValue(jsonWithTrueAnswersDogAndCar, DailyTestControllerResponseDto.class);
         // then
@@ -341,47 +268,17 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(responseWithTrueAnswersDogAndCar.incorrect()).isEqualTo(0);
 
 
-//    step 18: 2 days passed (23.12.2025 06:05).
+// step 16: time moves forward to 2026-01-10T06:01 (after long inactivity)
         adjustableClock().plusDays(20);
-        assertThat(adjustableClock().instant()).isEqualTo("2026-01-11T06:01:00Z");
+        assertThat(adjustableClock().instant()).isEqualTo("2026-01-10T06:01:00Z");
 
 
-////    step 19: the system at 6:00 selected words for the user (1 word).
-//        // given
-//        LocalDate day3 = adjustableClock().today();
-//        // when
-//        // then
-//        List<WordEntrySnapshot> wordEntriesByDay3 = wordEntryReadPort.findWordEntriesByNextReviewDateLessThanEqual(day3);
-//        List<DailyWordSnapshot> dailyWordsByDay3 = dailyWordReadPort.findDailyWordReviewByTaskDate(day3);
-//        assertThat(wordEntriesByDay3).hasSize(1);
-//        assertThat(dailyWordsByDay3)
-//                .flatExtracting(DailyWordSnapshot::items)
-//                .extracting(ReviewWordItemSnapshot::wordEntryId, ReviewWordItemSnapshot::word, ReviewWordItemSnapshot::translation)
-//                .containsExactly(
-//                        tuple(1L, CAT, CAT_RU)
-//                );
-//
-//
-////    step 20: the system at 6:05 generated a task with selected words for the date 23.12.2025.
-//        // given && when
-//        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
-//        // then
-//        LearningTaskSnapshot taskDay3 = learningTaskReadPort.findLearningTaskByDateAndUserId(day3, 1L);
-//        assertThat(taskDay3.questions())
-//                .hasSize(2)
-//                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
-//                .containsExactly(
-//                        tuple(1L, CAT, WORD_TO_TRANSLATION, CAT_RU),
-//                        tuple(1L, CAT_RU, TRANSLATION_TO_WORD, CAT)
-//                );
-//    }
-
-        //    step 12.1: user made GET /dailytest and the server returned daily test.
+// step 17: user made GET /dailytest and the server returned daily test.
         // given && when
-        ResultActions lastTestAfter20Days = mockMvc.perform(get("/dailytest")
+        ResultActions dailyTestAfterLongBreakRequest = mockMvc.perform(get("/dailytest")
                         .header("Authorization", authenticatedUser()))
                 .andExpect(status().isOk());
-        MvcResult getTestAfter20Days = lastTestAfter20Days.andExpect(status().isOk()).andReturn();
+        MvcResult getTestAfter20Days = dailyTestAfterLongBreakRequest.andExpect(status().isOk()).andReturn();
         String jsonGetResponse20Days = getTestAfter20Days.getResponse().getContentAsString();
         DailyTestShowResponseDto getResponse20Days = objectMapper.readValue(jsonGetResponse20Days, DailyTestShowResponseDto.class);
 
@@ -391,16 +288,16 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(getResponse20Days.questions().size()).isEqualTo(6);
 
 
-//    step 17: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
+// step 18: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
         // given && when
-        ResultActions lastPerform20Days = mockMvc.perform(post("/dailytest")
+        ResultActions submitFinalTestResult = mockMvc.perform(post("/dailytest")
                 .content(getRequestWithAllTrueQuestions()
                         .trim()
                 )
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult actionResult20Days = lastPerform20Days.andExpect(status().isOk()).andReturn();
+        MvcResult actionResult20Days = submitFinalTestResult.andExpect(status().isOk()).andReturn();
         String jsonWithAllTrueAnswers = actionResult20Days.getResponse().getContentAsString();
         DailyTestControllerResponseDto responseWithAllTrueAnswers = objectMapper.readValue(jsonWithAllTrueAnswers, DailyTestControllerResponseDto.class);
         // then

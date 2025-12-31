@@ -15,6 +15,6 @@ class DailyTestConfiguration {
     DailyTestFacade dailyTestFacade(LearningTaskReadPort learningTaskReadPort, LearningTaskGeneratorFacade learningTaskGeneratorFacade, DictionaryUpdatePort dictionaryUpdatePort, CurrentUserProvider currentUserProvider, Clock clock) {
         DailyTestChecker dailyTestChecker = new DailyTestChecker(learningTaskReadPort);
         DailyTestRetriever dailyTestRetriever = new DailyTestRetriever(learningTaskReadPort);
-        return new DailyTestFacade(dailyTestChecker, currentUserProvider, dictionaryUpdatePort, dailyTestRetriever, learningTaskGeneratorFacade,learningTaskReadPort, clock);
+        return new DailyTestFacade(dailyTestChecker, currentUserProvider, dictionaryUpdatePort, dailyTestRetriever, learningTaskGeneratorFacade, learningTaskReadPort, clock);
     }
 }

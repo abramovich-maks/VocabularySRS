@@ -12,7 +12,7 @@ class WordDetailsEnricher {
     private final WordRetriever wordRetriever;
 
     void enrich(Long id) {
-        WordEntry wordEntry  = wordRetriever.findEntityById(id);
+        WordEntry wordEntry = wordRetriever.findEntityById(id);
         try {
             WordHttpDto httpDto = wordDetailsFetchable.details(wordEntry.getWord());
 
