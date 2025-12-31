@@ -1,10 +1,12 @@
 package com.vocabularysrs.domain.dailytest;
 
-import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskNotFoundException;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 
@@ -18,6 +20,8 @@ public class DailyTestFacade {
     private final CurrentUserProvider currentUserProvider;
     private final DictionaryUpdatePort dictionaryUpdatePort;
     private final DailyTestRetriever dailyTestRetriever;
+    private final LearningTaskGeneratorFacade learningTaskGeneratorFacade;
+    private final LearningTaskReadPort learningTaskReadPort;
 
     private final Clock clock;
 
@@ -33,6 +37,13 @@ public class DailyTestFacade {
     public DailyTestShowResponseDto retrieveDailyTest() {
         LocalDate today = LocalDate.now(clock);
         Long userId = currentUserProvider.getCurrentUserId();
+        if (!learningTaskReadPort.existsFor(userId, today)) {
+            learningTaskGeneratorFacade.generateTasks(today);
+        }
+
+        if (!learningTaskReadPort.existsFor(userId, today)) {
+            throw new LearningTaskNotFoundException(today, userId);
+        }
         return dailyTestRetriever.retrieveDailyTest(buildShowRequest(userId, today));
     }
 

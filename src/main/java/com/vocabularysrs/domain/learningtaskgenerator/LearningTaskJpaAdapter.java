@@ -22,4 +22,9 @@ class LearningTaskJpaAdapter implements LearningTaskReadPort {
                 .toList();
         return new LearningTaskSnapshot(task.getId(), task.getTaskDate(), task.getUserId(), questionList);
     }
+
+    @Override
+    public boolean existsFor(Long userId, LocalDate date) {
+        return learningTaskRepository.existsByUserIdAndTaskDate(userId, date);
+    }
 }

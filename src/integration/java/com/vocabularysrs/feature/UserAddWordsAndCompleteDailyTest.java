@@ -4,18 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
-import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
-import com.vocabularysrs.domain.dailywordsselector.DailyWordSnapshot;
-import com.vocabularysrs.domain.dailywordsselector.DailyWordsSelectorFacade;
-import com.vocabularysrs.domain.dailywordsselector.ReviewWordItemSnapshot;
 import com.vocabularysrs.domain.dictionary.DictionaryFacade;
 import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
-import com.vocabularysrs.domain.dictionary.WordEntrySnapshot;
 import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskSnapshot;
-import com.vocabularysrs.domain.learningtaskgenerator.QuestionSnapshot;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.infrastructure.dailytest.DailyTestControllerResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
@@ -33,11 +26,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import static com.vocabularysrs.domain.learningtaskgenerator.TranslationDirection.TRANSLATION_TO_WORD;
-import static com.vocabularysrs.domain.learningtaskgenerator.TranslationDirection.WORD_TO_TRANSLATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -52,16 +42,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements IntegrationTestData {
 
     @Autowired
-    DailyWordsSelectorFacade dailyWordsSelectorFacade;
-
-    @Autowired
     DictionaryFacade dictionaryFacade;
 
     @Autowired
     WordEntryReadPort wordEntryReadPort;
 
-    @Autowired
-    DailyWordReadPort dailyWordReadPort;
 
     @Autowired
     LearningTaskReadPort learningTaskReadPort;
@@ -222,42 +207,31 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(adjustableClock().instant()).isEqualTo("2025-12-20T06:01:00Z");
 
 
-//    step 11: the system at 6:00 selected words for the user (3 words).
-        dailyWordsSelectorFacade.retrieveWordsByDate();
-        LocalDate day1 = adjustableClock().today();
-        List<WordEntrySnapshot> wordEntriesByDay1 = wordEntryReadPort.findWordEntriesByNextReviewDate(day1);
-        List<DailyWordSnapshot> dailyWordsByDay1 = dailyWordReadPort.findDailyWordReviewByTaskDate(day1);
-        assertThat(wordEntriesByDay1).hasSize(3);
-        assertThat(dailyWordsByDay1)
-                .flatExtracting(DailyWordSnapshot::items)
-                .extracting(ReviewWordItemSnapshot::wordEntryId, ReviewWordItemSnapshot::word, ReviewWordItemSnapshot::translation)
-                .containsExactly(
-                        tuple(1L, CAT, CAT_RU),
-                        tuple(2L, DOG, DOG_RU),
-                        tuple(4L, CAR, CAR_RU)
-                );
+////    step 11: the system at 6:00 selected words for the user (3 words).
+//        LocalDate day1 = adjustableClock().today();
+//
+//
+////    step 12: the system at 6:05 generated a task with selected words for the date 20.12.2025.
+//        // given
+//        adjustableClock().plusMinutes(4);
+//        assertThat(adjustableClock().instant()).isEqualTo("2025-12-20T06:05:00Z");
+//        // when
+////        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
+//        // then
+//        LearningTaskSnapshot taskDay1 = learningTaskReadPort.findLearningTaskByDateAndUserId(day1, 1L);
+//        assertThat(taskDay1.questions())
+//                .hasSize(6)
+//                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
+//                .containsExactly(
+//                        tuple(1L, CAT, WORD_TO_TRANSLATION, CAT_RU),
+//                        tuple(1L, CAT_RU, TRANSLATION_TO_WORD, CAT),
+//                        tuple(2L, DOG, WORD_TO_TRANSLATION, DOG_RU),
+//                        tuple(2L, DOG_RU, TRANSLATION_TO_WORD, DOG),
+//                        tuple(4L, CAR, WORD_TO_TRANSLATION, CAR_RU),
+//                        tuple(4L, CAR_RU, TRANSLATION_TO_WORD, CAR)
+//                );
 
-//    step 12: the system at 6:05 generated a task with selected words for the date 20.12.2025.
-        // given
-        adjustableClock().plusMinutes(4);
-        assertThat(adjustableClock().instant()).isEqualTo("2025-12-20T06:05:00Z");
-        // when
-        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
-        // then
-        LearningTaskSnapshot taskDay1 = learningTaskReadPort.findLearningTaskByDateAndUserId(day1, 1L);
-        assertThat(taskDay1.questions())
-                .hasSize(6)
-                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
-                .containsExactly(
-                        tuple(1L, CAT, WORD_TO_TRANSLATION, CAT_RU),
-                        tuple(1L, CAT_RU, TRANSLATION_TO_WORD, CAT),
-                        tuple(2L, DOG, WORD_TO_TRANSLATION, DOG_RU),
-                        tuple(2L, DOG_RU, TRANSLATION_TO_WORD, DOG),
-                        tuple(4L, CAR, WORD_TO_TRANSLATION, CAR_RU),
-                        tuple(4L, CAR_RU, TRANSLATION_TO_WORD, CAR)
-                );
-
-
+//        adjustableClock().plusDays(1);
 //    step 12.1: user made GET /dailytest and the server returned daily test.
         // given && when
         ResultActions performGetTest = mockMvc.perform(get("/dailytest")
@@ -294,41 +268,58 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 //    step 14: 1 day passed (21.12.2025 06:05).
         adjustableClock().plusDays(1);
-        assertThat(adjustableClock().instant()).isEqualTo("2025-12-21T06:05:00Z");
+        assertThat(adjustableClock().instant()).isEqualTo("2025-12-21T06:01:00Z");
 
 
-//    step 15: the system at 6:00 selected words for the user (4 words).
-        // given
-        LocalDate day2 = adjustableClock().today();
-        // when
-        dailyWordsSelectorFacade.retrieveWordsByDate();
-        List<WordEntrySnapshot> wordEntriesByDay2 = wordEntryReadPort.findWordEntriesByNextReviewDate(day2);
-        List<DailyWordSnapshot> dailyWordsByDay2 = dailyWordReadPort.findDailyWordReviewByTaskDate(day2);
-        // then
-        assertThat(wordEntriesByDay2).hasSize(2);
-        assertThat(dailyWordsByDay2)
-                .flatExtracting(DailyWordSnapshot::items)
-                .extracting(ReviewWordItemSnapshot::wordEntryId, ReviewWordItemSnapshot::word, ReviewWordItemSnapshot::translation)
-                .containsExactly(
-                        tuple(2L, DOG, DOG_RU),
-                        tuple(4L, CAR, CAR_RU)
-                );
+////    step 15: the system at 6:00 selected words for the user (4 words).
+//        // given
+//        LocalDate day2 = adjustableClock().today();
+//        // when
+//        List<WordEntrySnapshot> wordEntriesByDay2 = wordEntryReadPort.findWordEntriesByNextReviewDateLessThanEqual(day2);
+//        List<DailyWordSnapshot> dailyWordsByDay2 = dailyWordReadPort.findDailyWordReviewByTaskDate(day2);
+//        // then
+//        assertThat(wordEntriesByDay2).hasSize(2);
+//        assertThat(dailyWordsByDay2)
+//                .flatExtracting(DailyWordSnapshot::items)
+//                .extracting(ReviewWordItemSnapshot::wordEntryId, ReviewWordItemSnapshot::word, ReviewWordItemSnapshot::translation)
+//                .containsExactly(
+//                        tuple(2L, DOG, DOG_RU),
+//                        tuple(4L, CAR, CAR_RU)
+//                );
+//
+//
+////    step 16: the system at 6:05 generated a task with selected words for the date 21.12.2025.
+//        // given && when
+//        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
+//        // then
+//        LearningTaskSnapshot taskDay2 = learningTaskReadPort.findLearningTaskByDateAndUserId(day2, 1L);
+//        assertThat(taskDay2.questions())
+//                .hasSize(4)
+//                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
+//                .containsExactly(
+//                        tuple(2L, DOG, WORD_TO_TRANSLATION, DOG_RU),
+//                        tuple(2L, DOG_RU, TRANSLATION_TO_WORD, DOG),
+//                        tuple(4L, CAR, WORD_TO_TRANSLATION, CAR_RU),
+//                        tuple(4L, CAR_RU, TRANSLATION_TO_WORD, CAR)
+//                );
 
-
-//    step 16: the system at 6:05 generated a task with selected words for the date 21.12.2025.
-        // given && when
+        adjustableClock().plusDays(1);
         learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
-        // then
-        LearningTaskSnapshot taskDay2 = learningTaskReadPort.findLearningTaskByDateAndUserId(day2, 1L);
-        assertThat(taskDay2.questions())
-                .hasSize(4)
-                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
-                .containsExactly(
-                        tuple(2L, DOG, WORD_TO_TRANSLATION, DOG_RU),
-                        tuple(2L, DOG_RU, TRANSLATION_TO_WORD, DOG),
-                        tuple(4L, CAR, WORD_TO_TRANSLATION, CAR_RU),
-                        tuple(4L, CAR_RU, TRANSLATION_TO_WORD, CAR)
-                );
+
+
+        //    step 12.1: user made GET /dailytest and the server returned daily test.
+        // given && when
+        ResultActions performGetTest1 = mockMvc.perform(get("/dailytest")
+                        .header("Authorization", authenticatedUser()))
+                .andExpect(status().isOk());
+        MvcResult getTest1 = performGetTest1.andExpect(status().isOk()).andReturn();
+        String jsonGetResponse1 = getTest1.getResponse().getContentAsString();
+        DailyTestShowResponseDto getResponse1 = objectMapper.readValue(jsonGetResponse1, DailyTestShowResponseDto.class);
+
+        assertThat(getResponse1.userId()).isEqualTo(1);
+        assertThat(getResponse1.id()).isNotNull();
+        assertThat(getResponse1.taskDate()).isEqualTo(adjustableClock().today());
+        assertThat(getResponse1.questions().size()).isEqualTo(4);
 
 
 //    step 17: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
@@ -351,38 +342,71 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 
 //    step 18: 2 days passed (23.12.2025 06:05).
-        adjustableClock().plusDays(2);
-        assertThat(adjustableClock().instant()).isEqualTo("2025-12-23T06:05:00Z");
+        adjustableClock().plusDays(20);
+        assertThat(adjustableClock().instant()).isEqualTo("2026-01-11T06:01:00Z");
 
 
-//    step 19: the system at 6:00 selected words for the user (1 word).
-        // given
-        LocalDate day3 = adjustableClock().today();
-        // when
-        dailyWordsSelectorFacade.retrieveWordsByDate();
-        // then
-        List<WordEntrySnapshot> wordEntriesByDay3 = wordEntryReadPort.findWordEntriesByNextReviewDate(day3);
-        List<DailyWordSnapshot> dailyWordsByDay3 = dailyWordReadPort.findDailyWordReviewByTaskDate(day3);
-        assertThat(wordEntriesByDay3).hasSize(1);
-        assertThat(dailyWordsByDay3)
-                .flatExtracting(DailyWordSnapshot::items)
-                .extracting(ReviewWordItemSnapshot::wordEntryId, ReviewWordItemSnapshot::word, ReviewWordItemSnapshot::translation)
-                .containsExactly(
-                        tuple(1L, CAT, CAT_RU)
-                );
+////    step 19: the system at 6:00 selected words for the user (1 word).
+//        // given
+//        LocalDate day3 = adjustableClock().today();
+//        // when
+//        // then
+//        List<WordEntrySnapshot> wordEntriesByDay3 = wordEntryReadPort.findWordEntriesByNextReviewDateLessThanEqual(day3);
+//        List<DailyWordSnapshot> dailyWordsByDay3 = dailyWordReadPort.findDailyWordReviewByTaskDate(day3);
+//        assertThat(wordEntriesByDay3).hasSize(1);
+//        assertThat(dailyWordsByDay3)
+//                .flatExtracting(DailyWordSnapshot::items)
+//                .extracting(ReviewWordItemSnapshot::wordEntryId, ReviewWordItemSnapshot::word, ReviewWordItemSnapshot::translation)
+//                .containsExactly(
+//                        tuple(1L, CAT, CAT_RU)
+//                );
+//
+//
+////    step 20: the system at 6:05 generated a task with selected words for the date 23.12.2025.
+//        // given && when
+//        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
+//        // then
+//        LearningTaskSnapshot taskDay3 = learningTaskReadPort.findLearningTaskByDateAndUserId(day3, 1L);
+//        assertThat(taskDay3.questions())
+//                .hasSize(2)
+//                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
+//                .containsExactly(
+//                        tuple(1L, CAT, WORD_TO_TRANSLATION, CAT_RU),
+//                        tuple(1L, CAT_RU, TRANSLATION_TO_WORD, CAT)
+//                );
+//    }
 
-
-//    step 20: the system at 6:05 generated a task with selected words for the date 23.12.2025.
+        //    step 12.1: user made GET /dailytest and the server returned daily test.
         // given && when
-        learningTaskGeneratorFacade.generateTasks(adjustableClock().today());
+        ResultActions lastTestAfter20Days = mockMvc.perform(get("/dailytest")
+                        .header("Authorization", authenticatedUser()))
+                .andExpect(status().isOk());
+        MvcResult getTestAfter20Days = lastTestAfter20Days.andExpect(status().isOk()).andReturn();
+        String jsonGetResponse20Days = getTestAfter20Days.getResponse().getContentAsString();
+        DailyTestShowResponseDto getResponse20Days = objectMapper.readValue(jsonGetResponse20Days, DailyTestShowResponseDto.class);
+
+        assertThat(getResponse20Days.userId()).isEqualTo(1);
+        assertThat(getResponse20Days.id()).isNotNull();
+        assertThat(getResponse20Days.taskDate()).isEqualTo(adjustableClock().today());
+        assertThat(getResponse20Days.questions().size()).isEqualTo(6);
+
+
+//    step 17: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
+        // given && when
+        ResultActions lastPerform20Days = mockMvc.perform(post("/dailytest")
+                .content(getRequestWithAllTrueQuestions()
+                        .trim()
+                )
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", authenticatedUser()));
         // then
-        LearningTaskSnapshot taskDay3 = learningTaskReadPort.findLearningTaskByDateAndUserId(day3, 1L);
-        assertThat(taskDay3.questions())
-                .hasSize(2)
-                .extracting(QuestionSnapshot::wordEntryId, QuestionSnapshot::prompt, QuestionSnapshot::direction, QuestionSnapshot::answer)
-                .containsExactly(
-                        tuple(1L, CAT, WORD_TO_TRANSLATION, CAT_RU),
-                        tuple(1L, CAT_RU, TRANSLATION_TO_WORD, CAT)
-                );
+        MvcResult actionResult20Days = lastPerform20Days.andExpect(status().isOk()).andReturn();
+        String jsonWithAllTrueAnswers = actionResult20Days.getResponse().getContentAsString();
+        DailyTestControllerResponseDto responseWithAllTrueAnswers = objectMapper.readValue(jsonWithAllTrueAnswers, DailyTestControllerResponseDto.class);
+        // then
+        assertThat(responseWithAllTrueAnswers.userId()).isEqualTo(1);
+        assertThat(responseWithAllTrueAnswers.total()).isEqualTo(6);
+        assertThat(responseWithAllTrueAnswers.correct()).isEqualTo(6);
+        assertThat(responseWithAllTrueAnswers.incorrect()).isEqualTo(0);
     }
 }

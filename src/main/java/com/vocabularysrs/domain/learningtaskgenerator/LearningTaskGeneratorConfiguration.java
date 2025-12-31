@@ -1,15 +1,15 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
-import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
+import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-class LearningTaskGeneratorConfiguration {
+public class LearningTaskGeneratorConfiguration {
 
     @Bean
-    LearningTaskGeneratorFacade learningTaskGeneratorFacade(DailyWordReadPort dailyWordReadPort, LearningTaskRepository learningTaskRepository) {
-        LearningTaskAdder learningTaskAdder = new LearningTaskAdder(dailyWordReadPort, learningTaskRepository);
+    public LearningTaskGeneratorFacade learningTaskGeneratorFacade(LearningTaskRepository learningTaskRepository, WordEntryReadPort wordEntryReadPort) {
+        LearningTaskAdder learningTaskAdder = new LearningTaskAdder(learningTaskRepository, wordEntryReadPort);
         return new LearningTaskGeneratorFacade(learningTaskAdder);
     }
 }

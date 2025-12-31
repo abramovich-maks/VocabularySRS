@@ -23,4 +23,9 @@ class LearningTaskReadPortTestImpl implements LearningTaskReadPort {
 
         return new LearningTaskSnapshot(1L, today, userId, question);
     }
+
+    @Override
+    public boolean existsFor(final Long userId, final LocalDate date) {
+        return userId != null && date != null;
+    }
 }

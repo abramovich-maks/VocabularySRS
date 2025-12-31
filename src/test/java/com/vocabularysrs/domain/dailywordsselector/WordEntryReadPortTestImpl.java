@@ -10,7 +10,7 @@ import java.util.List;
 class WordEntryReadPortTestImpl implements WordEntryReadPort {
 
     @Override
-    public List<WordEntrySnapshot> findWordEntriesByNextReviewDate(final LocalDate today) {
+    public List<WordEntrySnapshot> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate today) {
         List<WordEntrySnapshot> testImpl = new ArrayList<>();
         Long userId1 = 1L;
         Long userId2 = 2L;

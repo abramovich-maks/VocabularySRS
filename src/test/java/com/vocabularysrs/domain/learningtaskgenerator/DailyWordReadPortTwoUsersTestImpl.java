@@ -1,28 +1,28 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
-
-import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
-import com.vocabularysrs.domain.dailywordsselector.DailyWordSnapshot;
-import com.vocabularysrs.domain.dailywordsselector.DailyWordSnapshotTestFactory;
-
-import java.time.LocalDate;
-import java.util.List;
-
-class DailyWordReadPortTwoUsersTestImpl implements DailyWordReadPort {
-    @Override
-    public List<DailyWordSnapshot> findDailyWordReviewByTaskDate(LocalDate today) {
-        LocalDate now = LocalDate.now();
-        return List.of(
-                DailyWordSnapshotTestFactory.withSingleWord(
-                        1L,
-                        now,
-                        "cat",
-                        "кот"
-                ),DailyWordSnapshotTestFactory.withSingleWord(
-                        2L,
-                        now,
-                        "dog",
-                        "собака"
-                )
-        );
-    }
-}
+//package com.vocabularysrs.domain.learningtaskgenerator;
+//
+//import com.vocabularysrs.domain.dailywordsselector.DailyWordReadPort;
+//import com.vocabularysrs.domain.dailywordsselector.DailyWordSnapshot;
+//import com.vocabularysrs.domain.dailywordsselector.DailyWordSnapshotTestFactory;
+//
+//import java.time.LocalDate;
+//import java.util.List;
+//
+//class DailyWordReadPortTwoUsersTestImpl implements DailyWordReadPort {
+//    @Override
+//    public List<DailyWordSnapshot> findDailyWordReviewByTaskDate(LocalDate today) {
+//        LocalDate now = LocalDate.now();
+//        return List.of(
+//                DailyWordSnapshotTestFactory.withSingleWord(
+//                        1L,
+//                        now,
+//                        "cat",
+//                        "кот"
+//                ),DailyWordSnapshotTestFactory.withSingleWord(
+//                        2L,
+//                        now,
+//                        "dog",
+//                        "собака"
+//                )
+//        );
+//    }
+//}

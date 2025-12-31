@@ -66,4 +66,19 @@ public interface IntegrationTestData {
                 }
                 """;
     }
+
+    default String getRequestWithAllTrueQuestions() {
+        return """
+                {
+                  "answers": [
+                    {"questionId": 11, "answer": "кот"},
+                    {"questionId": 12, "answer": "cat"},
+                    {"questionId": 13, "answer": "собака"},
+                    {"questionId": 14, "answer": "dog"},
+                    {"questionId": 15, "answer": "машина"},
+                    {"questionId": 16, "answer": "car"}
+                  ]
+                }
+                """;
+    }
 }

@@ -20,7 +20,7 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
     @Query("SELECT s FROM WordEntry s WHERE s.id = :id AND s.userId = :userId")
     Optional<WordEntry> findByIdAndUserId(Long id, Long userId);
 
-    List<WordEntry> findWordEntriesByNextReviewDate(LocalDate nextReviewDate);
+    List<WordEntry> findWordEntriesByNextReviewDateLessThanEqual(LocalDate nextReviewDate);
 
     void delete(WordEntry word);
 }
