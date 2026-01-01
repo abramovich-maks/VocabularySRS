@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.apivalidation;
 
+import com.vocabularysrs.domain.dailytest.DailyTestAlreadyCompletedException;
 import com.vocabularysrs.domain.dictionary.WordAlreadyExistsException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -33,6 +34,17 @@ public class ApiValidationErrorHandler {
         return new ApiValidationErrorDto(
                 List.of(exception.getMessage()),
                 HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler(DailyTestAlreadyCompletedException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ApiValidationErrorDto handleTestAlreadyCompleted(DailyTestAlreadyCompletedException exception) {
+        log.info(exception.getMessage());
+        return new ApiValidationErrorDto(
+                List.of(exception.getMessage()),
+                HttpStatus.NO_CONTENT
         );
     }
 

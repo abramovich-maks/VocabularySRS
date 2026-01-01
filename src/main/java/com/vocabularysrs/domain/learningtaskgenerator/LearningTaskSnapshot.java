@@ -7,6 +7,6 @@ public record LearningTaskSnapshot(
         Long id,
         LocalDate taskDate,
         Long userId,
-        List<QuestionSnapshot> questions
-) {
-}
+        List<QuestionSnapshot> questions,
+        LearningTaskStatus status
+) {}

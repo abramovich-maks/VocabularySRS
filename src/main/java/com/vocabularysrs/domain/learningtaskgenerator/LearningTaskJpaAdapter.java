@@ -8,7 +8,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Component
-class LearningTaskJpaAdapter implements LearningTaskReadPort {
+class LearningTaskJpaAdapter implements LearningTaskReadPort, LearningTaskWritePort {
 
     private final LearningTaskRepository learningTaskRepository;
 
@@ -20,11 +20,19 @@ class LearningTaskJpaAdapter implements LearningTaskReadPort {
                 .stream()
                 .map(question -> new QuestionSnapshot(question.getId(), question.getWordEntryId(), question.getPrompt(), question.getDirection(), question.getAnswer()))
                 .toList();
-        return new LearningTaskSnapshot(task.getId(), task.getTaskDate(), task.getUserId(), questionList);
+        return new LearningTaskSnapshot(task.getId(), task.getTaskDate(), task.getUserId(), questionList, task.getStatus());
     }
 
     @Override
     public boolean existsFor(Long userId, LocalDate date) {
         return learningTaskRepository.existsByUserIdAndTaskDate(userId, date);
+    }
+
+    @Override
+    public void markCompleted(Long userId, LocalDate date) {
+        LearningTask task = learningTaskRepository.findLearningTaskByTaskDateAndUserId(date, userId)
+                .orElseThrow(() -> new LearningTaskNotFoundException(date, userId));
+        task.markCompleted();
+        learningTaskRepository.save(task);
     }
 }

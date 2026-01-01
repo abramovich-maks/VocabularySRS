@@ -2,6 +2,8 @@ package com.vocabularysrs.domain.learningtaskgenerator;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,6 +43,13 @@ class LearningTask {
 
     @OneToMany(mappedBy = "learningTask", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
+
+    @Enumerated(EnumType.STRING)
+    private LearningTaskStatus status = LearningTaskStatus.PENDING;
+
+    public void markCompleted() {
+        this.status = LearningTaskStatus.COMPLETED;
+    }
 
     LearningTask(final Long userId, final LocalDate taskDate, final List<Question> questions) {
         this.userId = userId;

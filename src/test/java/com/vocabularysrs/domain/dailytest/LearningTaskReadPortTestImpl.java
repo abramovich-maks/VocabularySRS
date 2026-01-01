@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vocabularysrs.domain.learningtaskgenerator.LearningTaskStatus.PENDING;
+
 class LearningTaskReadPortTestImpl implements LearningTaskReadPort {
     @Override
     public LearningTaskSnapshot findLearningTaskByDateAndUserId(final LocalDate today, final Long userId) {
@@ -21,7 +23,7 @@ class LearningTaskReadPortTestImpl implements LearningTaskReadPort {
         question.add(dog);
         question.add(sun);
 
-        return new LearningTaskSnapshot(1L, today, userId, question);
+        return new LearningTaskSnapshot(1L, today, userId, question, PENDING);
     }
 
     @Override

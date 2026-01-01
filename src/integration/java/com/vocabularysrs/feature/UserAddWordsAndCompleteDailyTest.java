@@ -305,5 +305,9 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(responseWithAllTrueAnswers.total()).isEqualTo(6);
         assertThat(responseWithAllTrueAnswers.correct()).isEqualTo(6);
         assertThat(responseWithAllTrueAnswers.incorrect()).isEqualTo(0);
+
+        mockMvc.perform(get("/dailytest")
+                        .header("Authorization", authenticatedUser()))
+                .andExpect(status().isNoContent());
     }
 }

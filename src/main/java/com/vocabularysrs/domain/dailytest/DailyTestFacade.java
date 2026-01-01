@@ -5,8 +5,10 @@ import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskNotFoundException;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskSnapshot;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskStatus;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskWritePort;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 
@@ -22,6 +24,7 @@ public class DailyTestFacade {
     private final DailyTestRetriever dailyTestRetriever;
     private final LearningTaskGeneratorFacade learningTaskGeneratorFacade;
     private final LearningTaskReadPort learningTaskReadPort;
+    private final LearningTaskWritePort learningTaskWritePort;
 
     private final Clock clock;
 
@@ -30,6 +33,7 @@ public class DailyTestFacade {
         Long userId = currentUserProvider.getCurrentUserId();
         LocalDate today = LocalDate.now(clock);
         DailyTestResponseDto response = dailyTestChecker.checkResult(buildShowRequest(userId, today), request.answers());
+        learningTaskWritePort.markCompleted(userId, today);
         dictionaryUpdatePort.update(response);
         return response;
     }
@@ -41,8 +45,10 @@ public class DailyTestFacade {
             learningTaskGeneratorFacade.generateTasks(today);
         }
 
-        if (!learningTaskReadPort.existsFor(userId, today)) {
-            throw new LearningTaskNotFoundException(today, userId);
+        LearningTaskSnapshot task = learningTaskReadPort.findLearningTaskByDateAndUserId(today, userId);
+
+        if (task.status() == LearningTaskStatus.COMPLETED) {
+            throw new DailyTestAlreadyCompletedException(today);
         }
         return dailyTestRetriever.retrieveDailyTest(buildShowRequest(userId, today));
     }
