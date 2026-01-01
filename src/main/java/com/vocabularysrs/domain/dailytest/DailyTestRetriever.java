@@ -24,6 +24,7 @@ class DailyTestRetriever {
                         .wordEntryId(question.wordEntryId())
                         .prompt(question.prompt())
                         .direction(question.direction())
+                        .answer(question.answer())
                         .build()).toList())
                 .build();
     }

@@ -8,5 +8,6 @@ public record QuestionDto(
         Long id,
         Long wordEntryId,
         String prompt,
-        TranslationDirection direction) {
+        TranslationDirection direction,
+        String answer) {
 }
