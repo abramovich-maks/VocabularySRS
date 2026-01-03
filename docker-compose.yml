@@ -1,22 +1,36 @@
 services:
   db:
     image: postgres:15
-    container_name: vocabulary
+    container_name: vocabulary-db
     restart: always
     ports:
-      - "54320:5432"
+      - "127.0.0.1:54320:5432"
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: vocabulary
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
 
   pgadmin:
     image: dpage/pgadmin4
-    container_name: pgadmin4_container
+    container_name: vocabulary-pgadmin
     restart: always
     ports:
-      - "5050:80"
+      - "127.0.0.1:5050:80"
     environment:
       PGADMIN_DEFAULT_EMAIL: a@a.com
       PGADMIN_DEFAULT_PASSWORD: admin
+
+  vocabulary:
+    container_name: vocabulary_prod
+    build: .
+    image: 362552858794.dkr.ecr.eu-central-1.amazonaws.com/vocabulary:latest
+    restart: always
+    ports:
+     - "127.0.0.1:8080:8080"
+    environment:
+      AWS_REGION: eu-central-1
+volumes:
+  pgdata:

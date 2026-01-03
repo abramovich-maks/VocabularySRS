@@ -35,7 +35,7 @@ class JwtTokenController {
         String refreshToken = tokenGenerator.generateRefreshToken(user);
         Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
         refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(false);
+        refreshCookie.setSecure(true);
         refreshCookie.setPath("/");
         refreshCookie.setMaxAge((int) properties.refreshExpirationSeconds());
         response.addCookie(refreshCookie);
@@ -70,7 +70,7 @@ class JwtTokenController {
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         Cookie refreshCookie = new Cookie("refreshToken", "");
         refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(false);
+        refreshCookie.setSecure(true);
         refreshCookie.setPath("/");
         refreshCookie.setMaxAge(0);
         response.addCookie(refreshCookie);

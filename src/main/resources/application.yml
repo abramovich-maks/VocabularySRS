@@ -1,12 +1,14 @@
 spring:
   application:
     name: VocabularySRS
+  config:
+    import: "optional:aws-secretsmanager:prod/vocabulary"
 
   #PostgreSQL
   datasource:
-    url: jdbc:postgresql://localhost:54320/vocabulary
-    username: user
-    password: admin
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
 
   ## Flyway
   flyway:
