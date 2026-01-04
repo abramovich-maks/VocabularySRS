@@ -8,6 +8,15 @@ Words are scheduled dynamically based on previous test results and individual re
 
 ---
 
+## 🌍 Live version
+
+The application is available online:  
+👉 https://my-vocab.eu
+
+Deployed on AWS using EC2 and ECR.
+
+---
+
 ## 🚀 Project Overview
 
 The application models the **learning process itself as domain logic**, not just data storage.
