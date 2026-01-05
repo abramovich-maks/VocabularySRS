@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,12 +35,7 @@ class JwtTokenController {
         SecurityUser user = (SecurityUser) auth.getPrincipal();
         String accessToken = tokenGenerator.generateAccessToken(user);
         String refreshToken = tokenGenerator.generateRefreshToken(user);
-        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/");
-        refreshCookie.setMaxAge((int) properties.refreshExpirationSeconds());
-        response.addCookie(refreshCookie);
+        addRefreshCookie(response, refreshToken, (int) properties.refreshExpirationSeconds());
         return ResponseEntity.ok(
                 JwtResponseDto.builder()
                         .token(accessToken)
@@ -68,12 +65,7 @@ class JwtTokenController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie refreshCookie = new Cookie("refreshToken", "");
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/");
-        refreshCookie.setMaxAge(0);
-        response.addCookie(refreshCookie);
+        addRefreshCookie(response, "", 0);
         return ResponseEntity.ok().build();
     }
 
@@ -85,5 +77,16 @@ class JwtTokenController {
             }
         }
         return null;
+    }
+
+    private void addRefreshCookie(HttpServletResponse response, String value, int maxAge) {
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", value)
+                .httpOnly(true)
+                .secure(properties.secure())
+                .path("/")
+                .sameSite("None")
+                .maxAge(maxAge)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

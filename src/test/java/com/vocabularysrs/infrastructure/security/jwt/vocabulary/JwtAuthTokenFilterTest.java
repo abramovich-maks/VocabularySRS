@@ -44,7 +44,7 @@ class JwtAuthTokenFilterTest {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048);
         keyPair = generator.generateKeyPair();
-        properties = new JwtConfigurationProperties(60, "VocabularySRS-backend", 600);
+        properties = new JwtConfigurationProperties(60, "VocabularySRS-backend", 600,true);
         jwtTokenValidator = new JwtTokenValidator(keyPair);
         filter = new JwtAuthTokenFilter(jwtTokenValidator, userDetailsService);
     }

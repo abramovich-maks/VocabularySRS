@@ -1,3 +1,4 @@
 auth:
   jwt:
     expirationSeconds: 99999999
+    secure: false

@@ -35,6 +35,7 @@ auth:
     expirationSeconds: 90
     issuer: VocabularySRS-backend
     refresh-expiration-seconds: 604800
+    secure: true
 
   ## Http Dictionary Api
 dictionary:
