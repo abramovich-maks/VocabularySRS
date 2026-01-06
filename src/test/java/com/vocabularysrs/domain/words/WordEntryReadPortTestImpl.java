@@ -1,13 +1,15 @@
-package com.vocabularysrs.domain.dictionary;
-
-import com.vocabularysrs.domain.words.WordEntryReadPort;
-import com.vocabularysrs.domain.words.WordEntrySnapshot;
+package com.vocabularysrs.domain.words;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 class WordEntryReadPortTestImpl implements WordEntryReadPort {
+
+    private final Map<Long, WordEntrySnapshot> data = new HashMap<>();
 
     @Override
     public List<WordEntrySnapshot> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate today) {
@@ -21,5 +23,10 @@ class WordEntryReadPortTestImpl implements WordEntryReadPort {
         testImpl.add(word2);
         testImpl.add(word3);
         return testImpl;
+    }
+
+    @Override
+    public Optional<WordEntrySnapshot> findById(Long id) {
+        return Optional.ofNullable(data.get(id));
     }
 }

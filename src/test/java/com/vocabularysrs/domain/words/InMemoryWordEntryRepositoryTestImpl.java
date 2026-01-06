@@ -1,8 +1,6 @@
-package com.vocabularysrs.domain.dictionary;
+package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.words.WordEntry;
-import com.vocabularysrs.domain.words.WordEntryRepository;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -89,5 +87,10 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     @Override
     public void delete(final WordEntry word) {
         database.remove(word.getId());
+    }
+
+    @Override
+    public Optional<WordEntry> findById(final Long wordId) {
+        return Optional.empty();
     }
 }

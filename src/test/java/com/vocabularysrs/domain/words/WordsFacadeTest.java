@@ -1,31 +1,14 @@
-package com.vocabularysrs.domain.dictionary;
+package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
-import com.vocabularysrs.domain.worddetails.WordDetailsEnricher;
-import com.vocabularysrs.domain.worddetails.WordDetailsEntry;
-import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
-import com.vocabularysrs.domain.worddetails.WordHttpDetailsDto;
-import com.vocabularysrs.domain.worddetails.WordHttpDto;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
-import com.vocabularysrs.domain.security.CurrentUserProvider;
-import com.vocabularysrs.domain.words.DictionaryFacade;
-import com.vocabularysrs.domain.words.DictionaryUpdateAdapter;
-import com.vocabularysrs.domain.words.InvalidWordException;
-import com.vocabularysrs.domain.words.RepetitionIntervalCalculator;
-import com.vocabularysrs.domain.words.WordAlreadyExistsException;
-import com.vocabularysrs.domain.words.WordEntry;
-import com.vocabularysrs.domain.words.WordEntryConfiguration;
-import com.vocabularysrs.domain.words.WordEntryJpaAdapter;
-import com.vocabularysrs.domain.words.WordEntryReadPort;
-import com.vocabularysrs.domain.words.WordEntrySnapshot;
-import com.vocabularysrs.domain.words.WordNotFoundException;
-import com.vocabularysrs.domain.words.WordRetriever;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class DictionaryFacadeTest {
+class WordsFacadeTest {
 
     AdjustableClock clock = AdjustableClock.ofLocalDateAndLocalTime(
             LocalDate.of(2025, 1, 1),
@@ -53,24 +36,11 @@ class DictionaryFacadeTest {
             ZoneId.systemDefault()
     );
 
-    private final InMemoryFetcherTestImpl fetcherTest = new InMemoryFetcherTestImpl(
-            new WordHttpDto(
-                    "mother",
-                    "/ˈmʌðə/",
-                    "audio.mp3",
-                    new WordHttpDetailsDto(
-                            "noun",
-                            "A female parent",
-                            "She is my mother."
-                    ))
-    );
-
-    InMemoryWordDetailsRepositoryTestImpl detailsRepo = new InMemoryWordDetailsRepositoryTestImpl();
     private final RepetitionIntervalCalculator calculator = new RepetitionIntervalCalculator();
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
     WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
     CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
-    DictionaryFacade dictionaryFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, detailsRepo, fetcherTest);
+    WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock);
     DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
 
     @Test
@@ -78,7 +48,7 @@ class DictionaryFacadeTest {
         // given
         WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
         // when
-        WordEntryDtoResponse result = dictionaryFacade.addWord(dtoRequest);
+        WordEntryDtoResponse result = wordsFacade.addWord(dtoRequest);
         // then
         assertThat(result.message()).isEqualTo("Success. New word added");
         assertThat(result.word()).isEqualTo("cat");
@@ -91,10 +61,10 @@ class DictionaryFacadeTest {
         WordAddDtoRequest wordIsNull = new WordAddDtoRequest(null, "кот");
         WordAddDtoRequest translateIsNull = new WordAddDtoRequest("cat", null);
         // when && then
-        InvalidWordException word = assertThrows(InvalidWordException.class, () -> dictionaryFacade.addWord(wordIsNull));
+        InvalidWordException word = assertThrows(InvalidWordException.class, () -> wordsFacade.addWord(wordIsNull));
         assertThat(word.getMessage()).isEqualTo("Word must not be null");
 
-        InvalidWordException translate = assertThrows(InvalidWordException.class, () -> dictionaryFacade.addWord(translateIsNull));
+        InvalidWordException translate = assertThrows(InvalidWordException.class, () -> wordsFacade.addWord(translateIsNull));
         assertThat(translate.getMessage()).isEqualTo("Translate must not be null");
     }
 
@@ -104,9 +74,9 @@ class DictionaryFacadeTest {
         WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот");
         WordAddDtoRequest word_2 = new WordAddDtoRequest("cat", "кот");
         // when
-        dictionaryFacade.addWord(word_1);
+        wordsFacade.addWord(word_1);
         // then
-        WordAlreadyExistsException wordAlreadyExistsException = assertThrows(WordAlreadyExistsException.class, () -> dictionaryFacade.addWord(word_2));
+        WordAlreadyExistsException wordAlreadyExistsException = assertThrows(WordAlreadyExistsException.class, () -> wordsFacade.addWord(word_2));
         assertThat(wordAlreadyExistsException.getMessage()).isEqualTo("Word \"cat\" already exists");
     }
 
@@ -137,7 +107,7 @@ class DictionaryFacadeTest {
     public void should_throw_an_exception_when_user_want_delete_by_id_not_exist_word() {
         // given
         // when
-        WordNotFoundException wordAlreadyExistsException = assertThrows(WordNotFoundException.class, () -> dictionaryFacade.deleteWord(0L));
+        WordNotFoundException wordAlreadyExistsException = assertThrows(WordNotFoundException.class, () -> wordsFacade.deleteWord(0L));
         // then
         assertThat(wordAlreadyExistsException.getMessage()).isEqualTo("Word with id: 0 not found");
     }
@@ -146,27 +116,27 @@ class DictionaryFacadeTest {
     public void should_deleted_message_when_user_want_delete_by_exist_id() {
         // given
         WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
-        dictionaryFacade.addWord(dtoRequest);
+        wordsFacade.addWord(dtoRequest);
         // when
-        WordEntryDtoResponse result = dictionaryFacade.deleteWord(0L);
+        WordEntryDtoResponse result = wordsFacade.deleteWord(0L);
         // then
         assertThat(result.message()).isEqualTo("Deleted word by id: 0");
-        assertThrows(WordNotFoundException.class, () -> dictionaryFacade.deleteWord(0L));
+        assertThrows(WordNotFoundException.class, () -> wordsFacade.deleteWord(0L));
     }
 
     @Test
     public void should_return_all_words_entry() {
         // given
-        assertThat(dictionaryFacade.findAllWords(Pageable.unpaged())).isEmpty();
+        assertThat(wordsFacade.findAllWords(Pageable.unpaged())).isEmpty();
         WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот");
         WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2");
         // when
-        dictionaryFacade.addWord(dtoRequest1);
-        dictionaryFacade.addWord(dtoRequest2);
+        wordsFacade.addWord(dtoRequest1);
+        wordsFacade.addWord(dtoRequest2);
         // then
         assertAll(
-                () -> assertThat(dictionaryFacade.findAllWords(Pageable.unpaged())).hasSize(2),
-                () -> assertThat(dictionaryFacade.findAllWords(Pageable.unpaged())).extracting(WordDtoResponse::word).contains("cat", "cat2")
+                () -> assertThat(wordsFacade.findAllWords(Pageable.unpaged())).hasSize(2),
+                () -> assertThat(wordsFacade.findAllWords(Pageable.unpaged())).extracting(WordDtoResponse::word).contains("cat", "cat2")
         );
     }
 
@@ -175,11 +145,11 @@ class DictionaryFacadeTest {
         // given
         WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот");
         WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2");
-        dictionaryFacade.addWord(dtoRequest1);
-        dictionaryFacade.addWord(dtoRequest2);
+        wordsFacade.addWord(dtoRequest1);
+        wordsFacade.addWord(dtoRequest2);
         // when
-        WordDtoResponse result1 = dictionaryFacade.findById(0L);
-        WordDtoResponse result2 = dictionaryFacade.findById(1L);
+        WordDtoResponse result1 = wordsFacade.findById(0L);
+        WordDtoResponse result2 = wordsFacade.findById(1L);
         // then
         assertAll(
                 () -> {
@@ -201,7 +171,7 @@ class DictionaryFacadeTest {
     public void should_throw_an_exception_when_user_want_get_word_entry_is_not_exist() {
         // given
         // when
-        WordNotFoundException wordAlreadyExistsException = assertThrows(WordNotFoundException.class, () -> dictionaryFacade.findById(13L));
+        WordNotFoundException wordAlreadyExistsException = assertThrows(WordNotFoundException.class, () -> wordsFacade.findById(13L));
         // then
         assertThat(wordAlreadyExistsException.getMessage()).isEqualTo("Word with id: 13 not found");
     }
@@ -210,14 +180,14 @@ class DictionaryFacadeTest {
     public void should_return_updated_word() {
         // given
         WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
-        dictionaryFacade.addWord(dtoRequest);
+        wordsFacade.addWord(dtoRequest);
         WordUpdatePartiallyDtoRequest updateRequest = WordUpdatePartiallyDtoRequest.builder()
                 .word("dog")
                 .build();
         // when
-        WordEntryUpdateDtoResponse updatedWordEntry = dictionaryFacade.updatePartiallyById(0L, updateRequest);
+        WordEntryUpdateDtoResponse updatedWordEntry = wordsFacade.updatePartiallyById(0L, updateRequest);
         // then
-        WordDtoResponse result1 = dictionaryFacade.findById(0L);
+        WordDtoResponse result1 = wordsFacade.findById(0L);
         assertAll(
                 () -> assertThat(updatedWordEntry.message()).isEqualTo("Success. Word entry with id: 0 updated"),
                 () -> assertThat(updatedWordEntry.word()).isEqualTo("dog"),
@@ -234,14 +204,14 @@ class DictionaryFacadeTest {
     public void should_return_updated_translate() {
         // given
         WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
-        dictionaryFacade.addWord(dtoRequest);
+        wordsFacade.addWord(dtoRequest);
         WordUpdatePartiallyDtoRequest updateRequest = WordUpdatePartiallyDtoRequest.builder()
                 .translate("dog")
                 .build();
         // when
-        WordEntryUpdateDtoResponse updatedWordEntry = dictionaryFacade.updatePartiallyById(0L, updateRequest);
+        WordEntryUpdateDtoResponse updatedWordEntry = wordsFacade.updatePartiallyById(0L, updateRequest);
         // then
-        WordDtoResponse result1 = dictionaryFacade.findById(0L);
+        WordDtoResponse result1 = wordsFacade.findById(0L);
         assertAll(
                 () -> assertThat(updatedWordEntry.message()).isEqualTo("Success. Word entry with id: 0 updated"),
                 () -> assertThat(updatedWordEntry.word()).isEqualTo("cat"),
@@ -271,8 +241,8 @@ class DictionaryFacadeTest {
         // given
         WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот");
         WordAddDtoRequest word_2 = new WordAddDtoRequest("dog", "собака");
-        dictionaryFacade.addWord(word_1);
-        dictionaryFacade.addWord(word_2);
+        wordsFacade.addWord(word_1);
+        wordsFacade.addWord(word_2);
         WordEntryJpaAdapter adapter = new WordEntryJpaAdapter(repository);
         LocalDate reviewDate = clock.today().plusDays(INTERVAL_1_DAY.getDays());
         // when
@@ -355,84 +325,19 @@ class DictionaryFacadeTest {
     void should_return_only_current_user_words() {
         // given
         ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
-        dictionaryFacade.addWord(new WordAddDtoRequest("cat", "кот"));
-        dictionaryFacade.addWord(new WordAddDtoRequest("dog", "собака"));
+        wordsFacade.addWord(new WordAddDtoRequest("cat", "кот"));
+        wordsFacade.addWord(new WordAddDtoRequest("dog", "собака"));
 
         ((TestCurrentUserProvider) currentUserProvider).setUserId(2L);
-        dictionaryFacade.addWord(new WordAddDtoRequest("sun", "солнце"));
+        wordsFacade.addWord(new WordAddDtoRequest("sun", "солнце"));
         // when
         ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
         List<WordDtoResponse> result =
-                dictionaryFacade.findAllWords(Pageable.unpaged());
+                wordsFacade.findAllWords(Pageable.unpaged());
         // then
         assertThat(result).hasSize(2);
         assertThat(result)
                 .extracting(WordDtoResponse::word)
                 .containsExactlyInAnyOrder("cat", "dog");
     }
-
-    @Test
-    void should_enrich_word_and_save_details() {
-        // given
-        ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
-        WordEntry entry = WordEntry.builder()
-                .word("mother")
-                .userId(1L)
-                .build();
-        repository.save(entry);
-
-        WordDetailsEnricher enricher = new WordDetailsEnricher(fetcherTest, detailsRepo, new WordRetriever(repository, currentUserProvider));
-
-        // when
-        enricher.enrich(entry.getId());
-
-        // then
-        WordDetailsEntry saved = detailsRepo.findByIdAndUserId(entry.getId(), entry.getUserId()).orElseThrow();
-
-        assertThat(saved.getPhonetic()).isEqualTo("/ˈmʌðə/");
-        assertThat(saved.getAudioUrl()).isEqualTo("audio.mp3");
-        assertThat(saved.getPartOfSpeech()).isEqualTo("noun");
-        assertThat(saved.getDefinition()).isEqualTo("A female parent");
-    }
-
-
-    @Test
-    void should_add_word_even_when_dictionary_api_fails() {
-        // given
-        WordDetailsFetchable failingFetcher = word -> {
-            throw new RuntimeException("API DOWN");
-        };
-        DictionaryFacade facade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, detailsRepo, failingFetcher);
-        // when
-        WordEntryDtoResponse result = facade.addWord(new WordAddDtoRequest("mother", "мать"));
-        // then
-        assertThat(result.word()).isEqualTo("mother");
-        assertThat(detailsRepo.database).isEmpty();
-    }
-
-    @Test
-    void should_read_word_details_from_database() {
-        // given
-        WordEntry entry = WordEntry.builder()
-                .word("mother")
-                .userId(1L)
-                .build();
-        repository.save(entry);
-
-        WordDetailsEntry details = WordDetailsEntry.builder()
-                .wordEntry(entry)
-                .phonetic("/ˈmʌðə/")
-                .audioUrl("audio.mp3")
-                .partOfSpeech("noun")
-                .definition("A female parent")
-                .example("She is my mother.")
-                .build();
-        detailsRepo.save(details);
-        // when
-        WordHttpDto result = dictionaryFacade.getWordDetails(entry.getId()).orElseThrow();
-        // then
-        assertThat(result.word()).isEqualTo("mother");
-        assertThat(result.phonetic()).isEqualTo("/ˈmʌðə/");
-    }
-
 }
