@@ -1,4 +1,4 @@
-package com.vocabularysrs.domain.worddetails;
+package com.vocabularysrs.domain.worddetails.dto;
 
 import lombok.Builder;
 

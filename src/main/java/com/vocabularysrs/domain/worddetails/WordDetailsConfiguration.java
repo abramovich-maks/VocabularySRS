@@ -10,6 +10,7 @@ class WordDetailsConfiguration {
 
     @Bean
     WordDetailsFacade detailsFacade(WordDetailsRepository repository, WordEntryReadPort wordEntryReadPort, WordDetailsFetchable fetchable, CurrentUserProvider currentUserProvider) {
-        return new WordDetailsFacade(repository, wordEntryReadPort, fetchable, currentUserProvider);
+        WordDetailsRetriever wordDetailsRetriever = new WordDetailsRetriever(repository, wordEntryReadPort, fetchable, currentUserProvider);
+        return new WordDetailsFacade(wordDetailsRetriever);
     }
 }
