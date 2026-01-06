@@ -1,7 +1,6 @@
 package com.vocabularysrs.domain.words;
 
 
-import com.vocabularysrs.domain.worddetails.WordHttpDto;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
@@ -12,11 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Transactional
 @AllArgsConstructor
-public class DictionaryFacade {
+public class WordsFacade {
 
     private final WordAdder wordAdder;
     private final WordDeleter wordDeleter;
