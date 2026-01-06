@@ -1,7 +1,7 @@
 package com.vocabularysrs.infrastructure.dictionary.http;
 
-import com.vocabularysrs.domain.dictionary.WordHttpDetailsDto;
-import com.vocabularysrs.domain.dictionary.WordHttpDto;
+import com.vocabularysrs.domain.worddetails.WordHttpDetailsDto;
+import com.vocabularysrs.domain.worddetails.WordHttpDto;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DefinitionDto;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DictionaryApiResponse;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.MeaningDto;

@@ -1,5 +1,8 @@
 package com.vocabularysrs.domain.dictionary;
 
+import com.vocabularysrs.domain.worddetails.WordDetailsEntry;
+import com.vocabularysrs.domain.worddetails.WordDetailsRepository;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;

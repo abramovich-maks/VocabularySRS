@@ -1,5 +1,8 @@
 package com.vocabularysrs.domain.dictionary;
 
+import com.vocabularysrs.domain.words.WordEntryReadPort;
+import com.vocabularysrs.domain.words.WordEntrySnapshot;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.http;
 
-import com.vocabularysrs.domain.dictionary.WordDetailsFetchable;
+import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.http.client.ClientHttpRequestFactorySettings;
 import org.springframework.boot.web.client.RestTemplateBuilder;

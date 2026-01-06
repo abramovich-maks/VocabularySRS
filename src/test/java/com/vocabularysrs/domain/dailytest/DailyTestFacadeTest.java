@@ -4,7 +4,7 @@ import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.UserAnswerRequestDto;
-import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
+import com.vocabularysrs.domain.words.WordEntryReadPort;
 import com.vocabularysrs.domain.learningtaskgenerator.InMemoryLearningTaskRepositoryTestImpl;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorConfiguration;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;

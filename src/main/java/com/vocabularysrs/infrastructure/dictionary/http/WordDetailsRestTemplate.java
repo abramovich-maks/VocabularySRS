@@ -1,8 +1,8 @@
 package com.vocabularysrs.infrastructure.dictionary.http;
 
 
-import com.vocabularysrs.domain.dictionary.WordDetailsFetchable;
-import com.vocabularysrs.domain.dictionary.WordHttpDto;
+import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
+import com.vocabularysrs.domain.worddetails.WordHttpDto;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DictionaryApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;

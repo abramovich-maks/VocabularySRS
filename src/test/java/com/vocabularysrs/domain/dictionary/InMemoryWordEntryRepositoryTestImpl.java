@@ -1,6 +1,8 @@
 package com.vocabularysrs.domain.dictionary;
 
 import com.vocabularysrs.domain.AdjustableClock;
+import com.vocabularysrs.domain.words.WordEntry;
+import com.vocabularysrs.domain.words.WordEntryRepository;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;

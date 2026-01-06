@@ -1,6 +1,6 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
-import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
+import com.vocabularysrs.domain.words.WordEntryReadPort;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
