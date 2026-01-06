@@ -1,5 +1,7 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
+import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
+import com.vocabularysrs.domain.worddetails.WordHttpDto;
 import com.vocabularysrs.domain.words.WordsFacade;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
@@ -40,6 +42,7 @@ import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryC
 class DictionaryController {
 
     private final WordsFacade wordsFacade;
+    private final WordDetailsFacade wordDetailsFacade;
 
     @PostMapping()
     public ResponseEntity<WordEntryControllerDtoResponse> addWord(@RequestBody @Valid WordEntryControllerDtoRequest dtoRequest) {
@@ -77,11 +80,11 @@ class DictionaryController {
         return ResponseEntity.ok().body(response);
     }
 
-//    @GetMapping("/{wordEntryId}/details")
-//    public ResponseEntity<WordDetailsControllerDto> getDetailsWord(@PathVariable Long wordEntryId) {
-//        return wordsFacade.getWordDetails(wordEntryId)
-//                .map(dto -> ResponseEntity.ok(mapFromWordHttpDtoToWordDetailsControllerDto(dto)))
-//                .orElseGet(() -> ResponseEntity.noContent().build());
-//    }
+    @GetMapping("/{wordEntryId}/details")
+    public ResponseEntity<WordDetailsControllerDto> getDetailsWord(@PathVariable Long wordEntryId) {
+        WordHttpDto details = wordDetailsFacade.getOrLoad(wordEntryId);
+        WordDetailsControllerDto build = WordDetailsControllerDto.builder().word(details.word()).phonetic(details.phonetic()).audioUrl(details.audioUrl()).definition(details.definition()).example(details.example()).build();
+        return ResponseEntity.ok(build);
+    }
 }
 

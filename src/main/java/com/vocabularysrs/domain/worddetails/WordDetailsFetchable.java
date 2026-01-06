@@ -1,7 +1,9 @@
 package com.vocabularysrs.domain.worddetails;
 
 
+import com.vocabularysrs.domain.words.WordDetailsSnapshot;
+
 public interface WordDetailsFetchable {
 
-    WordHttpDto details(String word);
+    WordDetailsSnapshot fetch(String word);
 }

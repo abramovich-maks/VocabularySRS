@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.words;
 
+import org.antlr.v4.runtime.misc.MultiMap;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -23,4 +24,6 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
     List<WordEntry> findWordEntriesByNextReviewDateLessThanEqual(LocalDate nextReviewDate);
 
     void delete(WordEntry word);
+
+    Optional<WordEntry> findById(Long wordId);
 }

@@ -62,14 +62,5 @@ class DictionaryControllerMapper {
                 .build();
     }
 
-    public static WordDetailsControllerDto mapFromWordHttpDtoToWordDetailsControllerDto(final WordHttpDto wordDetails) {
-        return WordDetailsControllerDto.builder()
-                .word(wordDetails.word())
-                .phonetic(wordDetails.phonetic())
-                .audioUrl(wordDetails.audioUrl())
-                .partOfSpeech(wordDetails.details().partOfSpeech())
-                .definition(wordDetails.details().definition())
-                .example(wordDetails.details().example())
-                .build();
-    }
+
 }
