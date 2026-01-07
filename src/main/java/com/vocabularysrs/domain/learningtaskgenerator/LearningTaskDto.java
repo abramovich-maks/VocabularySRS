@@ -3,7 +3,7 @@ package com.vocabularysrs.domain.learningtaskgenerator;
 import java.time.LocalDate;
 import java.util.List;
 
-public record LearningTaskSnapshot(
+public record LearningTaskDto(
         Long id,
         LocalDate taskDate,
         Long userId,

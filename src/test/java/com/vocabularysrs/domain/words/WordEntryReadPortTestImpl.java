@@ -12,7 +12,7 @@ class WordEntryReadPortTestImpl implements WordEntryReadPort {
     private final Map<Long, WordEntrySnapshot> data = new HashMap<>();
 
     @Override
-    public List<WordEntrySnapshot> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate today) {
+    public List<WordEntrySnapshot> findWordEntriesByNextReviewDateAndUserIdLessThanEqual(final LocalDate today, final Long userId) {
         List<WordEntrySnapshot> testImpl = new ArrayList<>();
         Long userId1 = 1L;
         Long userId2 = 2L;

@@ -1,10 +1,14 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 public interface LearningTaskReadPort {
-    LearningTaskSnapshot findLearningTaskByDateAndUserId(LocalDate today, Long userId);
+    LearningTaskDto findLearningTaskByDateAndUserId(LocalDate today, Long userId);
 
-    boolean existsFor(Long userId, LocalDate date);
+    Optional<LearningTaskDto> findInProgress(
+            LocalDate date,
+            Long userId
+    );
 
 }

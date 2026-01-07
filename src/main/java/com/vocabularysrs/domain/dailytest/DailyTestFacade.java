@@ -4,9 +4,9 @@ import com.vocabularysrs.domain.dailytest.dto.DailyTestRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskDto;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskSnapshot;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskStatus;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskWritePort;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
@@ -41,11 +41,9 @@ public class DailyTestFacade {
     public DailyTestShowResponseDto retrieveDailyTest() {
         LocalDate today = LocalDate.now(clock);
         Long userId = currentUserProvider.getCurrentUserId();
-        if (!learningTaskReadPort.existsFor(userId, today)) {
-            learningTaskGeneratorFacade.generateTasks(today);
-        }
-
-        LearningTaskSnapshot task = learningTaskReadPort.findLearningTaskByDateAndUserId(today, userId);
+        LearningTaskDto task = learningTaskReadPort
+                .findInProgress(today, userId)
+                .orElseGet(() -> learningTaskGeneratorFacade.generateForUser(today, currentUserProvider.getCurrentUserId()));
 
         if (task.status() == LearningTaskStatus.COMPLETED) {
             throw new DailyTestAlreadyCompletedException(today);

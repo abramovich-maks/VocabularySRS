@@ -11,20 +11,29 @@ import java.util.Optional;
 class DailyWordReadPortTwoUsersTestImpl implements WordEntryReadPort {
 
     @Override
-    public List<WordEntrySnapshot> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate today) {
-        return List.of(
-                WordEntrySnapshot.builder()
-                        .id(1L)
-                        .userId(1L)
-                        .word("cat")
-                        .translate("кот")
-                        .build(),
-                WordEntrySnapshot.builder()
-                        .id(2L)
-                        .userId(2L)
-                        .word("dog")
-                        .translate("собака")
-                        .build());
+    public List<WordEntrySnapshot> findWordEntriesByNextReviewDateAndUserIdLessThanEqual(final LocalDate today, final Long userId) {
+        if (userId == 1L) {
+            return List.of(
+                    WordEntrySnapshot.builder()
+                            .id(1L)
+                            .userId(1L)
+                            .word("cat")
+                            .translate("кот")
+                            .build()
+            );
+        }
+
+        if (userId == 2L) {
+            return List.of(
+                    WordEntrySnapshot.builder()
+                            .id(2L)
+                            .userId(2L)
+                            .word("dog")
+                            .translate("собака")
+                            .build()
+            );
+        }
+        return List.of();
     }
 
     @Override

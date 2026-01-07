@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WordEntryReadPort {
-    List<WordEntrySnapshot> findWordEntriesByNextReviewDateLessThanEqual(LocalDate today);
+    List<WordEntrySnapshot> findWordEntriesByNextReviewDateAndUserIdLessThanEqual(LocalDate today, Long userId);
 
     Optional<WordEntrySnapshot> findById(Long wordId);
 }

@@ -1,13 +1,13 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
 import com.vocabularysrs.domain.AdjustableClock;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.WordEntryReadPort;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
@@ -20,6 +20,7 @@ class LearningTaskGeneratorFacadeTest {
             ZoneId.systemDefault()
     );
 
+    CurrentUserProvider user = new TestCurrentUserProvider();
 
     @Test
     void should_generate_two_questions_for_single_word() {
@@ -28,12 +29,10 @@ class LearningTaskGeneratorFacadeTest {
         InMemoryLearningTaskRepositoryTestImpl dailyWordRepository = new InMemoryLearningTaskRepositoryTestImpl();
         LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordRepository, wordEntryReadPort);
         // when
-        List<LearningTask> learningTasks = learningTaskGeneratorFacade.generateTasks(clock.today());
+        LearningTaskDto learningTaskDto = learningTaskGeneratorFacade.generateForUser(clock.today(), user.getCurrentUserId());
         // then
-        assertThat(learningTasks).hasSize(1);
-        LearningTask task = learningTasks.get(0);
-        assertThat(task.getQuestions()).hasSize(2);
-        assertThat(task.getQuestions())
+        assertThat(learningTaskDto.questions()).hasSize(2);
+        assertThat(learningTaskDto.questions())
                 .extracting("prompt", "direction")
                 .containsExactlyInAnyOrder(
                         tuple("cat", TranslationDirection.WORD_TO_TRANSLATION),
@@ -42,38 +41,24 @@ class LearningTaskGeneratorFacadeTest {
     }
 
     @Test
-    void should_generate_tasks_for_two_users() {
+    void should_generate_tasks_only_for_given_user() {
         // given
         WordEntryReadPort wordEntryReadPort = new DailyWordReadPortTwoUsersTestImpl();
         InMemoryLearningTaskRepositoryTestImpl dailyWordRepository = new InMemoryLearningTaskRepositoryTestImpl();
         LearningTaskGeneratorFacade learningTaskGeneratorFacade = new LearningTaskGeneratorConfiguration().learningTaskGeneratorFacade(dailyWordRepository, wordEntryReadPort);
         // when
-        List<LearningTask> tasks = learningTaskGeneratorFacade.generateTasks(clock.today());
+        LearningTaskDto taskUser1 = learningTaskGeneratorFacade.generateForUser(clock.today(), 1L);
+        LearningTaskDto taskUser2 = learningTaskGeneratorFacade.generateForUser(clock.today(), 2L);
+
         // then
-        assertThat(tasks).hasSize(2);
-        // USER1
-        LearningTask task1 = tasks.stream()
-                .filter(t -> t.getUserId() == 1L)
-                .findFirst()
-                .orElseThrow();
-        assertThat(task1.getQuestions()).hasSize(2);
-        assertThat(task1.getQuestions())
-                .extracting("prompt", "direction")
-                .containsExactlyInAnyOrder(
-                        tuple("cat", TranslationDirection.WORD_TO_TRANSLATION),
-                        tuple("кот", TranslationDirection.TRANSLATION_TO_WORD)
-                );
-        // USER2
-        LearningTask task2 = tasks.stream()
-                .filter(t -> t.getUserId() == 2L)
-                .findFirst()
-                .orElseThrow();
-        assertThat(task2.getQuestions()).hasSize(2);
-        assertThat(task2.getQuestions())
-                .extracting("prompt", "direction")
-                .containsExactlyInAnyOrder(
-                        tuple("dog", TranslationDirection.WORD_TO_TRANSLATION),
-                        tuple("собака", TranslationDirection.TRANSLATION_TO_WORD)
-                );
+        assertThat(taskUser1.userId()).isEqualTo(1L);
+        assertThat(taskUser1.questions())
+                .extracting("prompt")
+                .containsExactlyInAnyOrder("cat", "кот");
+
+        assertThat(taskUser2.userId()).isEqualTo(2L);
+        assertThat(taskUser2.questions())
+                .extracting("prompt")
+                .containsExactlyInAnyOrder("dog", "собака");
     }
 }

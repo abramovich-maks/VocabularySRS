@@ -15,7 +15,7 @@ class WordDetailsConfiguration {
     }
 
     @Bean
-    WordDetailsDeleter wordDetailsDeleterImpl(WordDetailsRepository repository){
-      return new WordDetailsDeleterImpl(repository);
+    WordDetailsDeleter wordDetailsDeleterImpl(WordDetailsRepository repository) {
+        return new WordDetailsDeleterImpl(repository);
     }
 }

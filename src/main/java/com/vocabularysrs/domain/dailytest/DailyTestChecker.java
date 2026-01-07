@@ -4,8 +4,8 @@ import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.UserAnswerRequestDto;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskDto;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskSnapshot;
 import com.vocabularysrs.domain.learningtaskgenerator.QuestionSnapshot;
 import lombok.AllArgsConstructor;
 
@@ -20,7 +20,7 @@ class DailyTestChecker {
     private final LearningTaskReadPort learningTaskReadPort;
 
     DailyTestResponseDto checkResult(DailyTestShowRequestDto requestDto, List<UserAnswerRequestDto> answers) {
-        LearningTaskSnapshot task = learningTaskReadPort.findLearningTaskByDateAndUserId(requestDto.date(), requestDto.userId());
+        LearningTaskDto task = learningTaskReadPort.findLearningTaskByDateAndUserId(requestDto.date(), requestDto.userId());
 
         Map<Long, QuestionSnapshot> questionsById = task.questions()
                 .stream()

@@ -12,13 +12,10 @@ interface LearningTaskRepository extends Repository<LearningTask, Long> {
     @Query("""
                         select task
                         from LearningTask task
-                        join fetch task.questions
+                        left join fetch task.questions
                         where task.userId = :userId
                         and task.taskDate = :taskDate
             """)
     Optional<LearningTask> findLearningTaskByTaskDateAndUserId(LocalDate taskDate, Long userId);
-
-    boolean existsByUserIdAndTaskDate(Long userId, LocalDate taskDate);
-
 }
 

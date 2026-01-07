@@ -3,8 +3,8 @@ package com.vocabularysrs.domain.dailytest;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.QuestionDto;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskDto;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskSnapshot;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -14,7 +14,7 @@ class DailyTestRetriever {
 
 
     public DailyTestShowResponseDto retrieveDailyTest(DailyTestShowRequestDto requestDto) {
-        LearningTaskSnapshot questions = learningTaskReadPort.findLearningTaskByDateAndUserId(requestDto.date(), requestDto.userId());
+        LearningTaskDto questions = learningTaskReadPort.findLearningTaskByDateAndUserId(requestDto.date(), requestDto.userId());
         return DailyTestShowResponseDto.builder()
                 .id(questions.id())
                 .userId(questions.userId())

@@ -74,7 +74,7 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public List<WordEntry> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate date) {
+    public List<WordEntry> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate date, final Long userId) {
         List<WordEntry> findWordEntry = new ArrayList<>();
         for (WordEntry entry : database.values()) {
             if (entry.getNextReviewDate().equals(date)) {

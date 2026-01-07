@@ -231,7 +231,7 @@ class WordsFacadeTest {
         // given
         LocalDate reviewDate = LocalDate.now().plusDays(INTERVAL_1_DAY.getDays());
         // when
-        List<WordEntrySnapshot> wordsForReview = wordEntryReadPort.findWordEntriesByNextReviewDateLessThanEqual(reviewDate);
+        List<WordEntrySnapshot> wordsForReview = wordEntryReadPort.findWordEntriesByNextReviewDateAndUserIdLessThanEqual(reviewDate, currentUserProvider.getCurrentUserId());
         // then
         assertThat(wordsForReview)
                 .extracting(WordEntrySnapshot::word)
@@ -248,7 +248,7 @@ class WordsFacadeTest {
         WordEntryJpaAdapter adapter = new WordEntryJpaAdapter(repository);
         LocalDate reviewDate = clock.today().plusDays(INTERVAL_1_DAY.getDays());
         // when
-        List<WordEntrySnapshot> result = adapter.findWordEntriesByNextReviewDateLessThanEqual(reviewDate);
+        List<WordEntrySnapshot> result = adapter.findWordEntriesByNextReviewDateAndUserIdLessThanEqual(reviewDate, currentUserProvider.getCurrentUserId());
         // then
         assertThat(result)
                 .extracting(WordEntrySnapshot::word)

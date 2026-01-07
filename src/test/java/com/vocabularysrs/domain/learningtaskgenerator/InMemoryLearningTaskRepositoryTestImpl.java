@@ -27,10 +27,4 @@ public class InMemoryLearningTaskRepositoryTestImpl implements LearningTaskRepos
                 .filter(task -> task.getUserId().equals(userId) && task.getTaskDate().equals(taskDate))
                 .findFirst();
     }
-
-    @Override
-    public boolean existsByUserIdAndTaskDate(final Long userId, final LocalDate taskDate) {
-        return database.values().stream()
-                .anyMatch(task -> task.getUserId().equals(userId) && task.getTaskDate().equals(taskDate));
-    }
 }
