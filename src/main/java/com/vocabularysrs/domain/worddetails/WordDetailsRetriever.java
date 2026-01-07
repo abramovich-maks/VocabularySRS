@@ -15,7 +15,6 @@ class WordDetailsRetriever {
     private final CurrentUserProvider currentUserProvider;
 
 
-
     public WordHttpDto getOrLoad(Long wordId) {
         Long userId = currentUserProvider.getCurrentUserId();
 

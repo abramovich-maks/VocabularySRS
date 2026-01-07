@@ -1,7 +1,7 @@
 package com.vocabularysrs.domain.words;
 
-import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
+import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 

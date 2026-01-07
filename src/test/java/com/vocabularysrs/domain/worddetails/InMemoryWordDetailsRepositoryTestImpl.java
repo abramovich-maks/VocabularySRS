@@ -28,7 +28,8 @@ class InMemoryWordDetailsRepositoryTestImpl implements WordDetailsRepository {
     }
 
     @Override
-    public void deleteById(Long id) {
-        database.values().removeIf(e -> e.getId().equals(id));
+    public void deleteByWordIdAndUserId(final Long wordId, final Long userId) {
+        database.values().removeIf(e -> e.getWordId().equals(wordId) && e.getUserId().equals(userId));
+
     }
 }

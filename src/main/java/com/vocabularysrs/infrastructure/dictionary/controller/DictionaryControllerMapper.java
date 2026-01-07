@@ -1,6 +1,5 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
-import com.vocabularysrs.domain.worddetails.WordHttpDto;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;

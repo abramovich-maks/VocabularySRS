@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.words;
 
 
 import com.vocabularysrs.domain.security.CurrentUserProvider;
+import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
 import com.vocabularysrs.infrastructure.security.JwtCurrentUserProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +13,10 @@ import java.time.Clock;
 class WordEntryConfiguration {
 
     @Bean
-    WordsFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock) {
+    WordsFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock, WordDetailsDeleter wordDetailsDeleter) {
         WordRetriever wordRetriever = new WordRetriever(wordRepository, currentUserProvider);
         WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, clock);
-        WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever);
+        WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever, wordDetailsDeleter);
         WordUpdater wordUpdater = new WordUpdater(wordRetriever);
         return new WordsFacade(wordAdder, wordDeleter, wordRetriever, wordUpdater);
     }

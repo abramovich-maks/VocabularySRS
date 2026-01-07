@@ -1,6 +1,5 @@
 package com.vocabularysrs.domain.words;
 
-import org.antlr.v4.runtime.misc.MultiMap;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;

@@ -9,6 +9,5 @@ interface WordDetailsRepository extends Repository<WordDetailsEntry, Long> {
 
     Optional<WordDetailsEntry> findByWordIdAndUserId(Long wordId, Long userId);
 
-    void deleteById(Long id);
-
+    void deleteByWordIdAndUserId(Long wordId, Long userId);
 }

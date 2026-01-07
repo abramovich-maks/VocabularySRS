@@ -6,5 +6,6 @@ public record WordDetailsSnapshot(
         String partOfSpeech,
         String definition,
         String example
-) {}
+) {
+}
 

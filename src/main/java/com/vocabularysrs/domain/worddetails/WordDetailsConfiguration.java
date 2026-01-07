@@ -13,4 +13,9 @@ class WordDetailsConfiguration {
         WordDetailsRetriever wordDetailsRetriever = new WordDetailsRetriever(repository, wordEntryReadPort, fetchable, currentUserProvider);
         return new WordDetailsFacade(wordDetailsRetriever);
     }
+
+    @Bean
+    WordDetailsDeleter wordDetailsDeleterImpl(WordDetailsRepository repository){
+      return new WordDetailsDeleterImpl(repository);
+    }
 }

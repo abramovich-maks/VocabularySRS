@@ -1,7 +1,7 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
-import com.vocabularysrs.domain.worddetails.WordHttpDto;
+import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
 import com.vocabularysrs.domain.words.WordsFacade;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
