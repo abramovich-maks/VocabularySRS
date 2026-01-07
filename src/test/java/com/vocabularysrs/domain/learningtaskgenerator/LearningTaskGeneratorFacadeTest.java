@@ -1,7 +1,7 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
+import com.vocabularysrs.domain.words.WordEntryReadPort;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

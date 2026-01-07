@@ -1,8 +1,8 @@
 package com.vocabularysrs.infrastructure.dictionary.http;
 
 
-import com.vocabularysrs.domain.dictionary.WordDetailsFetchable;
-import com.vocabularysrs.domain.dictionary.WordHttpDto;
+import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
+import com.vocabularysrs.domain.words.WordDetailsSnapshot;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DictionaryApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -24,7 +24,7 @@ public class WordDetailsRestTemplate implements WordDetailsFetchable {
 
 
     @Override
-    public WordHttpDto details(final String word) {
+    public WordDetailsSnapshot fetch(String word) {
         String url = getUrlForWord(word);
 
         DictionaryApiResponse[] response =

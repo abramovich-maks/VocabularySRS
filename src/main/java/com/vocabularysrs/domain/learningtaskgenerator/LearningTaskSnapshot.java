@@ -9,4 +9,5 @@ public record LearningTaskSnapshot(
         Long userId,
         List<QuestionSnapshot> questions,
         LearningTaskStatus status
-) {}
+) {
+}

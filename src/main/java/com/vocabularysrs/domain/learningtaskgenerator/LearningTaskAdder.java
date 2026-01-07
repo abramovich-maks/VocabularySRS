@@ -1,7 +1,7 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
-import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
-import com.vocabularysrs.domain.dictionary.WordEntrySnapshot;
+import com.vocabularysrs.domain.words.WordEntryReadPort;
+import com.vocabularysrs.domain.words.WordEntrySnapshot;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDate;

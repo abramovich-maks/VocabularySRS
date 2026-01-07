@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
-import com.vocabularysrs.domain.dictionary.DictionaryFacade;
-import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
+import com.vocabularysrs.domain.words.WordsFacade;
+import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.infrastructure.dailytest.DailyTestControllerResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements IntegrationTestData {
 
     @Autowired
-    DictionaryFacade dictionaryFacade;
+    WordsFacade wordsFacade;
 
     @MockitoBean
     AuthenticationManager authenticationManager;
@@ -185,7 +185,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         });
         assertThat(deleteResponse.message()).isEqualTo("Deleted word by id: 3");
 
-        List<WordDtoResponse> allWords = dictionaryFacade.findAllWords(Pageable.unpaged());
+        List<WordDtoResponse> allWords = wordsFacade.findAllWords(Pageable.unpaged());
         assertThat(allWords).hasSize(3);
 
 

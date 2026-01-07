@@ -1,7 +1,7 @@
 package com.vocabularysrs.infrastructure.apivalidation;
 
 import com.vocabularysrs.domain.dailytest.DailyTestAlreadyCompletedException;
-import com.vocabularysrs.domain.dictionary.WordAlreadyExistsException;
+import com.vocabularysrs.domain.words.WordAlreadyExistsException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;

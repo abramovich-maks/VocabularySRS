@@ -1,7 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.http;
 
-import com.vocabularysrs.domain.dictionary.WordHttpDetailsDto;
-import com.vocabularysrs.domain.dictionary.WordHttpDto;
+import com.vocabularysrs.domain.words.WordDetailsSnapshot;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DefinitionDto;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DictionaryApiResponse;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.MeaningDto;
@@ -9,7 +8,7 @@ import com.vocabularysrs.infrastructure.dictionary.http.dto.PhoneticDto;
 
 class DictionaryApiResponseMapper {
 
-    public static WordHttpDto mapToWordHttpDto(DictionaryApiResponse entry) {
+    public static WordDetailsSnapshot mapToWordHttpDto(DictionaryApiResponse entry) {
 
         MeaningDto meaning = entry.meanings().stream()
                 .filter(m -> "noun".equals(m.partOfSpeech()))
@@ -33,15 +32,12 @@ class DictionaryApiResponseMapper {
                 .findFirst()
                 .orElse(null);
 
-        return new WordHttpDto(
-                entry.word(),
+        return new WordDetailsSnapshot(
                 phonetic,
                 audioUrl,
-                new WordHttpDetailsDto(
-                        meaning.partOfSpeech(),
-                        definition.definition(),
-                        definition.example()
-                )
+                meaning.partOfSpeech(),
+                definition.definition(),
+                definition.example()
         );
     }
 }

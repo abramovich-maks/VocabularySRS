@@ -1,11 +1,12 @@
 package com.vocabularysrs.domain.learningtaskgenerator;
 
 
-import com.vocabularysrs.domain.dictionary.WordEntryReadPort;
-import com.vocabularysrs.domain.dictionary.WordEntrySnapshot;
+import com.vocabularysrs.domain.words.WordEntryReadPort;
+import com.vocabularysrs.domain.words.WordEntrySnapshot;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 class DailyWordReadPortTwoUsersTestImpl implements WordEntryReadPort {
 
@@ -24,5 +25,10 @@ class DailyWordReadPortTwoUsersTestImpl implements WordEntryReadPort {
                         .word("dog")
                         .translate("собака")
                         .build());
+    }
+
+    @Override
+    public Optional<WordEntrySnapshot> findById(final Long wordId) {
+        return Optional.empty();
     }
 }

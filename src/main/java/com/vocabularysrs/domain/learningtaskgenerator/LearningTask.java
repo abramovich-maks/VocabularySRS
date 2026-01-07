@@ -47,14 +47,14 @@ class LearningTask {
     @Enumerated(EnumType.STRING)
     private LearningTaskStatus status = LearningTaskStatus.PENDING;
 
-    public void markCompleted() {
-        this.status = LearningTaskStatus.COMPLETED;
-    }
-
     LearningTask(final Long userId, final LocalDate taskDate, final List<Question> questions) {
         this.userId = userId;
         this.taskDate = taskDate;
         this.questions = questions;
+    }
+
+    public void markCompleted() {
+        this.status = LearningTaskStatus.COMPLETED;
     }
 
     public void addQuestion(Question question) {

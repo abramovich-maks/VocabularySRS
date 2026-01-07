@@ -1,17 +1,20 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
-import com.vocabularysrs.domain.dictionary.DictionaryFacade;
-import com.vocabularysrs.domain.dictionary.dto.WordAddDtoRequest;
-import com.vocabularysrs.domain.dictionary.dto.WordDtoResponse;
-import com.vocabularysrs.domain.dictionary.dto.WordEntryDtoResponse;
-import com.vocabularysrs.domain.dictionary.dto.WordEntryUpdateDtoResponse;
-import com.vocabularysrs.domain.dictionary.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
+import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
+import com.vocabularysrs.domain.words.WordsFacade;
+import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -32,56 +35,56 @@ import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryC
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse;
-import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordHttpDtoToWordDetailsControllerDto;
 
 @AllArgsConstructor
 @RestController()
 @RequestMapping("/words")
 class DictionaryController {
 
-    private final DictionaryFacade dictionaryFacade;
+    private final WordsFacade wordsFacade;
+    private final WordDetailsFacade wordDetailsFacade;
 
     @PostMapping()
-    public ResponseEntity<WordEntryControllerDtoResponse> addWord(@RequestBody WordEntryControllerDtoRequest dtoRequest) {
+    public ResponseEntity<WordEntryControllerDtoResponse> addWord(@RequestBody @Valid WordEntryControllerDtoRequest dtoRequest) {
         WordAddDtoRequest wordEntry = mapFromWordEntryControllerDtoRequestToWordAddDtoRequest(dtoRequest);
-        WordEntryDtoResponse newWordEntry = dictionaryFacade.addWord(wordEntry);
+        WordEntryDtoResponse newWordEntry = wordsFacade.addWord(wordEntry);
         WordEntryControllerDtoResponse response = mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse(newWordEntry);
         return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<DeletedWordEntryControllerDtoResponse> deleteWord(@PathVariable Long id) {
-        WordEntryDtoResponse deletedWordEntry = dictionaryFacade.deleteWord(id);
+        WordEntryDtoResponse deletedWordEntry = wordsFacade.deleteWord(id);
         DeletedWordEntryControllerDtoResponse response = mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse(deletedWordEntry);
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping()
     public ResponseEntity<GetAllWordsResponseDto> getAllWords(Pageable pageable) {
-        List<WordDtoResponse> allWords = dictionaryFacade.findAllWords(pageable);
+        List<WordDtoResponse> allWords = wordsFacade.findAllWords(pageable);
         GetAllWordsResponseDto getAllWordsResponseDto = mapFromWordDtoresponseToGetAllWordsResponseDto(allWords);
         return ResponseEntity.ok().body(getAllWordsResponseDto);
     }
 
     @GetMapping("/{wordEntryId}")
     public ResponseEntity<WordDtoControllerResponse> getAllWords(@PathVariable Long wordEntryId) {
-        WordDtoResponse wordEntryById = dictionaryFacade.findById(wordEntryId);
+        WordDtoResponse wordEntryById = wordsFacade.findById(wordEntryId);
         WordDtoControllerResponse response = mapFromWordDtoResponseToWordDtoControllerResponse(wordEntryById);
         return ResponseEntity.ok().body(response);
     }
 
     @PatchMapping("/{wordEntryId}")
     public ResponseEntity<WordUpdatePartiallyDtoResponse> partiallyUpdateWordEntry(@PathVariable Long wordEntryId, @RequestBody WordUpdatePartiallyDtoRequest requestDto) {
-        WordEntryUpdateDtoResponse wordEntryById = dictionaryFacade.updatePartiallyById(wordEntryId, requestDto);
+        WordEntryUpdateDtoResponse wordEntryById = wordsFacade.updatePartiallyById(wordEntryId, requestDto);
         WordUpdatePartiallyDtoResponse response = mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse(wordEntryById);
         return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/{wordEntryId}/details")
     public ResponseEntity<WordDetailsControllerDto> getDetailsWord(@PathVariable Long wordEntryId) {
-        return dictionaryFacade.getWordDetails(wordEntryId)
-                .map(dto -> ResponseEntity.ok(mapFromWordHttpDtoToWordDetailsControllerDto(dto)))
-                .orElseGet(() -> ResponseEntity.noContent().build());
+        WordHttpDto details = wordDetailsFacade.getOrLoad(wordEntryId);
+        WordDetailsControllerDto build = WordDetailsControllerDto.builder().word(details.word()).phonetic(details.phonetic()).audioUrl(details.audioUrl()).definition(details.definition()).example(details.example()).build();
+        return ResponseEntity.ok(build);
     }
 }
 
