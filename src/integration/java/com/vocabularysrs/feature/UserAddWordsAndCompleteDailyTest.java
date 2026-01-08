@@ -3,11 +3,13 @@ package com.vocabularysrs.feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
+import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
+import com.vocabularysrs.domain.dailytest.dto.QuestionDto;
+import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.WordsFacade;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
-import com.vocabularysrs.domain.security.CurrentUserProvider;
-import com.vocabularysrs.infrastructure.dailytest.DailyTestControllerResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
@@ -200,8 +202,8 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         ResultActions firstDailyTestRequest = mockMvc.perform(get("/dailytest")
                 .header("Authorization", authenticatedUser()));
         // then
-        MvcResult getTest = firstDailyTestRequest.andExpect(status().isOk()).andReturn();
-        String jsonGetResponse = getTest.getResponse().getContentAsString();
+        MvcResult dailyTestResponse = firstDailyTestRequest.andExpect(status().isOk()).andReturn();
+        String jsonGetResponse = dailyTestResponse.getResponse().getContentAsString();
         DailyTestShowResponseDto getResponse = objectMapper.readValue(jsonGetResponse, DailyTestShowResponseDto.class);
 
         assertThat(getResponse.userId()).isEqualTo(1);
@@ -212,21 +214,35 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 // step 12: user made POST /dailytest and requested 2 true and 4 false questions, and the server returned test statistics.
         // given && when
-        ResultActions submitFirstTestResult = mockMvc.perform(post("/dailytest")
-                .content(getRequestWithOneTrueAnswerCat()
-                        .trim()
-                )
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", authenticatedUser()));
+        AnswerResult question1 = answerQuestion(mockMvc, objectMapper, authenticatedUser(), 1, "кот");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 2, "cat");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 3, "qwe");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 4, "qwe");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 5, "qwe");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 6, "qwe");
         // then
-        MvcResult testResult = submitFirstTestResult.andExpect(status().isOk()).andReturn();
-        String jsonResponse = testResult.getResponse().getContentAsString();
-        DailyTestControllerResponseDto response = objectMapper.readValue(jsonResponse, DailyTestControllerResponseDto.class);
+        assertThat(question1.questionId()).isEqualTo(1);
+        assertThat(question1.wordEntryId()).isEqualTo(1);
+        assertThat(question1.userAnswer()).isEqualTo("кот");
+        assertThat(question1.correctAnswer()).isEqualTo("кот");
 
-        assertThat(response.userId()).isEqualTo(1);
-        assertThat(response.total()).isEqualTo(6);
-        assertThat(response.correct()).isEqualTo(2);
-        assertThat(response.incorrect()).isEqualTo(4);
+
+        MvcResult summaryResponse = mockMvc.perform(post("/dailytest/result")
+                        .header("Authorization", authenticatedUser())
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+        DailyTestResponseDto summary = objectMapper.readValue(summaryResponse.getResponse().getContentAsString(), DailyTestResponseDto.class);
+
+        assertThat(summary.userId()).isEqualTo(1L);
+        assertThat(summary.total()).isEqualTo(6);
+        assertThat(summary.correct()).isEqualTo(2);
+        assertThat(summary.incorrect()).isEqualTo(4);
+        assertThat(summary.answers()).hasSize(6);
+        assertThat(summary.answers())
+                .extracting(AnswerResult::correct)
+                .containsExactly(true, true, false, false, false, false);
 
 
 // step 13: system time is advanced to 2025-12-21T06:01 (next day morning)
@@ -239,34 +255,37 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         ResultActions secondDailyTestRequest = mockMvc.perform(get("/dailytest")
                         .header("Authorization", authenticatedUser()))
                 .andExpect(status().isOk());
-        MvcResult getTest1 = secondDailyTestRequest.andExpect(status().isOk()).andReturn();
-        String jsonGetResponse1 = getTest1.getResponse().getContentAsString();
+        MvcResult secondDayDailyTestResponse = secondDailyTestRequest.andExpect(status().isOk()).andReturn();
+        String jsonGetResponse1 = secondDayDailyTestResponse.getResponse().getContentAsString();
         DailyTestShowResponseDto getResponse1 = objectMapper.readValue(jsonGetResponse1, DailyTestShowResponseDto.class);
 
         assertThat(getResponse1.userId()).isEqualTo(1);
         assertThat(getResponse1.id()).isNotNull();
         assertThat(getResponse1.taskDate()).isEqualTo(adjustableClock().today());
         assertThat(getResponse1.questions().size()).isEqualTo(4);
+        assertThat(getResponse1.questions())
+                .extracting(QuestionDto::wordEntryId)
+                .doesNotContain(3L);
 
 
 // step 15: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
         // given && when
-        ResultActions submitSecondTestResult = mockMvc.perform(post("/dailytest")
-                .content(getRequestWithTrueAnswersDogAndCar()
-                        .trim()
-                )
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", authenticatedUser()));
-        // then
-        MvcResult actionResult = submitSecondTestResult.andExpect(status().isOk()).andReturn();
-        String jsonWithTrueAnswersDogAndCar = actionResult.getResponse().getContentAsString();
-        DailyTestControllerResponseDto responseWithTrueAnswersDogAndCar = objectMapper.readValue(jsonWithTrueAnswersDogAndCar, DailyTestControllerResponseDto.class);
-        // then
-        assertThat(responseWithTrueAnswersDogAndCar.userId()).isEqualTo(1);
-        assertThat(responseWithTrueAnswersDogAndCar.total()).isEqualTo(4);
-        assertThat(responseWithTrueAnswersDogAndCar.correct()).isEqualTo(4);
-        assertThat(responseWithTrueAnswersDogAndCar.incorrect()).isEqualTo(0);
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 7, "собака");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 8, "dog");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 9, "машина");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 10, "car");
 
+        MvcResult secondDaySummaryResponse = mockMvc.perform(post("/dailytest/result")
+                        .header("Authorization", authenticatedUser())
+                )
+                .andExpect(status().isOk())
+                .andReturn();
+
+        DailyTestResponseDto summary2 = objectMapper.readValue(secondDaySummaryResponse.getResponse().getContentAsString(), DailyTestResponseDto.class);
+
+        assertThat(summary2.total()).isEqualTo(4);
+        assertThat(summary2.correct()).isEqualTo(4);
+        assertThat(summary2.incorrect()).isEqualTo(0);
 
 // step 16: time moves forward to 2026-01-10T06:01 (after long inactivity)
         adjustableClock().plusDays(20);
@@ -290,21 +309,27 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 // step 18: user made POST /dailytest and requested 2 true questions, and the server returned test statistics.
         // given && when
-        ResultActions submitFinalTestResult = mockMvc.perform(post("/dailytest")
-                .content(getRequestWithAllTrueQuestions()
-                        .trim()
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 11, "кот");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 12, "cat");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 13, "собака");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 14, "dog");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 15, "машина");
+        answerQuestion(mockMvc, objectMapper, authenticatedUser(), 16, "car");
+
+        MvcResult finalSummaryResponse = mockMvc.perform(post("/dailytest/result")
+                        .header("Authorization", authenticatedUser())
                 )
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("Authorization", authenticatedUser()));
-        // then
-        MvcResult actionResult20Days = submitFinalTestResult.andExpect(status().isOk()).andReturn();
-        String jsonWithAllTrueAnswers = actionResult20Days.getResponse().getContentAsString();
-        DailyTestControllerResponseDto responseWithAllTrueAnswers = objectMapper.readValue(jsonWithAllTrueAnswers, DailyTestControllerResponseDto.class);
-        // then
-        assertThat(responseWithAllTrueAnswers.userId()).isEqualTo(1);
-        assertThat(responseWithAllTrueAnswers.total()).isEqualTo(6);
-        assertThat(responseWithAllTrueAnswers.correct()).isEqualTo(6);
-        assertThat(responseWithAllTrueAnswers.incorrect()).isEqualTo(0);
+                .andExpect(status().isOk())
+                .andReturn();
+
+        DailyTestResponseDto summaryFinal = objectMapper.readValue(finalSummaryResponse.getResponse().getContentAsString(), DailyTestResponseDto.class);
+
+        assertThat(summaryFinal.total()).isEqualTo(6);
+        assertThat(summaryFinal.correct()).isEqualTo(6);
+        assertThat(summaryFinal.incorrect()).isEqualTo(0);
+        assertThat(summaryFinal.answers())
+                .allMatch(AnswerResult::correct);
+
 
         mockMvc.perform(get("/dailytest")
                         .header("Authorization", authenticatedUser()))
