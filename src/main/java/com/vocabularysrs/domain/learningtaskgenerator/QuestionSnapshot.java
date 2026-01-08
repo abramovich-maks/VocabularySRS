@@ -5,6 +5,6 @@ public record QuestionSnapshot(
         Long wordEntryId,
         String prompt,
         TranslationDirection direction,
-        String answer
+        boolean answered
 ) {
 }

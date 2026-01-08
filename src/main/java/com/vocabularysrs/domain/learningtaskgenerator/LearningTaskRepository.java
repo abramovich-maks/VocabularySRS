@@ -17,5 +17,14 @@ interface LearningTaskRepository extends Repository<LearningTask, Long> {
                         and task.taskDate = :taskDate
             """)
     Optional<LearningTask> findLearningTaskByTaskDateAndUserId(LocalDate taskDate, Long userId);
+
+    @Query("""
+                select task
+                from LearningTask task
+                join fetch task.questions q
+                where q.id = :questionId
+                and task.userId = :userId
+            """)
+    Optional<LearningTask> findByQuestionIdAndUserId(Long questionId, Long userId);
 }
 

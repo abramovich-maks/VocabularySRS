@@ -1,31 +1,47 @@
 package com.vocabularysrs.domain.dailytest;
 
-import com.vocabularysrs.domain.dailytest.dto.DailyTestShowRequestDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
-import com.vocabularysrs.domain.dailytest.dto.QuestionDto;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskDto;
+import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskGeneratorFacade;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskReadPort;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
+
+import java.time.Clock;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 class DailyTestRetriever {
 
     private final LearningTaskReadPort learningTaskReadPort;
+    private final LearningTaskGeneratorFacade learningTaskGeneratorFacade;
+    private final CurrentUserProvider currentUserProvider;
+
+    private final Clock clock;
 
 
-    public DailyTestShowResponseDto retrieveDailyTest(DailyTestShowRequestDto requestDto) {
-        LearningTaskDto questions = learningTaskReadPort.findLearningTaskByDateAndUserId(requestDto.date(), requestDto.userId());
+    public DailyTestShowResponseDto retrieveDailyTest() {
+        LocalDate today = LocalDate.now(clock);
+        Long userId = currentUserProvider.getCurrentUserId();
+
+        LearningTaskDto task = learningTaskReadPort.findInProgress(today, userId)
+                .orElseGet(() -> learningTaskGeneratorFacade.generateForUser(today, userId));
+
+        var unansweredQuestions = task.questions().stream()
+                .filter(q -> !q.answered())
+                .toList();
+
+        if (unansweredQuestions.isEmpty()) {
+            throw new DailyTestAlreadyCompletedException(today);
+        }
         return DailyTestShowResponseDto.builder()
-                .id(questions.id())
-                .userId(questions.userId())
-                .taskDate(questions.taskDate())
-                .questions(questions.questions().stream().map(question -> QuestionDto.builder()
-                        .id(question.id())
-                        .wordEntryId(question.wordEntryId())
-                        .prompt(question.prompt())
-                        .direction(question.direction())
-                        .answer(question.answer())
-                        .build()).toList())
-                .build();
+                .id(task.id())
+                .userId(task.userId())
+                .taskDate(task.taskDate())
+                .questions(
+                        unansweredQuestions.stream()
+                                .map(DailyTestMapper::mapFromQuestionSnapshotToQuestionDto)
+                                .toList()
+                ).build();
     }
 }

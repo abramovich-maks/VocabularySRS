@@ -11,7 +11,7 @@ class LearningTaskMapper {
                         q.getWordEntryId(),
                         q.getPrompt(),
                         q.getDirection(),
-                        q.getAnswer()
+                        q.isAnswered()
                 ))
                 .toList();
 
@@ -20,7 +20,7 @@ class LearningTaskMapper {
                 task.getTaskDate(),
                 task.getUserId(),
                 questions,
-                task.getStatus()
+                task.hasUnansweredQuestions()
         );
     }
 }

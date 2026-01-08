@@ -41,6 +41,10 @@ class Question {
 
     private String answer;
 
+    private boolean answered;
+
+    private String userAnswer;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private LearningTask learningTask;
 
@@ -50,5 +54,30 @@ class Question {
         this.direction = direction;
         this.answer = answer;
     }
-}
 
+    void answer(String userAnswer) {
+        if (this.answered) {
+            throw new IllegalStateException("Question already answered");
+        }
+        this.userAnswer = userAnswer;
+        this.answered = true;
+    }
+
+    boolean isAnswered() {
+        return answered;
+    }
+
+    boolean isCorrect() {
+        return answered && answer.equalsIgnoreCase(userAnswer);
+    }
+
+    AnswerResult toResult() {
+        return new AnswerResult(
+                id,
+                wordEntryId,
+                userAnswer,
+                answer,
+                isCorrect()
+        );
+    }
+}
