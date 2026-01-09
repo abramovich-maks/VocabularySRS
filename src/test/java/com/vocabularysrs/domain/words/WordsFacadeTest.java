@@ -1,8 +1,8 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
@@ -291,7 +291,7 @@ class WordsFacadeTest {
         entry.initialize(clock.today());
         repository.save(entry);
         DailyTestResponseDto response = DailyTestResponseDto.builder()
-                .answers(List.of(AnswerResultDto.builder()
+                .answers(List.of(AnswerResult.builder()
                         .wordEntryId(0L)
                         .correct(true)
                         .build()))

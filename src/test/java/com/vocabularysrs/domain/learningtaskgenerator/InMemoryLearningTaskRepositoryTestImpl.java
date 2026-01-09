@@ -27,4 +27,9 @@ public class InMemoryLearningTaskRepositoryTestImpl implements LearningTaskRepos
                 .filter(task -> task.getUserId().equals(userId) && task.getTaskDate().equals(taskDate))
                 .findFirst();
     }
+
+    @Override
+    public Optional<LearningTask> findByQuestionIdAndUserId(final Long questionId, final Long userId) {
+        return Optional.empty();
+    }
 }
