@@ -1,0 +1,3 @@
+ALTER TABLE question
+    ADD COLUMN answered BOOLEAN NOT NULL DEFAULT false,
+    ADD COLUMN user_answer VARCHAR(255);
