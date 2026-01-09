@@ -8,6 +8,6 @@ public record LearningTaskDto(
         LocalDate taskDate,
         Long userId,
         List<QuestionSnapshot> questions,
-        LearningTaskStatus status
+        boolean hasUnansweredQuestions
 ) {
 }

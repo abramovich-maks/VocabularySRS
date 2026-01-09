@@ -40,8 +40,4 @@ public class WordsFacade {
     public WordEntryUpdateDtoResponse updatePartiallyById(Long id, WordUpdatePartiallyDtoRequest dtoRequest) {
         return wordUpdater.updateById(id, dtoRequest);
     }
-
-//    public Optional<WordHttpDto> getWordDetails(Long id) {
-//        return wordDetailsReader.getDetails(id);
-//    }
 }

@@ -1,19 +1,22 @@
 package com.vocabularysrs.domain.dailytest;
 
+import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskWritePort;
-
-import java.time.LocalDate;
 
 class LearningTaskWritePortTestImpl implements LearningTaskWritePort {
 
-    boolean completed = false;
-    Long completedUserId;
-    LocalDate completedDate;
-
     @Override
-    public void markCompleted(Long userId, LocalDate date) {
-        this.completed = true;
-        this.completedUserId = userId;
-        this.completedDate = date;
+    public AnswerResult answerQuestion(
+            final Long userId,
+            final Long questionId,
+            final String userAnswer
+    ) {
+        return AnswerResult.builder()
+                .questionId(questionId)
+                .wordEntryId(1L)
+                .userAnswer(userAnswer)
+                .correctAnswer("cat")
+                .correct(true)
+                .build();
     }
 }
