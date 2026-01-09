@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.dailytest.dto;
 
+import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import lombok.Builder;
 
 import java.util.List;
@@ -10,6 +11,6 @@ public record DailyTestResponseDto(
         int total,
         int correct,
         int incorrect,
-        List<AnswerResultDto> answers
+        List<AnswerResult> answers
 ) {
 }

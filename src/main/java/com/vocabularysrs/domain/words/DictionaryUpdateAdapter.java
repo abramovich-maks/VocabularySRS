@@ -1,8 +1,8 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.dailytest.DictionaryUpdatePort;
-import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import lombok.AllArgsConstructor;
 
 import java.time.Clock;
@@ -23,13 +23,13 @@ class DictionaryUpdateAdapter implements DictionaryUpdatePort {
     @Override
     public void update(DailyTestResponseDto result) {
         LocalDate today = LocalDate.now(clock);
-        Map<Long, List<AnswerResultDto>> answersByWord =
+        Map<Long, List<AnswerResult>> answersByWord =
                 result.answers().stream()
-                        .collect(Collectors.groupingBy(AnswerResultDto::wordEntryId));
-        for (Map.Entry<Long, List<AnswerResultDto>> entry : answersByWord.entrySet()) {
+                        .collect(Collectors.groupingBy(AnswerResult::wordEntryId));
+        for (Map.Entry<Long, List<AnswerResult>> entry : answersByWord.entrySet()) {
             Long wordId = entry.getKey();
-            List<AnswerResultDto> answersForWord = entry.getValue();
-            boolean correct = answersForWord.stream().allMatch(AnswerResultDto::correct);
+            List<AnswerResult> answersForWord = entry.getValue();
+            boolean correct = answersForWord.stream().allMatch(AnswerResult::correct);
             WordEntry entityById = wordRetriever.findEntityById(wordId);
             entityById.applyReviewResult(correct, calculator, today);
             wordEntryRepository.save(entityById);

@@ -3,7 +3,6 @@ package com.vocabularysrs.domain.dailytest;
 import com.vocabularysrs.domain.dailytest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
