@@ -5,5 +5,6 @@ CREATE TABLE learning_task
     id        BIGINT NOT NULL,
     task_date DATE   NOT NULL,
     user_id   BIGINT NOT NULL,
+    status    VARCHAR(255),
     CONSTRAINT pk_learningtask PRIMARY KEY (id)
 );
