@@ -74,15 +74,24 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public List<WordEntry> findWordEntriesByNextReviewDateLessThanEqual(final LocalDate date, final Long userId) {
-        List<WordEntry> findWordEntry = new ArrayList<>();
+    public List<WordEntry> findWordEntriesByNextReviewDateLessThanEqual(
+            final LocalDate date,
+            final Long userId
+    ) {
+        List<WordEntry> result = new ArrayList<>();
+
         for (WordEntry entry : database.values()) {
-            if (entry.getNextReviewDate().equals(date)) {
-                findWordEntry.add(entry);
+            if (
+                    userId.equals(entry.getUserId()) &&
+                            entry.getNextReviewDate() != null &&
+                            !entry.getNextReviewDate().isAfter(date)
+            ) {
+                result.add(entry);
             }
         }
-        return findWordEntry;
+        return result;
     }
+
 
     @Override
     public void delete(final WordEntry word) {
@@ -91,6 +100,6 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
 
     @Override
     public Optional<WordEntry> findById(final Long wordId) {
-        return Optional.empty();
+        return Optional.ofNullable(database.get(wordId));
     }
 }

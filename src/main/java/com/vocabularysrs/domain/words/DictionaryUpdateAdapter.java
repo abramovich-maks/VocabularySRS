@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.dailytest.DictionaryUpdatePort;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
+@Log4j2
 class DictionaryUpdateAdapter implements DictionaryUpdatePort {
 
     private final WordEntryRepository wordEntryRepository;
@@ -30,9 +32,13 @@ class DictionaryUpdateAdapter implements DictionaryUpdatePort {
             Long wordId = entry.getKey();
             List<AnswerResult> answersForWord = entry.getValue();
             boolean correct = answersForWord.stream().allMatch(AnswerResult::correct);
-            WordEntry entityById = wordRetriever.findEntityById(wordId);
-            entityById.applyReviewResult(correct, calculator, today);
-            wordEntryRepository.save(entityById);
+            try {
+                WordEntry entityById = wordRetriever.findEntityById(wordId);
+                entityById.applyReviewResult(correct, calculator, today);
+                wordEntryRepository.save(entityById);
+            } catch (WordNotFoundException e) {
+                log.warn("Skipping dictionary update for missing wordEntryId={}", wordId);
+            }
         }
     }
 }
