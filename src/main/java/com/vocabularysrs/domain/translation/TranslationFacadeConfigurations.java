@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 class TranslationFacadeConfigurations {
 
     @Bean
-    TranslateFacade translateFacade(TranslationService translationService) {
-        return new TranslateFacade(translationService);
+    WordTranslator translateFacade(TranslationService translationService) {
+        return new WordTranslator(translationService);
     }
 }

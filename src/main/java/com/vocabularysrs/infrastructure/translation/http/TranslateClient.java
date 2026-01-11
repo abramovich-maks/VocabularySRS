@@ -36,8 +36,6 @@ class TranslateClient implements TranslationService {
                 .retrieve()
                 .bodyToMono(TranslateResponse.class)
                 .block();
-        System.out.println("LibreTranslate baseUrl = " + properties.baseUrl());
-        System.out.println("LibreTranslate path = " + properties.translatePath());
 
         if (response == null || response.translatedText() == null) {
             return failed(word);

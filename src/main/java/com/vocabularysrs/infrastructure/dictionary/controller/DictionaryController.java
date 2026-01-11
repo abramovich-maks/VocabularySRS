@@ -2,6 +2,7 @@ package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
 import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
+import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
 import com.vocabularysrs.domain.words.WordsFacade;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
@@ -12,6 +13,7 @@ import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEnt
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryWithAutoTranslateControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -49,6 +51,14 @@ class DictionaryController {
         return ResponseEntity.ok().body(response);
     }
 
+    @PostMapping("/auto")
+    public ResponseEntity<WordEntryControllerDtoResponse> addWordWithAutoTranslate(@RequestBody @Valid WordEntryWithAutoTranslateControllerDtoRequest dtoRequest) {
+        WordWithAutoTranslateDtoRequest build = WordWithAutoTranslateDtoRequest.builder().word(dtoRequest.word()).build();
+        WordEntryDtoResponse newWordEntry = wordsFacade.addWordWithAutoTranslate(build);
+        WordEntryControllerDtoResponse response = mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse(newWordEntry);
+        return ResponseEntity.ok().body(response);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<DeletedWordEntryControllerDtoResponse> deleteWord(@PathVariable Long id) {
         WordEntryDtoResponse deletedWordEntry = wordsFacade.deleteWord(id);
@@ -63,7 +73,7 @@ class DictionaryController {
     }
 
     @GetMapping("/{wordEntryId}")
-    public ResponseEntity<WordDtoControllerResponse> getAllWords(@PathVariable Long wordEntryId) {
+    public ResponseEntity<WordDtoControllerResponse> getWordById(@PathVariable Long wordEntryId) {
         WordDtoResponse wordEntryById = wordsFacade.findById(wordEntryId);
         WordDtoControllerResponse response = mapFromWordDtoResponseToWordDtoControllerResponse(wordEntryById);
         return ResponseEntity.ok().body(response);
