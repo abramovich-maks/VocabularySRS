@@ -45,3 +45,14 @@ dictionary:
         connection-timeout: 5000
         read-timeout: 5000
         uri: https://api.dictionaryapi.dev/api/v2/entries/en/
+
+  ## Http Translate Api
+translate:
+  http:
+    client:
+      config:
+        base-url: ${TRANSLATE_BASE_URL}
+        translate-path: /translate
+        connection-timeout: 5000
+        read-timeout: 5000
+        size-alternatives: 5

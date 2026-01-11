@@ -11,3 +11,7 @@ auth:
   jwt:
     expirationSeconds: 99999999
     secure: false
+
+server:
+  servlet:
+    context-path:
