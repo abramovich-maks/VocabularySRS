@@ -5,14 +5,10 @@ import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 class DictionaryControllerMapper {
 
@@ -45,12 +41,6 @@ class DictionaryControllerMapper {
                 .build();
     }
 
-    public static GetAllWordsResponseDto mapFromWordDtoresponseToGetAllWordsResponseDto(List<WordDtoResponse> songs) {
-        List<WordDtoControllerResponse> dtos = songs.stream()
-                .map(DictionaryControllerMapper::mapFromWordDtoResponseToWordDtoControllerResponse)
-                .collect(Collectors.toList());
-        return new GetAllWordsResponseDto(dtos);
-    }
 
     public static WordUpdatePartiallyDtoResponse mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse(final WordEntryUpdateDtoResponse wordEntryById) {
         return WordUpdatePartiallyDtoResponse.builder()

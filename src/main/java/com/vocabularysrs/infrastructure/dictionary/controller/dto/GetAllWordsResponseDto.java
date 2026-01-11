@@ -1,6 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller.dto;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
-public record GetAllWordsResponseDto(List<WordDtoControllerResponse> dtoResponse) {
+public record GetAllWordsResponseDto(Page<WordDtoControllerResponse> dtoResponse) {
 }

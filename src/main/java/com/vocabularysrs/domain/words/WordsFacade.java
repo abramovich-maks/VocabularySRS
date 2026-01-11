@@ -7,10 +7,9 @@ import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Transactional
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class WordsFacade {
         return wordDeleter.deleteById(id);
     }
 
-    public List<WordDtoResponse> findAllWords(final Pageable pageable) {
+    public Page<WordDtoResponse> findAllWords(final Pageable pageable) {
         return wordRetriever.findAllByUserId(pageable);
     }
 

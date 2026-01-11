@@ -9,13 +9,13 @@ import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,10 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordDtoResponseToWordDtoControllerResponse;
-import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordDtoresponseToGetAllWordsResponseDto;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryControllerDtoRequestToWordAddDtoRequest;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse;
@@ -59,11 +56,10 @@ class DictionaryController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping()
-    public ResponseEntity<GetAllWordsResponseDto> getAllWords(Pageable pageable) {
-        List<WordDtoResponse> allWords = wordsFacade.findAllWords(pageable);
-        GetAllWordsResponseDto getAllWordsResponseDto = mapFromWordDtoresponseToGetAllWordsResponseDto(allWords);
-        return ResponseEntity.ok().body(getAllWordsResponseDto);
+    @GetMapping
+    public Page<WordDtoControllerResponse> getAllWords(Pageable pageable) {
+        return wordsFacade.findAllWords(pageable)
+                .map(DictionaryControllerMapper::mapFromWordDtoResponseToWordDtoControllerResponse);
     }
 
     @GetMapping("/{wordEntryId}")

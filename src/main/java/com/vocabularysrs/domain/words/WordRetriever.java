@@ -3,10 +3,8 @@ package com.vocabularysrs.domain.words;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.vocabularysrs.domain.words.WordEntryMapper.mapFromWordEntryToWordDtoResponse;
 
@@ -30,11 +28,10 @@ class WordRetriever {
         }
     }
 
-    List<WordDtoResponse> findAllByUserId(Pageable pageable) {
+    Page<WordDtoResponse> findAllByUserId(Pageable pageable) {
         Long userId = currentUserProvider.getCurrentUserId();
         return wordEntryRepository.findAllByUserId(userId, pageable)
-                .stream().map(WordEntryMapper::mapFromWordEntryToWordDtoResponse)
-                .collect(Collectors.toList());
+                .map(WordEntryMapper::mapFromWordEntryToWordDtoResponse);
     }
 
     WordDtoResponse findById(Long id) {

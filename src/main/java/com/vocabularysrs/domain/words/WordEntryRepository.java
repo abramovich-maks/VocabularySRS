@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.words;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -15,7 +16,7 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
 
     boolean existsByIdAndUserId(Long id, Long userId);
 
-    List<WordEntry> findAllByUserId(Long userId, Pageable pageable);
+    Page<WordEntry> findAllByUserId(Long userId, Pageable pageable);
 
     @Query("SELECT s FROM WordEntry s WHERE s.id = :id AND s.userId = :userId")
     Optional<WordEntry> findByIdAndUserId(Long id, Long userId);
