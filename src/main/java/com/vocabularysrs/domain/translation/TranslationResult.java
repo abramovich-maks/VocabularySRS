@@ -10,4 +10,7 @@ public record TranslationResult(
         String translatedText,
         List<String> alternative
 ) {
+    public boolean isSuccessful() {
+        return translatedText != null && !translatedText.isBlank();
+    }
 }

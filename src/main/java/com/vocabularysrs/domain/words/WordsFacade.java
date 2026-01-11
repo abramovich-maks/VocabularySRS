@@ -6,6 +6,7 @@ import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,10 @@ public class WordsFacade {
 
     public WordEntryDtoResponse addWord(WordAddDtoRequest dtoRequest) {
         return wordAdder.addWord(dtoRequest);
+    }
+
+    public WordEntryDtoResponse addWordWithAutoTranslate(final WordWithAutoTranslateDtoRequest request) {
+        return wordAdder.addWordWithAutoTranslate(request);
     }
 
     public WordEntryDtoResponse deleteWord(Long id) {
