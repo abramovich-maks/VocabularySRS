@@ -1,12 +1,15 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,15 +59,26 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public List<WordEntry> findAllByUserId(final Long userId, final Pageable pageable) {
-        List<WordEntry> result = new ArrayList<>();
+    public Page<WordEntry> findAllByUserId(Long userId, Pageable pageable) {
 
-        for (WordEntry entry : database.values()) {
-            if (userId.equals(entry.getUserId())) {
-                result.add(entry);
-            }
+        List<WordEntry> filtered = database.values().stream()
+                .filter(entry -> userId.equals(entry.getUserId()))
+                .sorted(Comparator.comparing(WordEntry::getId))
+                .toList();
+
+        if (pageable.isUnpaged()) {
+            return new PageImpl<>(filtered);
         }
-        return result;
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), filtered.size());
+
+        List<WordEntry> pageContent =
+                start >= filtered.size()
+                        ? List.of()
+                        : filtered.subList(start, end);
+
+        return new PageImpl<>(pageContent, pageable, filtered.size());
     }
 
     @Override

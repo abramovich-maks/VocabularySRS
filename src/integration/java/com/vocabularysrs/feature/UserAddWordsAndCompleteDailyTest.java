@@ -3,6 +3,7 @@ package com.vocabularysrs.feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
+import com.vocabularysrs.PageResponse;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.QuestionDto;
@@ -11,12 +12,12 @@ import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.WordsFacade;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
-import com.vocabularysrs.infrastructure.dictionary.controller.dto.GetAllWordsResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,8 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -71,9 +70,9 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         // then
         MvcResult mvcResultZeroWords = performEmptyResults.andExpect(status().isOk()).andReturn();
         String jsonEmptyWords = mvcResultZeroWords.getResponse().getContentAsString();
-        GetAllWordsResponseDto emptyWordsResponse = objectMapper.readValue(jsonEmptyWords, new TypeReference<>() {
+        PageResponse<WordDtoControllerResponse> emptyWordsResponse = objectMapper.readValue(jsonEmptyWords, new TypeReference<>() {
         });
-        assertThat(emptyWordsResponse.dtoResponse()).isEmpty();
+        assertThat(emptyWordsResponse.content()).isEmpty();
 
 
 // step 2: user made POST /words with body (word: cat, translate: кот) at 19-12-2025 12:00, and the system returned OK (200) with message: "Success. New word added" and word: "cat", translate: "кот".
@@ -102,11 +101,11 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         // then
         MvcResult mvcResultOneWord = getAllWordsRequest.andExpect(status().isOk()).andReturn();
         String jsonWithOneWord = mvcResultOneWord.getResponse().getContentAsString();
-        GetAllWordsResponseDto responseWithOneWord = objectMapper.readValue(jsonWithOneWord, new TypeReference<>() {
+        PageResponse<WordDtoControllerResponse> responseWithOneWord = objectMapper.readValue(jsonWithOneWord, new TypeReference<>() {
         });
-        WordDtoControllerResponse actual = responseWithOneWord.dtoResponse().get(0);
+        WordDtoControllerResponse actual = responseWithOneWord.content().get(0);
         assertAll(
-                () -> assertThat(responseWithOneWord.dtoResponse().size()).isEqualTo(1),
+                () -> assertThat(responseWithOneWord.content().size()).isEqualTo(1),
                 () -> assertThat(actual.id()).isEqualTo(1L),
                 () -> assertThat(actual.word()).isEqualTo(CAT),
                 () -> assertThat(actual.translate()).isEqualTo(CAT_RU)
@@ -147,9 +146,9 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         // then
         MvcResult mvcResultFourWords = getAllWordsAfterAddingRequest.andExpect(status().isOk()).andReturn();
         String jsonWithFourWords = mvcResultFourWords.getResponse().getContentAsString();
-        GetAllWordsResponseDto responseWithFourWords = objectMapper.readValue(jsonWithFourWords, new TypeReference<>() {
+        PageResponse<WordDtoControllerResponse> responseWithFourWords = objectMapper.readValue(jsonWithFourWords, new TypeReference<>() {
         });
-        assertThat(responseWithFourWords.dtoResponse())
+        assertThat(responseWithFourWords.content())
                 .hasSize(4)
                 .extracting(WordDtoControllerResponse::id, WordDtoControllerResponse::word, WordDtoControllerResponse::translate)
                 .containsExactly(
@@ -187,7 +186,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         });
         assertThat(deleteResponse.message()).isEqualTo("Deleted word by id: 3");
 
-        List<WordDtoResponse> allWords = wordsFacade.findAllWords(Pageable.unpaged());
+        Page<WordDtoResponse> allWords = wordsFacade.findAllWords(Pageable.unpaged());
         assertThat(allWords).hasSize(3);
 
 

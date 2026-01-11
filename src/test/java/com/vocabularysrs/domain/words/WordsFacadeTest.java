@@ -12,6 +12,7 @@ import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
@@ -334,7 +335,7 @@ class WordsFacadeTest {
         wordsFacade.addWord(new WordAddDtoRequest("sun", "солнце"));
         // when
         ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
-        List<WordDtoResponse> result =
+        Page<WordDtoResponse> result =
                 wordsFacade.findAllWords(Pageable.unpaged());
         // then
         assertThat(result).hasSize(2);
