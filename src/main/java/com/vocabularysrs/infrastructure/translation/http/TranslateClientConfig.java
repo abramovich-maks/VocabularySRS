@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.translation.http;
 
+import com.vocabularysrs.domain.translation.TranslationAlternativeService;
 import com.vocabularysrs.domain.translation.TranslationService;
 import io.netty.channel.ChannelOption;
 import lombok.AllArgsConstructor;
@@ -13,7 +14,7 @@ import java.time.Duration;
 
 @AllArgsConstructor
 @Configuration
-class TranslateClientConfig {
+public class TranslateClientConfig {
 
     private final TranslateClientConfigurationProperties properties;
 
@@ -31,5 +32,10 @@ class TranslateClientConfig {
     @Bean
     TranslationService translationService() {
         return new TranslateClient(properties, translateWebClient());
+    }
+
+    @Bean
+    TranslationAlternativeService translationAlternativeService(){
+        return new TranslateClient(properties,translateWebClient());
     }
 }
