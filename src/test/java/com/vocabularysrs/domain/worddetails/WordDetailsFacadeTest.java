@@ -5,6 +5,8 @@ import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
 import com.vocabularysrs.domain.words.WordEntryReadPort;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -14,7 +16,8 @@ class WordDetailsFacadeTest {
     private final InMemoryWordDetailsRepositoryTestImpl detailsRepo = new InMemoryWordDetailsRepositoryTestImpl();
     private final CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
     private final WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl(1L, 1L, "mother");
-    private final WordDetailsFacade facadeTest = new WordDetailsConfiguration().detailsFacade(detailsRepo, wordEntryReadPort, fetcherTest, currentUserProvider);
+    TranslationAlternativeServiceTestImpl translationAlternativeService = new TranslationAlternativeServiceTestImpl();
+    private final WordDetailsFacade facadeTest = new WordDetailsConfiguration().detailsFacade(detailsRepo, wordEntryReadPort, fetcherTest, currentUserProvider, translationAlternativeService);
 
 
     @Test
@@ -50,6 +53,30 @@ class WordDetailsFacadeTest {
         assertEquals("She is my mother.", result.example());
         assertEquals(1, fetcherTest.callsCount());
         assertTrue(detailsRepo.findByWordIdAndUserId(wordId, currentUserProvider.getCurrentUserId()).isPresent());
+    }
+    @Test
+    void should_load_and_save_alternative_translations() {
+        // given
+        Long wordId = 1L;
+
+        // when
+        WordHttpDto result = facadeTest.getOrLoad(wordId);
+
+        // then
+        assertEquals(List.of("мать", "мама"), result.alternatives());
+
+        WordDetailsEntry saved =
+                detailsRepo.findByWordIdAndUserId(
+                        wordId,
+                        currentUserProvider.getCurrentUserId()
+                ).orElseThrow();
+
+        List<String> storedAlternatives = saved.getAlternatives()
+                .stream()
+                .map(WordDetailsAlternativeTranslation::getAlternativeTranslate)
+                .toList();
+
+        assertEquals(List.of("мать", "мама"), storedAlternatives);
     }
 
 }
