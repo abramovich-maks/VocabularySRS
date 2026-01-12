@@ -2,13 +2,14 @@ package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record WordDetailsControllerDto(
-        String word,
         String phonetic,
         String audioUrl,
-        String partOfSpeech,
         String definition,
-        String example
+        String example,
+        List<String> alternativeTranslate
 ) {
 }

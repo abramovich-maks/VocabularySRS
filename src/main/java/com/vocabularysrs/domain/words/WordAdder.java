@@ -63,6 +63,11 @@ class WordAdder {
         String word = WordNormalizer.normalizeWord(request.word());
         wordRetriever.assertNotExistsByWord(word);
         TranslationResult translation = wordTranslator.translate(word);
+
+        if (!translation.isSuccessful()) {
+            throw InvalidWordException.translationFailed(word);
+        }
+
         WordEntry newWord = WordEntry.builder()
                 .word(word)
                 .translate(translation.translatedText())
