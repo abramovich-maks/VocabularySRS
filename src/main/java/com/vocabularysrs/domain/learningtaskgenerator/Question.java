@@ -75,6 +75,7 @@ class Question {
         return new AnswerResult(
                 id,
                 wordEntryId,
+                prompt,
                 userAnswer,
                 answer,
                 isCorrect()
