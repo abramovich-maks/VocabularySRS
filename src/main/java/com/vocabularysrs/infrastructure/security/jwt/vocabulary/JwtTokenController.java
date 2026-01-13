@@ -31,7 +31,8 @@ class JwtTokenController {
 
     @PostMapping("/token")
     public ResponseEntity<JwtResponseDto> login(@RequestBody @Valid TokenRequestDto dto, HttpServletResponse response) {
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.email(), dto.password()));
+        String email = dto.email().toLowerCase();
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, dto.password()));
         SecurityUser user = (SecurityUser) auth.getPrincipal();
         String accessToken = tokenGenerator.generateAccessToken(user);
         String refreshToken = tokenGenerator.generateRefreshToken(user);
