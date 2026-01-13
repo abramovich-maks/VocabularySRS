@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 class TokenControllerErrorHandler {
 
     private static final String BAD_CREDENTIALS = "Bad credentials";
+    private static final String EMAIL_ALREADY_EXISTS = "Email is already registered";
 
     @ResponseBody
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -27,8 +28,7 @@ class TokenControllerErrorHandler {
     @ExceptionHandler(UserAlreadyExistException.class)
     @ResponseBody
     public LoginErrorResponse mailDuplicate(UserAlreadyExistException duplicateMailException) {
-        final String message = String.format("user with email: [%s] already exists", duplicateMailException.userEmail);
-        log.error(message);
-        return new LoginErrorResponse(message, HttpStatus.CONFLICT);
+        log.warn("User registration failed: email already exists [{}]", duplicateMailException.userEmail);
+        return new LoginErrorResponse(EMAIL_ALREADY_EXISTS, HttpStatus.CONFLICT);
     }
 }
