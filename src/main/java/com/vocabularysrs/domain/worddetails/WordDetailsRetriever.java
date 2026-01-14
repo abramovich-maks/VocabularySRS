@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.worddetails;
 
+import com.vocabularysrs.domain.loginandregister.UserLanguage;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.translation.TranslationAlternativeService;
 import com.vocabularysrs.domain.translation.TranslationAlternatives;
@@ -35,9 +36,10 @@ class WordDetailsRetriever {
                 .filter(w -> w.userId().equals(userId))
                 .orElseThrow(() -> new IllegalStateException("Word not found: " + wordId));
 
+        UserLanguage userLanguage = currentUserProvider.getCurrentUserLanguage();
 
         WordDetailsSnapshot dto = fetchable.fetch(word.word());
-        TranslationAlternatives alternatives = translationAlternativeService.getAlternatives(word.word(), "ru");
+        TranslationAlternatives alternatives = translationAlternativeService.getAlternatives(word.word(), userLanguage.getLanguage());
         WordDetailsEntry wordDetailsEntry = WordDetailsEntry.builder()
                 .wordId(wordId)
                 .userId(userId)
