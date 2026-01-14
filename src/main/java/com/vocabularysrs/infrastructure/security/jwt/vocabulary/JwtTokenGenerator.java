@@ -28,6 +28,8 @@ public class JwtTokenGenerator {
         Algorithm algorithm = Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate());
         return JWT.create()
                 .withSubject(user.getUsername())
+                .withClaim("userId", user.getUserId())
+                .withClaim("userLanguage", user.getUserLanguage().name())
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt)
                 .withIssuer(properties.issuer())
@@ -41,6 +43,8 @@ public class JwtTokenGenerator {
         Algorithm algorithm = Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate());
         return JWT.create()
                 .withSubject(user.getUsername())
+                .withClaim("userId", user.getUserId())
+                .withClaim("userLanguage", user.getUserLanguage().name())
                 .withIssuedAt(issuedAt)
                 .withExpiresAt(expiresAt)
                 .withIssuer(properties.issuer())
