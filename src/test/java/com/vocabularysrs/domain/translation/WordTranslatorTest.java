@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.translation;
 
+import com.vocabularysrs.domain.security.CurrentUserProvider;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,7 +8,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class WordTranslatorTest {
 
     TranslationServiceTestImpl translationService = new TranslationServiceTestImpl();
-    private final WordTranslator wordTranslator = new TranslationFacadeConfigurations().translateFacade(translationService);
+    CurrentUserProvider userProvider = new TestCurrentUserProvider();
+    private final WordTranslator wordTranslator = new TranslationFacadeConfigurations().translateFacade(translationService, userProvider);
 
 
     @Test
