@@ -1,14 +1,12 @@
-package com.vocabularysrs.domain.worddetails;
+package com.vocabularysrs.domain.translation;
 
 import com.vocabularysrs.domain.loginandregister.UserLanguage;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 
 class TestCurrentUserProvider implements CurrentUserProvider {
-    private Long userId = 1L;
-
     @Override
     public Long getCurrentUserId() {
-        return userId;
+        return 1L;
     }
 
     @Override
