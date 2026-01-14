@@ -17,7 +17,7 @@ class WordEntryConfiguration {
     @Bean
     WordsFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock, WordDetailsDeleter wordDetailsDeleter, TranslationService translationService) {
         WordRetriever wordRetriever = new WordRetriever(wordRepository, currentUserProvider);
-        WordTranslator wordTranslator = new WordTranslator(translationService);
+        WordTranslator wordTranslator = new WordTranslator(translationService,currentUserProvider);
         WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, wordTranslator, clock);
         WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever, wordDetailsDeleter);
         WordUpdater wordUpdater = new WordUpdater(wordRetriever);

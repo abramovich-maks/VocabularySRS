@@ -2,6 +2,8 @@ package com.vocabularysrs.domain.loginandregister;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,10 +46,14 @@ class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    static User createNew(final String username, final String surname, final String email, final String passwordHash) {
+    @Enumerated(EnumType.STRING)
+    private UserLanguage userLanguage;
+
+    static User createNew(final String username, final String surname, final UserLanguage language, final String email, final String passwordHash) {
         return User.builder()
                 .username(username)
                 .surname(surname)
+                .userLanguage(language)
                 .email(email)
                 .passwordHash(passwordHash)
                 .build();
