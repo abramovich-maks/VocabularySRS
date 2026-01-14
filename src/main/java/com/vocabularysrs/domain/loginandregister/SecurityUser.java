@@ -8,14 +8,25 @@ import java.util.Collections;
 
 public class SecurityUser implements UserDetails {
 
-    private final User user;
+    private final Long userId;
+    private final UserLanguage userLanguage;
+    private final String username;
+    private final String passwordHash;
 
-    public SecurityUser(User user) {
-        this.user = user;
+
+    public SecurityUser(Long userId, UserLanguage userLanguage, String username, final String passwordHash) {
+        this.userId = userId;
+        this.userLanguage = userLanguage;
+        this.username = username;
+        this.passwordHash = passwordHash;
     }
 
     public Long getUserId() {
-        return user.getId();
+        return userId;
+    }
+
+    public UserLanguage getUserLanguage() {
+        return userLanguage;
     }
 
     @Override
@@ -25,12 +36,12 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPasswordHash();
+        return passwordHash;
     }
 
     @Override
     public String getUsername() {
-        return user.getEmail();
+        return username;
     }
 
     @Override

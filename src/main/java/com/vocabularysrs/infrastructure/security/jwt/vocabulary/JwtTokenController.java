@@ -3,7 +3,7 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
-import com.vocabularysrs.domain.loginandregister.UserDetailsService;
+import com.vocabularysrs.domain.loginandregister.UserLanguage;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,7 +26,6 @@ class JwtTokenController {
     private final JwtTokenGenerator tokenGenerator;
     private final JwtConfigurationProperties properties;
     private final AuthenticationManager authenticationManager;
-    private final UserDetailsService userDetailsService;
     private final JwtTokenValidator jwtTokenValidator;
 
     @PostMapping("/token")
@@ -52,7 +51,15 @@ class JwtTokenController {
         try {
             DecodedJWT decodedJWT = jwtTokenValidator.verifyRefreshToken(refreshToken);
             String username = decodedJWT.getSubject();
-            SecurityUser user = (SecurityUser) userDetailsService.loadUserByUsername(username);
+
+            Long userId = decodedJWT.getClaim("userId").asLong();
+            String language = decodedJWT.getClaim("userLanguage").asString();
+            SecurityUser user = new SecurityUser(
+                    userId,
+                    UserLanguage.valueOf(language),
+                    username,
+                    "");
+
             String newAccessToken = tokenGenerator.generateAccessToken(user);
             return ResponseEntity.ok(
                     JwtResponseDto.builder()
