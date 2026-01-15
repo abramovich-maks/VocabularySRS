@@ -1,7 +1,8 @@
 package com.vocabularysrs.infrastructure.dictionary.http;
 
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
+import com.vocabularysrs.domain.worddetails.WordNotFoundInDictionaryException;
 import com.vocabularysrs.domain.words.WordDetailsSnapshot;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DictionaryApiResponse;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import static com.vocabularysrs.infrastructure.dictionary.http.DictionaryApiResp
 public class WordDetailsRestTemplate implements WordDetailsFetchable {
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
     private final String uri;
 
 
@@ -26,16 +28,26 @@ public class WordDetailsRestTemplate implements WordDetailsFetchable {
     @Override
     public WordDetailsSnapshot fetch(String word) {
         String url = getUrlForWord(word);
+        try {
+            String responseBody = restTemplate.getForObject(url, String.class);
 
-        DictionaryApiResponse[] response =
-                restTemplate.getForObject(url, DictionaryApiResponse[].class);
+            if (responseBody == null || !responseBody.trim().startsWith("[")) {
+                throw new WordNotFoundInDictionaryException(word);
+            }
 
-        if (response == null || response.length == 0) {
-            throw new IllegalStateException("Empty dictionary response for word: " + word);
+            DictionaryApiResponse[] response =
+                    objectMapper.readValue(responseBody, DictionaryApiResponse[].class);
+
+            if (response == null || response.length == 0) {
+                throw new WordNotFoundInDictionaryException(word);
+            }
+
+            DictionaryApiResponse entry = response[0];
+
+            return mapToWordHttpDto(entry);
+        } catch (Exception ex) {
+            log.warn("Dictionary lookup failed for word '{}'", word, ex);
+            throw new WordNotFoundInDictionaryException(word);
         }
-
-        DictionaryApiResponse entry = response[0];
-
-        return mapToWordHttpDto(entry);
     }
 }

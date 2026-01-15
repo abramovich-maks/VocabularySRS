@@ -12,8 +12,7 @@ class LoginAndRegisterConfiguration {
     LoginAndRegisterFacade loginAndRegisterFacade(UserRepository userRepository, PasswordEncoder encodedPassword) {
         UserRetriever userRetriever = new UserRetriever(userRepository);
         UserAdder userAdder = new UserAdder(userRepository, userRetriever, encodedPassword);
-        UserLoginChecker userLoginChecker = new UserLoginChecker(userRetriever, encodedPassword);
-        return new LoginAndRegisterFacade(userAdder, userLoginChecker, userRetriever);
+        return new LoginAndRegisterFacade(userAdder, userRetriever);
     }
 
     @Bean

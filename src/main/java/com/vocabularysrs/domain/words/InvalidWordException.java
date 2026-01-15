@@ -1,6 +1,6 @@
 package com.vocabularysrs.domain.words;
 
-class InvalidWordException extends RuntimeException {
+public class InvalidWordException extends RuntimeException {
 
     InvalidWordException(String message) {
         super(message);

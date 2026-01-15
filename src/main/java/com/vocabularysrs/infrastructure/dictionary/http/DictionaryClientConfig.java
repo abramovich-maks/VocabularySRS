@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.http;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.http.client.ClientHttpRequestFactorySettings;
@@ -36,7 +37,7 @@ public class DictionaryClientConfig {
 
 
     @Bean
-    public WordDetailsFetchable httpWordDetails(RestTemplate restTemplate) {
-        return new WordDetailsRestTemplate(restTemplate, properties.uri());
+    public WordDetailsFetchable httpWordDetails(RestTemplate restTemplate, ObjectMapper objectMapper) {
+        return new WordDetailsRestTemplate(restTemplate, objectMapper, properties.uri());
     }
 }

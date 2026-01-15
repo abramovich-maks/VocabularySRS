@@ -12,6 +12,16 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: libretranslate
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5001:5000"
+    environment:
+      LT_LOAD_ONLY: en,ru,pl,de
+      LT_DISABLE_WEB_UI: "true"
+
   vocabulary:
     container_name: vocabulary_prod
 #    build: .

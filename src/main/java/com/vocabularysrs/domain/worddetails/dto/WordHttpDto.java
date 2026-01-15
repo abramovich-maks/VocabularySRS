@@ -2,6 +2,8 @@ package com.vocabularysrs.domain.worddetails.dto;
 
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record WordHttpDto(
         String word,
@@ -9,7 +11,8 @@ public record WordHttpDto(
         String audioUrl,
         String partOfSpeech,
         String definition,
-        String example
+        String example,
+        List<String> alternatives
 ) {
 }
 

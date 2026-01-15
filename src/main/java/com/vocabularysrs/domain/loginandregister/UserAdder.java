@@ -17,10 +17,9 @@ class UserAdder {
     private final PasswordEncoder bCryptpasswordEncoder;
 
     UserRegisterResponseDto addUser(final UserRegisterRequestDto requestDto) {
-        String email = requestDto.email().toLowerCase();
-        userRetriever.existsByEmail(email);
+        userRetriever.existsByEmail(requestDto.email());
         String encodedPassword = bCryptpasswordEncoder.encode(requestDto.password());
-        User createdUser = User.createNew(requestDto.username(), requestDto.surname(), email, encodedPassword);
+        User createdUser = User.createNew(requestDto.username(), requestDto.surname(), requestDto.language(), requestDto.email(), encodedPassword);
         User savedUser = userRepository.save(createdUser);
         log.info("Saved user with id: {}, email: {}", savedUser.getId(), savedUser.getEmail());
         return mapFromUserToUserRegisterResponseDto(savedUser);

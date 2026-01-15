@@ -1,7 +1,5 @@
 package com.vocabularysrs.domain.loginandregister;
 
-import com.vocabularysrs.domain.loginandregister.dto.UserLoginRequestDto;
-import com.vocabularysrs.domain.loginandregister.dto.UserLoginResponseDto;
 import com.vocabularysrs.domain.loginandregister.dto.UserRegisterRequestDto;
 import com.vocabularysrs.domain.loginandregister.dto.UserRegisterResponseDto;
 import org.junit.jupiter.api.Test;
@@ -20,11 +18,14 @@ class LoginAndRegisterFacadeTest {
     @Test
     public void should_return_success_when_user_register_with_not_exist_email() {
         // given
+        String email = "email@mail.com";
+        String password = "12345678";
         UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
                 .username("Maksim")
                 .surname("Abramovich")
-                .email("email@mail.com")
-                .password("12345678")
+                .language(UserLanguage.RU)
+                .email(email)
+                .password(password)
                 .build();
         // when
         UserRegisterResponseDto registerResult = loginAndRegisterFacade.registerUser(newUserRequest);
@@ -40,11 +41,14 @@ class LoginAndRegisterFacadeTest {
     @Test
     public void should_throw_an_exception_when_user_register_with_exist_email() {
         // given
+        String email = "email@mail.com";
+        String password = "12345678";
         UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
                 .username("Maksim")
                 .surname("Abramovich")
-                .email("email@mail.com")
-                .password("12345678")
+                .language(UserLanguage.RU)
+                .email(email)
+                .password(password)
                 .build();
         loginAndRegisterFacade.registerUser(newUserRequest);
         // when
@@ -56,11 +60,14 @@ class LoginAndRegisterFacadeTest {
     @Test
     public void should_encode_password_when_user_register() {
         // given
+        String email = "email@mail.com";
+        String password = "12345678";
         UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
                 .username("Maksim")
                 .surname("Abramovich")
-                .email("email@mail.com")
-                .password("12345678")
+                .language(UserLanguage.RU)
+                .email(email)
+                .password(password)
                 .build();
         // when
         loginAndRegisterFacade.registerUser(newUserRequest);
@@ -69,45 +76,5 @@ class LoginAndRegisterFacadeTest {
         assertThat(createdUser.password()).isNotNull();
         assertThat(createdUser.password()).isNotEqualTo(newUserRequest.password());
         assertThat(encodedPassword.matches(newUserRequest.password(), createdUser.password())).isTrue();
-    }
-
-    @Test
-    public void should_return_success_when_user_login() {
-        // given
-        String email = "email@mail.com";
-        String password = "12345678";
-        UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
-                .username("Maksim")
-                .surname("Abramovich")
-                .email(email)
-                .password(password)
-                .build();
-        loginAndRegisterFacade.registerUser(newUserRequest);
-
-        UserLoginRequestDto requestDto = new UserLoginRequestDto(email, password);
-        // when
-        UserLoginResponseDto login = loginAndRegisterFacade.login(requestDto);
-        // then
-        assertThat(login.message()).isEqualTo("Login successful");
-    }
-
-    @Test
-    public void should_return_failed_when_user_give_false_password() {
-        // given
-        String email = "email@mail.com";
-        String password = "12345678";
-        UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
-                .username("Maksim")
-                .surname("Abramovich")
-                .email(email)
-                .password(password)
-                .build();
-        loginAndRegisterFacade.registerUser(newUserRequest);
-
-        UserLoginRequestDto requestDto = new UserLoginRequestDto(email, "password");
-        // when
-        UserLoginResponseDto login = loginAndRegisterFacade.login(requestDto);
-        // then
-        assertThat(login.message()).isEqualTo("Login failed");
     }
 }

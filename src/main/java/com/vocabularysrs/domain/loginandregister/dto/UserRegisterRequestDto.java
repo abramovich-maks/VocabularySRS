@@ -1,13 +1,14 @@
 package com.vocabularysrs.domain.loginandregister.dto;
 
+import com.vocabularysrs.domain.loginandregister.UserLanguage;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.PASSWORD_MAX_SIZE;
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.PASSWORD_MIN_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.PASSWORD_MAX_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.PASSWORD_MIN_SIZE;
 
 @Builder
 public record UserRegisterRequestDto(
@@ -18,6 +19,9 @@ public record UserRegisterRequestDto(
         @NotNull(message = "{surname.not.null}")
         @NotEmpty(message = "{surname.not.empty}")
         String surname,
+
+        @NotNull(message = "{language.not.null}")
+        UserLanguage language,
 
         @NotNull(message = "{email.not.null}")
         @NotEmpty(message = "{email.not.empty}")
