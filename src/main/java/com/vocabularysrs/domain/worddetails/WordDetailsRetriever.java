@@ -45,7 +45,6 @@ class WordDetailsRetriever {
                 .userId(userId)
                 .phonetic(dto.phonetic())
                 .audioUrl(dto.audioUrl())
-                .partOfSpeech(dto.partOfSpeech())
                 .definition(dto.definition())
                 .example(dto.example())
                 .build();
