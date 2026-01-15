@@ -16,10 +16,10 @@ class DictionaryApiResponseMapper {
         DefinitionDto definitionDto = resolveDefinition(entry.meanings());
 
         return new WordDetailsSnapshot(
-                phoneticDto.text(),
-                phoneticDto.audio(),
-                definitionDto.definition(),
-                definitionDto.example()
+                phoneticDto != null ? phoneticDto.text() : null,
+                phoneticDto != null ? phoneticDto.audio() : null,
+                definitionDto != null ? definitionDto.definition() : null,
+                definitionDto != null ? definitionDto.example() : null
         );
     }
 
