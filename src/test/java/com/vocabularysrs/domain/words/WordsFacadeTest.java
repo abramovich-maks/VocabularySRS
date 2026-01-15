@@ -4,8 +4,6 @@ import com.vocabularysrs.domain.AdjustableClock;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
-import com.vocabularysrs.domain.translation.TranslationResult;
-import com.vocabularysrs.domain.translation.TranslationService;
 import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
@@ -42,17 +40,13 @@ class WordsFacadeTest {
 
     private final RepetitionIntervalCalculator calculator = new RepetitionIntervalCalculator();
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
-    WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
-    CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
+    private final WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
+    private final CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
     private final WordDetailsDeleter wordDetailsDeleter = new WordDetailsDeleteTestImpl();
-    TranslationService translationService = new TranslationService() {
-        @Override
-        public TranslationResult translate(final String word, final String targetLang) {
-            return null;
-        }
-    };
-    WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService);
-    DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
+    private final InMemoryTranslationServiceTestImpl translationService = new InMemoryTranslationServiceTestImpl();
+    private final InMemoryFetcherTestImpl fetcherTest = new InMemoryFetcherTestImpl();
+    private final WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService, fetcherTest);
+    private final DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
 
     @Test
     public void should_return_success_when_user_gave_new_word_and_translate() {
