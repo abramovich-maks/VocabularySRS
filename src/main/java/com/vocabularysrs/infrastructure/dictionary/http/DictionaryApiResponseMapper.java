@@ -6,38 +6,55 @@ import com.vocabularysrs.infrastructure.dictionary.http.dto.DictionaryApiRespons
 import com.vocabularysrs.infrastructure.dictionary.http.dto.MeaningDto;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.PhoneticDto;
 
+import java.util.List;
+
 class DictionaryApiResponseMapper {
 
     public static WordDetailsSnapshot mapToWordHttpDto(DictionaryApiResponse entry) {
 
-        MeaningDto meaning = entry.meanings().stream()
-                .filter(m -> "noun".equals(m.partOfSpeech()))
-                .findFirst()
-                .orElse(entry.meanings().get(0));
-
-        DefinitionDto definition = meaning.definitions().get(0);
-
-        String phonetic = entry.phonetic();
-        if (phonetic == null || phonetic.isBlank()) {
-            phonetic = entry.phonetics().stream()
-                    .map(PhoneticDto::text)
-                    .filter(t -> t != null && !t.isBlank())
-                    .findFirst()
-                    .orElse(null);
-        }
-
-        String audioUrl = entry.phonetics().stream()
-                .map(PhoneticDto::audio)
-                .filter(a -> a != null && !a.isBlank())
-                .findFirst()
-                .orElse(null);
+        PhoneticDto phoneticDto = resolvePhonetic(entry.phonetics());
+        DefinitionDto definitionDto = resolveDefinition(entry.meanings());
 
         return new WordDetailsSnapshot(
-                phonetic,
-                audioUrl,
-                meaning.partOfSpeech(),
-                definition.definition(),
-                definition.example()
+                phoneticDto.text(),
+                phoneticDto.audio(),
+                definitionDto.definition(),
+                definitionDto.example()
         );
+    }
+
+    private static PhoneticDto resolvePhonetic(List<PhoneticDto> phonetics) {
+        if (phonetics == null || phonetics.isEmpty()) {
+            return null;
+        }
+
+        return phonetics.stream()
+                .filter(word -> isNotBlank(word.audio()))
+                .filter(word -> word.audio().contains("-us"))
+                .findFirst()
+                .or(() -> phonetics.stream()
+                        .filter(word -> isNotBlank(word.audio()))
+                        .findFirst())
+                .or(() -> phonetics.stream()
+                        .filter(word -> isNotBlank(word.text()))
+                        .findFirst())
+                .orElse(null);
+    }
+
+    private static DefinitionDto resolveDefinition(List<MeaningDto> meanings) {
+        if (meanings == null || meanings.isEmpty()) {
+            return null;
+        }
+
+        MeaningDto meaning = meanings.get(0);
+        if (meaning.definitions() == null || meaning.definitions().isEmpty()) {
+            return null;
+        }
+
+        return meaning.definitions().get(0);
+    }
+
+    private static boolean isNotBlank(String value) {
+        return value != null && !value.isBlank();
     }
 }
