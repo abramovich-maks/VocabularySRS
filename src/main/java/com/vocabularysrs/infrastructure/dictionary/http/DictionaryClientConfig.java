@@ -19,22 +19,14 @@ public class DictionaryClientConfig {
     private final DictionaryRestTemplateConfigurationProperties properties;
 
     @Bean
-    public RestTemplateResponseErrorHandler restTemplateResponseErrorHandler() {
-        return new RestTemplateResponseErrorHandler();
-    }
-
-
-    @Bean
-    public RestTemplate restTemplate(RestTemplateResponseErrorHandler restTemplateResponseErrorHandler) {
+    public RestTemplate restTemplate() {
         ClientHttpRequestFactorySettings settings = ClientHttpRequestFactorySettings.defaults()
                 .withConnectTimeout(Duration.ofMillis(properties.connectionTimeout()))
                 .withReadTimeout(Duration.ofMillis(properties.readTimeout()));
         return new RestTemplateBuilder()
-                .errorHandler(restTemplateResponseErrorHandler)
                 .requestFactorySettings(settings)
                 .build();
     }
-
 
     @Bean
     public WordDetailsFetchable httpWordDetails(RestTemplate restTemplate, ObjectMapper objectMapper) {

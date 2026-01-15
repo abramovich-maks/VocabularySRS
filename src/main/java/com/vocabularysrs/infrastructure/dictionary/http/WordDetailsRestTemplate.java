@@ -7,6 +7,7 @@ import com.vocabularysrs.domain.words.WordDetailsSnapshot;
 import com.vocabularysrs.infrastructure.dictionary.http.dto.DictionaryApiResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static com.vocabularysrs.infrastructure.dictionary.http.DictionaryApiResponseMapper.mapToWordHttpDto;
@@ -31,10 +32,6 @@ public class WordDetailsRestTemplate implements WordDetailsFetchable {
         try {
             String responseBody = restTemplate.getForObject(url, String.class);
 
-            if (responseBody == null || !responseBody.trim().startsWith("[")) {
-                throw new WordNotFoundInDictionaryException(word);
-            }
-
             DictionaryApiResponse[] response =
                     objectMapper.readValue(responseBody, DictionaryApiResponse[].class);
 
@@ -45,9 +42,17 @@ public class WordDetailsRestTemplate implements WordDetailsFetchable {
             DictionaryApiResponse entry = response[0];
 
             return mapToWordHttpDto(entry);
-        } catch (Exception ex) {
-            log.warn("Dictionary lookup failed for word '{}'", word, ex);
+        } catch (HttpClientErrorException.NotFound ex) {
+            log.warn("Word '{}' not found in dictionary", word);
             throw new WordNotFoundInDictionaryException(word);
+
+        } catch (HttpClientErrorException ex) {
+            log.error("Dictionary client error for word '{}'", word, ex);
+            throw new RuntimeException("Dictionary client error");
+
+        } catch (Exception ex) {
+            log.error("Unexpected error while fetching word '{}'", word, ex);
+            throw new RuntimeException("Dictionary error");
         }
     }
 }
