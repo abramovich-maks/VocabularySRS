@@ -3,10 +3,10 @@ package com.vocabularysrs.domain.words.dto;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.TRANSLATE_MAX_SIZE;
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.TRANSLATE_MIN_SIZE;
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.WORD_MAX_SIZE;
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.WORD_MIN_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.TRANSLATE_MAX_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.TRANSLATE_MIN_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.WORD_MAX_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.WORD_MIN_SIZE;
 
 @Builder
 public record WordAddDtoRequest(

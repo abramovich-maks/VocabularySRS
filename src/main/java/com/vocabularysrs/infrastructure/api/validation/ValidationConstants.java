@@ -1,4 +1,4 @@
-package com.vocabularysrs.infrastructure.apivalidation;
+package com.vocabularysrs.infrastructure.api.validation;
 
 public interface ValidationConstants {
     int PASSWORD_MIN_SIZE = 8;
