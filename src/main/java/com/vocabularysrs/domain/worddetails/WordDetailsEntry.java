@@ -40,8 +40,6 @@ class WordDetailsEntry {
     private String phonetic;
     private String audioUrl;
 
-    private String partOfSpeech;
-
     @Column(length = 1000)
     private String definition;
 
