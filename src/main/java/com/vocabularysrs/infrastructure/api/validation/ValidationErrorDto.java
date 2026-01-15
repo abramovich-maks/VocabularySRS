@@ -1,10 +1,10 @@
-package com.vocabularysrs.infrastructure.apivalidation;
+package com.vocabularysrs.infrastructure.api.validation;
 
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
-public record ApiValidationErrorDto(
+public record ValidationErrorDto(
         List<String> message,
         HttpStatus status
 ) {

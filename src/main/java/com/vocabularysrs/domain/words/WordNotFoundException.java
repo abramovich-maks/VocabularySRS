@@ -1,6 +1,6 @@
 package com.vocabularysrs.domain.words;
 
-class WordNotFoundException extends RuntimeException {
+public class WordNotFoundException extends RuntimeException {
 
     public final Long wordId;
 

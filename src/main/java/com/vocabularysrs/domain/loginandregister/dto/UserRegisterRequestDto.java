@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.PASSWORD_MAX_SIZE;
-import static com.vocabularysrs.infrastructure.apivalidation.ValidationConstants.PASSWORD_MIN_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.PASSWORD_MAX_SIZE;
+import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.PASSWORD_MIN_SIZE;
 
 @Builder
 public record UserRegisterRequestDto(
