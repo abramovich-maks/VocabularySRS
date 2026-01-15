@@ -7,7 +7,4 @@ public record TranslationResult(
         String word,
         String translatedText
 ) {
-    public boolean isSuccessful() {
-        return translatedText != null && !translatedText.isBlank();
-    }
 }

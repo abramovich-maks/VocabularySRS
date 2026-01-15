@@ -3,6 +3,7 @@ package com.vocabularysrs.domain.words;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.translation.TranslationResult;
 import com.vocabularysrs.domain.translation.WordTranslator;
+import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
@@ -22,6 +23,7 @@ class WordAdder {
     private final WordRetriever wordRetriever;
     private final CurrentUserProvider currentUserProvider;
     private final WordTranslator wordTranslator;
+    private final WordDetailsFetchable wordFetchable;
 
     private final Clock clock;
 
@@ -64,9 +66,7 @@ class WordAdder {
         wordRetriever.assertNotExistsByWord(word);
         TranslationResult translation = wordTranslator.translate(word);
 
-        if (!translation.isSuccessful()) {
-            throw InvalidWordException.translationFailed(word);
-        }
+        wordFetchable.fetch(word);
 
         WordEntry newWord = WordEntry.builder()
                 .word(word)
