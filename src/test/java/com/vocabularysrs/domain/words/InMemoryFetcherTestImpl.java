@@ -1,12 +1,10 @@
-package com.vocabularysrs.domain.worddetails;
+package com.vocabularysrs.domain.words;
 
-
-import com.vocabularysrs.domain.words.WordDetailsSnapshot;
+import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
 
 class InMemoryFetcherTestImpl implements WordDetailsFetchable {
 
     WordDetailsSnapshot snapshot;
-    private int calls = 0;
 
     InMemoryFetcherTestImpl() {
         this.snapshot = new WordDetailsSnapshot(
@@ -19,11 +17,6 @@ class InMemoryFetcherTestImpl implements WordDetailsFetchable {
 
     @Override
     public WordDetailsSnapshot fetch(String word) {
-        calls++;
         return snapshot;
-    }
-
-    int callsCount() {
-        return calls;
     }
 }
