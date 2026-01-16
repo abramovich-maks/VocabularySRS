@@ -26,7 +26,7 @@ class WordDetailsAlternativeTranslation {
     @SequenceGenerator(
             name = "alternative_translate_id_seq",
             sequenceName = "alternative_translate_id_seq",
-            allocationSize = 1
+            allocationSize = 10
     )
     private Long id;
 

@@ -27,7 +27,7 @@ class WordDetailsRetriever {
         WordDetailsEntry entry = repository.findByWordIdAndUserId(wordId, userId)
                 .orElseGet(() -> loadAndSave(wordId, userId));
         List<String> alternativeTranslations = entry.getAlternatives().stream().map(WordDetailsAlternativeTranslation::getAlternativeTranslate).toList();
-        return WordHttpDto.builder().phonetic(entry.getPhonetic()).audioUrl(entry.getAudioUrl()).example(entry.getExample()).alternatives(alternativeTranslations).definition(entry.getDefinition()).build();
+        return WordHttpDto.builder().phonetic(entry.getPhonetic()).audioUrl(entry.getAudioUrl()).example(entry.getExample()).alternatives(alternativeTranslations).build();
     }
 
 
@@ -45,7 +45,6 @@ class WordDetailsRetriever {
                 .userId(userId)
                 .phonetic(dto.phonetic())
                 .audioUrl(dto.audioUrl())
-                .definition(dto.definition())
                 .example(dto.example())
                 .build();
 

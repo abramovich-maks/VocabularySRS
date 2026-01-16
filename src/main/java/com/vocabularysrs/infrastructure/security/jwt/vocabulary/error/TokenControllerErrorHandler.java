@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Log4j2
 class TokenControllerErrorHandler {
 
-    private static final String BAD_CREDENTIALS = "Bad credentials";
+    private static final String BAD_CREDENTIALS = "Invalid email or password";
     private static final String EMAIL_ALREADY_EXISTS = "Email is already registered";
 
     @ResponseBody

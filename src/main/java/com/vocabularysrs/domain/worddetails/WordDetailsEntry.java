@@ -41,9 +41,6 @@ class WordDetailsEntry {
     private String audioUrl;
 
     @Column(length = 1000)
-    private String definition;
-
-    @Column(length = 1000)
     private String example;
 
     @Builder.Default
@@ -52,6 +49,7 @@ class WordDetailsEntry {
 
     void addAlternative(WordDetailsAlternativeTranslation alternative) {
         alternatives.add(alternative);
+        alternative.setWordDetailsEntry(this);
     }
 }
 

@@ -12,7 +12,6 @@ class InMemoryFetcherTestImpl implements WordDetailsFetchable {
         this.snapshot = new WordDetailsSnapshot(
                 "/ˈmʌðə/",
                 "audio.mp3",
-                "A female parent",
                 "She is my mother."
         );
     }

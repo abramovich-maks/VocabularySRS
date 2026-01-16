@@ -89,7 +89,7 @@ class DictionaryController {
     @GetMapping("/{wordEntryId}/details")
     public ResponseEntity<WordDetailsControllerDto> getDetailsWord(@PathVariable Long wordEntryId) {
         WordHttpDto details = wordDetailsFacade.getOrLoad(wordEntryId);
-        WordDetailsControllerDto build = WordDetailsControllerDto.builder().phonetic(details.phonetic()).audioUrl(details.audioUrl()).definition(details.definition()).example(details.example()).alternativeTranslate(details.alternatives()).build();
+        WordDetailsControllerDto build = WordDetailsControllerDto.builder().phonetic(details.phonetic()).audioUrl(details.audioUrl()).example(details.example()).alternativeTranslate(details.alternatives()).build();
         return ResponseEntity.ok(build);
     }
 }

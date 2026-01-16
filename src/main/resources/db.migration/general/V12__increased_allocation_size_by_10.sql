@@ -1,0 +1,1 @@
+ALTER SEQUENCE alternative_translate_id_seq INCREMENT BY 10;

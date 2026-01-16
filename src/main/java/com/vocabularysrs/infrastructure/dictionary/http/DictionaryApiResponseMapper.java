@@ -18,7 +18,6 @@ class DictionaryApiResponseMapper {
         return new WordDetailsSnapshot(
                 phoneticDto != null ? phoneticDto.text() : null,
                 phoneticDto != null ? phoneticDto.audio() : null,
-                definitionDto != null ? definitionDto.definition() : null,
                 definitionDto != null ? definitionDto.example() : null
         );
     }

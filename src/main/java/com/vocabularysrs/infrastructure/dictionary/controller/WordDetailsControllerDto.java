@@ -8,7 +8,6 @@ import java.util.List;
 public record WordDetailsControllerDto(
         String phonetic,
         String audioUrl,
-        String definition,
         String example,
         List<String> alternativeTranslate
 ) {

@@ -29,14 +29,12 @@ class WordDetailsFacadeTest {
                 .userId(currentUserProvider.getCurrentUserId())
                 .phonetic("phonetic")
                 .audioUrl("audio")
-                .definition("definition")
                 .example("example")
                 .build();
         detailsRepo.save(existing);
         // when
         WordHttpDto result = facadeTest.getOrLoad(wordId);
         // then
-        assertEquals("definition", result.definition());
         assertEquals("example", result.example());
         assertEquals(0, fetcherTest.callsCount());
     }
@@ -49,7 +47,6 @@ class WordDetailsFacadeTest {
         // when
         WordHttpDto result = facadeTest.getOrLoad(wordId);
         // then
-        assertEquals("A female parent", result.definition());
         assertEquals("She is my mother.", result.example());
         assertEquals(1, fetcherTest.callsCount());
         assertTrue(detailsRepo.findByWordIdAndUserId(wordId, currentUserProvider.getCurrentUserId()).isPresent());

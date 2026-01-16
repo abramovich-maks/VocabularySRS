@@ -10,7 +10,6 @@ public record WordHttpDto(
         String phonetic,
         String audioUrl,
         String partOfSpeech,
-        String definition,
         String example,
         List<String> alternatives
 ) {
