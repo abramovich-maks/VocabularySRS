@@ -71,6 +71,23 @@ Tests act as **executable specifications** of the SRS behavior.
 
 ---
 
+## 🌐 Automatic Translation (LibreTranslate)
+
+The application now supports **automatic word translation** using a self-hosted **LibreTranslate** service.
+
+When a user adds a new word, they only need to provide the original term.  
+The system automatically translates it based on the **user’s preferred language**, defined during registration.
+
+### Key Points
+
+- Translation is performed via **LibreTranslate API**
+- Translation service is isolated from the core application
+- Communication is secured using **Cloudflare Tunnel (Zero Trust)**
+- Users no longer need to manually enter translations
+- The translation provider is treated as an external, replaceable infrastructure component
+
+---
+
 ## 🧠 Adaptive Learning
 
 The application implements a fully **adaptive, user-driven Spaced Repetition System**.
@@ -114,7 +131,6 @@ The system is designed so that this integration is **replaceable** and **non-blo
 ## 🗺 Roadmap
 - User accounts and personalization
 - Learning statistics and analytics
-- Integration with Google Translate API
 
 ---
 
