@@ -11,8 +11,10 @@ Words are scheduled dynamically based on previous test results and individual re
 ## 🌍 Live version
 
 The application is available online:  
-👉 https://my-vocab.eu
+👉 https://my-vocab.eu  
+📘 REST API (Swagger): https://my-vocab.eu/api/swagger-ui/index.html
 
+The project demonstrates clean REST API design, authentication with JWT, and production-like deployment.
 Deployed on AWS using EC2 and ECR.
 
 ---
