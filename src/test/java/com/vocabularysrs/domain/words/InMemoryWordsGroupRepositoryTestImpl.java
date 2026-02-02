@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.words;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -29,5 +30,16 @@ class InMemoryWordsGroupRepositoryTestImpl implements WordsGroupRepository {
             }
         }
         return false;
+    }
+
+    @Override
+    public Optional<WordsGroup> findByIdAndUserId(final Long id, final Long userId) {
+        return Optional.ofNullable(database.get(id))
+                .filter(entry -> userId.equals(entry.getUserId()));
+    }
+
+    @Override
+    public void delete(final WordsGroup group) {
+        database.remove(group.getId());
     }
 }
