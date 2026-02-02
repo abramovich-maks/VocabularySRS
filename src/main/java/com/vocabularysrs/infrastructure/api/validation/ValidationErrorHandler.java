@@ -1,6 +1,7 @@
 package com.vocabularysrs.infrastructure.api.validation;
 
 import com.vocabularysrs.domain.words.InvalidWordException;
+import com.vocabularysrs.domain.words.InvalidWordsGroupException;
 import com.vocabularysrs.infrastructure.api.ApiErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -34,6 +35,16 @@ public class ValidationErrorHandler {
         log.warn(exception.getMessage());
         return new ApiErrorResponse(
                 "WORD_VALIDATION_ERROR",
+                exception.getMessage());
+    }
+
+    @ExceptionHandler(InvalidWordsGroupException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleInvalidWordsGroup(InvalidWordsGroupException exception) {
+        log.warn(exception.getMessage());
+        return new ApiErrorResponse(
+                "WORDS_GROUP_VALIDATION_ERROR",
                 exception.getMessage());
     }
 
