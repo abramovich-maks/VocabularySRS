@@ -67,4 +67,8 @@ class WordEntry {
         this.currentInterval = correct ? calculator.next(this.currentInterval) : calculator.back(this.currentInterval);
         this.nextReviewDate = today.plusDays(this.currentInterval.getDays());
     }
+
+    void removeFromGroup() {
+        this.group = null;
+    }
 }

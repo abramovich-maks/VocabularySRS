@@ -18,4 +18,11 @@ class WordsGroupRetriever {
             throw new WordsGroupAlreadyExistsException(groupName);
         }
     }
+
+    WordsGroup findEntityById(final Long id) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        return groupRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(
+                        () -> new WordsGroupNotFoundException(id));
+    }
 }

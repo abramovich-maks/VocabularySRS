@@ -27,4 +27,6 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
     void delete(WordEntry word);
 
     Optional<WordEntry> findById(Long wordId);
+
+    List<WordEntry> findAllByUserIdAndGroup_Id(Long userId, Long groupId);
 }
