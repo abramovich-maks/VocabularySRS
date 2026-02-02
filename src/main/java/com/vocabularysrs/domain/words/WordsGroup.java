@@ -8,9 +8,20 @@ import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import static com.vocabularysrs.infrastructure.api.validation.ValidationConstants.GROUP_NAME_SIZE;
 
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter(AccessLevel.PACKAGE)
+@Setter(AccessLevel.PACKAGE)
 @Entity
 class WordsGroup {
 

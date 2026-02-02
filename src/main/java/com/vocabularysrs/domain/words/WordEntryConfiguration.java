@@ -35,4 +35,11 @@ class WordEntryConfiguration {
         WordRetriever wordRetriever = new WordRetriever(wordEntryRepository, currentUserProvider);
         return new DictionaryUpdateAdapter(wordEntryRepository, wordRetriever, calculator, clock);
     }
+
+    @Bean
+    WordsGroupFacade wordsGroupFacade(WordsGroupRepository groupRepository, CurrentUserProvider currentUserProvider) {
+        WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository, currentUserProvider);
+        WordsGroupAdder groupAdder = new WordsGroupAdder(wordsGroupRetriever, groupRepository, currentUserProvider);
+        return new WordsGroupFacade(groupAdder);
+    }
 }
