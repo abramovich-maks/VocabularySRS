@@ -1,8 +1,5 @@
 package com.vocabularysrs.domain.words;
 
-import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
-import org.flywaydb.core.api.output.InfoResult;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

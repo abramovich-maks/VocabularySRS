@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
 import org.junit.jupiter.api.Test;
 
@@ -93,6 +94,20 @@ class WordsGroupFacadeTest {
         //then
         assertAll(
                 () -> assertThat(allGroupByUser.group()).hasSize(3)
+        );
+    }
+
+    @Test
+    public void should_return_exist_group_by_id() {
+        // given
+        CreateGroupDtoRequest group1 = new CreateGroupDtoRequest("Animals");
+        wordsGroupFacade.createWordsGroup(group1);
+        // when
+        WordsGroupDtoRequest group = wordsGroupFacade.findGroupByIdAndUser(0L);
+        // then
+        assertAll(
+                ()-> assertThat(group.groupId()).isEqualTo(0),
+                ()-> assertThat(group.groupName()).isEqualTo("Animals")
         );
     }
 }
