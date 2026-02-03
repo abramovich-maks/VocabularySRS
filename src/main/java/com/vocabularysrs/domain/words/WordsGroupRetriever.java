@@ -28,8 +28,7 @@ class WordsGroupRetriever {
     WordsGroup findEntityById(final Long id) {
         Long userId = currentUserProvider.getCurrentUserId();
         return groupRepository.findByIdAndUserId(id, userId)
-                .orElseThrow(
-                        () -> new WordsGroupNotFoundException(id));
+                .orElseThrow(() -> new WordsGroupNotFoundException(id));
     }
 
     AllWordsGroupDtoRequest findAllGroupsByUser() {
@@ -37,5 +36,12 @@ class WordsGroupRetriever {
         List<WordsGroup> allByUserId = groupRepository.findAllByUserId(userId);
         List<WordsGroupDtoRequest> list = mapFromWordsGroupToWordsGroupDtoRequest(allByUserId);
         return AllWordsGroupDtoRequest.builder().group(list).build();
+    }
+
+    WordsGroupDtoRequest findGroupById(final Long groupId) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        WordsGroup wordsGroup = groupRepository.findByIdAndUserId(groupId, userId)
+                .orElseThrow(() -> new WordsGroupNotFoundException(groupId));
+        return WordsGroupDtoRequest.builder().groupId(wordsGroup.getId()).groupName(wordsGroup.getGroupName()).build();
     }
 }
