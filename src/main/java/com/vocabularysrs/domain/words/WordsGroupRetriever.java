@@ -1,8 +1,14 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.security.CurrentUserProvider;
+import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+
+import java.util.List;
+
+import static com.vocabularysrs.domain.words.WordsGroupMapper.mapFromWordsGroupToWordsGroupDtoRequest;
 
 @Log4j2
 @AllArgsConstructor
@@ -24,5 +30,12 @@ class WordsGroupRetriever {
         return groupRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(
                         () -> new WordsGroupNotFoundException(id));
+    }
+
+    AllWordsGroupDtoRequest findAllGroupsByUser() {
+        Long userId = currentUserProvider.getCurrentUserId();
+        List<WordsGroup> allByUserId = groupRepository.findAllByUserId(userId);
+        List<WordsGroupDtoRequest> list = mapFromWordsGroupToWordsGroupDtoRequest(allByUserId);
+        return AllWordsGroupDtoRequest.builder().group(list).build();
     }
 }

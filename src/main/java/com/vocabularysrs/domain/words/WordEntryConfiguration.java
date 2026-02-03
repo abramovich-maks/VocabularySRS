@@ -41,6 +41,6 @@ class WordEntryConfiguration {
         WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository, currentUserProvider);
         WordsGroupAdder groupAdder = new WordsGroupAdder(wordsGroupRetriever, groupRepository, currentUserProvider);
         WordsGroupDeleter wordsGroupDeleter = new WordsGroupDeleter(groupRepository, wordsGroupRetriever, wordEntryRepository, currentUserProvider);
-        return new WordsGroupFacade(groupAdder, wordsGroupDeleter);
+        return new WordsGroupFacade(groupAdder, wordsGroupDeleter, wordsGroupRetriever);
     }
 }
