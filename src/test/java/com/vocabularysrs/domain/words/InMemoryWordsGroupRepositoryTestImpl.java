@@ -1,5 +1,9 @@
 package com.vocabularysrs.domain.words;
 
+import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
+import org.flywaydb.core.api.output.InfoResult;
+
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,5 +45,12 @@ class InMemoryWordsGroupRepositoryTestImpl implements WordsGroupRepository {
     @Override
     public void delete(final WordsGroup group) {
         database.remove(group.getId());
+    }
+
+    @Override
+    public List<WordsGroup> findAllByUserId(Long userId) {
+        return database.values().stream()
+                .filter(g -> g.getUserId().equals(userId))
+                .toList();
     }
 }

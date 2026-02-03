@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.security.CurrentUserProvider;
+import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
@@ -76,5 +77,22 @@ class WordsGroupFacadeTest {
         // then
         assertThat(deleted.message()).isEqualTo("Deleted group by id: 0");
         assertThrows(WordsGroupNotFoundException.class, () -> wordsGroupFacade.deleteGroup(0L));
+    }
+
+    @Test
+    public void should_all_groups_by_current_user() {
+        //given
+        CreateGroupDtoRequest group1 = new CreateGroupDtoRequest("Animals");
+        CreateGroupDtoRequest group2 = new CreateGroupDtoRequest("Travels");
+        CreateGroupDtoRequest group3 = new CreateGroupDtoRequest("Work");
+        wordsGroupFacade.createWordsGroup(group1);
+        wordsGroupFacade.createWordsGroup(group2);
+        wordsGroupFacade.createWordsGroup(group3);
+        //when
+        AllWordsGroupDtoRequest allGroupByUser = wordsGroupFacade.findAllGroupByUser();
+        //then
+        assertAll(
+                () -> assertThat(allGroupByUser.group()).hasSize(3)
+        );
     }
 }
