@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
+import com.vocabularysrs.domain.words.dto.UpdateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
 import org.junit.jupiter.api.Test;
@@ -106,8 +107,26 @@ class WordsGroupFacadeTest {
         WordsGroupDtoRequest group = wordsGroupFacade.findGroupByIdAndUser(0L);
         // then
         assertAll(
-                ()-> assertThat(group.groupId()).isEqualTo(0),
-                ()-> assertThat(group.groupName()).isEqualTo("Animals")
+                () -> assertThat(group.groupId()).isEqualTo(0),
+                () -> assertThat(group.groupName()).isEqualTo("Animals")
+        );
+    }
+
+    @Test
+    public void should_return_group_with_new_updated_name() {
+        // given
+        CreateGroupDtoRequest group1 = new CreateGroupDtoRequest("Animals");
+        wordsGroupFacade.createWordsGroup(group1);
+        WordsGroupDtoRequest oldGroupName = wordsGroupFacade.findGroupByIdAndUser(0L);
+        assertThat(oldGroupName.groupName()).isEqualTo("Animals");
+        // when
+        UpdateGroupDtoRequest updateGroupDtoRequest = new UpdateGroupDtoRequest(0L, "Animals 2 - update");
+        WordsGroupDtoRequest updateGroupName = wordsGroupFacade.updateGroupName(updateGroupDtoRequest);
+        // then
+        WordsGroupDtoRequest newGroupName = wordsGroupFacade.findGroupByIdAndUser(0L);
+        assertAll(
+                () -> assertThat(updateGroupName.groupName()).isEqualTo("Animals 2 - update"),
+                () -> assertThat(newGroupName.groupName()).isEqualTo("Animals 2 - update")
         );
     }
 }
