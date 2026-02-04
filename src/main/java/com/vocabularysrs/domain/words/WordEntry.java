@@ -4,12 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -53,10 +50,6 @@ class WordEntry {
 
     private LocalDate nextReviewDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private WordsGroup group;
-
     void initialize(LocalDate today) {
         this.dateAdded = today;
         this.currentInterval = RepetitionInterval.INTERVAL_1_DAY;
@@ -66,9 +59,5 @@ class WordEntry {
     void applyReviewResult(boolean correct, RepetitionIntervalCalculator calculator, LocalDate today) {
         this.currentInterval = correct ? calculator.next(this.currentInterval) : calculator.back(this.currentInterval);
         this.nextReviewDate = today.plusDays(this.currentInterval.getDays());
-    }
-
-    void removeFromGroup() {
-        this.group = null;
     }
 }

@@ -23,8 +23,8 @@ class WordsGroupDeleter {
         WordsGroup group = wordsGroupRetriever.findEntityById(groupId);
 
         Long userId = currentUserProvider.getCurrentUserId();
-        List<WordEntry> words = wordEntryRepository.findAllByUserIdAndGroup_Id(userId, groupId);
-        words.forEach(WordEntry::removeFromGroup);
+//        List<WordEntry> words = wordEntryRepository.findAllByUserIdAndGroup_Id(userId, groupId);
+//        words.forEach(WordEntry::removeFromGroup);
         groupRepository.delete(group);
         log.info("Deleted group by id: {}, userId: {}", groupId, group.getUserId());
         return WordsGroupDtoResponse.builder()

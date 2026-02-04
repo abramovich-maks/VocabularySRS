@@ -28,5 +28,5 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
 
     Optional<WordEntry> findById(Long wordId);
 
-    List<WordEntry> findAllByUserIdAndGroup_Id(Long userId, Long groupId);
+//    List<WordEntry> findAllByUserIdAndGroup_Id(Long userId, Long groupId);
 }
