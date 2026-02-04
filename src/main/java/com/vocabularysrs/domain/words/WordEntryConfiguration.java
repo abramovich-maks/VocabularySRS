@@ -37,10 +37,10 @@ class WordEntryConfiguration {
     }
 
     @Bean
-    WordsGroupFacade wordsGroupFacade(WordsGroupRepository groupRepository, CurrentUserProvider currentUserProvider, WordEntryRepository wordEntryRepository) {
+    WordsGroupFacade wordsGroupFacade(WordsGroupRepository groupRepository, CurrentUserProvider currentUserProvider, WordGroupLinkRepository linkRepository) {
         WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository, currentUserProvider);
         WordsGroupAdder groupAdder = new WordsGroupAdder(wordsGroupRetriever, groupRepository, currentUserProvider);
-        WordsGroupDeleter wordsGroupDeleter = new WordsGroupDeleter(groupRepository, wordsGroupRetriever, wordEntryRepository, currentUserProvider);
+        WordsGroupDeleter wordsGroupDeleter = new WordsGroupDeleter(groupRepository, wordsGroupRetriever, linkRepository);
         WordsGroupUpdater wordsGroupUpdater = new WordsGroupUpdater(wordsGroupRetriever);
         return new WordsGroupFacade(groupAdder, wordsGroupDeleter, wordsGroupRetriever, wordsGroupUpdater);
     }
