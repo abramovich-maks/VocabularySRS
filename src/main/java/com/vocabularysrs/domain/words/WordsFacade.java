@@ -1,6 +1,8 @@
 package com.vocabularysrs.domain.words;
 
 
+import com.vocabularysrs.domain.words.dto.AddWordToGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
@@ -20,6 +22,7 @@ public class WordsFacade {
     private final WordDeleter wordDeleter;
     private final WordRetriever wordRetriever;
     private final WordUpdater wordUpdater;
+    private final GroupWordAssigner wordAssigner;
 
     public WordEntryDtoResponse addWord(WordAddDtoRequest dtoRequest) {
         return wordAdder.addWord(dtoRequest);
@@ -43,5 +46,9 @@ public class WordsFacade {
 
     public WordEntryUpdateDtoResponse updatePartiallyById(Long id, WordUpdatePartiallyDtoRequest dtoRequest) {
         return wordUpdater.updateById(id, dtoRequest);
+    }
+
+    public AddWordsToGroupDtoResponse addWordToGroup(AddWordToGroupDtoRequest request) {
+        return wordAssigner.addWordToGroup(request);
     }
 }
