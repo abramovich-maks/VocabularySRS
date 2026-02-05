@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
+import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
@@ -9,6 +10,8 @@ import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControl
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
+
+import java.util.List;
 
 class DictionaryControllerMapper {
 
@@ -51,5 +54,11 @@ class DictionaryControllerMapper {
                 .build();
     }
 
+    public static AllGroupsResponse mapFromAllWordsGroupDtoRequestToAllGroupsResponse(final AllWordsGroupDtoRequest allGroupByUser) {
+        List<GroupsResponse> allGroups = allGroupByUser.group().stream().map(group -> GroupsResponse.builder()
+                .groupId(group.groupId())
+                .groupName(group.groupName()).build()).toList();
+        return AllGroupsResponse.builder().groups(allGroups).build();
+    }
 
 }
