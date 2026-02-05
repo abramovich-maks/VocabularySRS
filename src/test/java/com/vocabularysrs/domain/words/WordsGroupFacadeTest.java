@@ -9,6 +9,8 @@ import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -17,8 +19,9 @@ class WordsGroupFacadeTest {
 
     private final CurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
     private final WordsGroupRepository wordsGroupRepository = new InMemoryWordsGroupRepositoryTestImpl();
-    private final InMemoryWordEntryRepositoryTestImpl wordsRepository = new InMemoryWordEntryRepositoryTestImpl();
-    private final WordsGroupFacade wordsGroupFacade = new WordEntryConfiguration().wordsGroupFacade(wordsGroupRepository, currentUserProvider, wordsRepository);
+    private final WordGroupLinkRepository linkRepository = new InMemoryWordGroupLinkRepositoryTestImpl();
+    private final InMemoryWordEntryRepositoryTestImpl wordRepository = new InMemoryWordEntryRepositoryTestImpl();
+    private final WordsGroupFacade wordsGroupFacade = new WordEntryConfiguration().wordsGroupFacade(wordsGroupRepository, currentUserProvider, linkRepository, wordRepository);
 
     @Test
     public void should_return_success_when_user_add_new_group() {
@@ -127,6 +130,27 @@ class WordsGroupFacadeTest {
         assertAll(
                 () -> assertThat(updateGroupName.groupName()).isEqualTo("Animals 2 - update"),
                 () -> assertThat(newGroupName.groupName()).isEqualTo("Animals 2 - update")
+        );
+    }
+
+    @Test
+    void should_add_two_words_to_group() {
+        // given
+        CreateGroupDtoResponse group = wordsGroupFacade.createWordsGroup(new CreateGroupDtoRequest("Animals"));
+        WordEntry savedWord = wordRepository.save(WordEntry.builder()
+                .word("cat")
+                .translate("кот")
+                .userId(currentUserProvider.getCurrentUserId()).build());
+        WordEntry savedWord2 = wordRepository.save(WordEntry.builder()
+                .word("dog")
+                .translate("собака")
+                .userId(currentUserProvider.getCurrentUserId()).build());
+        // when
+        AddWordsToGroupDtoResponse response = wordsGroupFacade.addWordsToGroup(new AddWordsToGroupDtoRequest(group.groupId(), List.of(savedWord.getId(), savedWord2.getId())));
+        // then
+        assertAll(
+                () -> assertThat((response.groupName())).isEqualTo("Animals"),
+                () -> assertThat(response.countAddedWords()).isEqualTo(2)
         );
     }
 }

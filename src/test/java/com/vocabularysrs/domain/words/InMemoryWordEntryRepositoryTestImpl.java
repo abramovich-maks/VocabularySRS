@@ -116,12 +116,4 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     public Optional<WordEntry> findById(final Long wordId) {
         return Optional.ofNullable(database.get(wordId));
     }
-
-    @Override
-    public List<WordEntry> findAllByUserIdAndGroup_Id(Long userId, Long groupId) {
-        return database.values().stream()
-                .filter(w -> userId.equals(w.getUserId()))
-                .filter(w -> w.getGroup() != null && w.getGroup().getId().equals(groupId))
-                .toList();
-    }
 }
