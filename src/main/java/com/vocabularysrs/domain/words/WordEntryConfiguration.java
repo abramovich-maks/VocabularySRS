@@ -19,7 +19,7 @@ class WordEntryConfiguration {
     WordsFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock, WordDetailsDeleter wordDetailsDeleter, TranslationService translationService, WordDetailsFetchable wordFetchable, WordsGroupRepository groupRepository, WordGroupLinkRepository linkRepository) {
         WordRetriever wordRetriever = new WordRetriever(wordRepository, currentUserProvider);
         WordTranslator wordTranslator = new WordTranslator(translationService, currentUserProvider);
-        WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository, currentUserProvider);
+        WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository,linkRepository, currentUserProvider);
         GroupWordAssigner wordAssigner = new GroupWordAssigner(linkRepository, wordRepository, wordsGroupRetriever, currentUserProvider);
         WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, wordTranslator, wordFetchable, wordsGroupRetriever, wordAssigner, clock);
         WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever, wordDetailsDeleter);
@@ -40,7 +40,7 @@ class WordEntryConfiguration {
 
     @Bean
     WordsGroupFacade wordsGroupFacade(WordsGroupRepository groupRepository, CurrentUserProvider currentUserProvider, WordGroupLinkRepository linkRepository, WordEntryRepository wordRepository) {
-        WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository, currentUserProvider);
+        WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository,linkRepository, currentUserProvider);
         WordsGroupAdder groupAdder = new WordsGroupAdder(wordsGroupRetriever, groupRepository, currentUserProvider);
         WordsGroupDeleter wordsGroupDeleter = new WordsGroupDeleter(groupRepository, wordsGroupRetriever, linkRepository);
         WordsGroupUpdater wordsGroupUpdater = new WordsGroupUpdater(wordsGroupRetriever);

@@ -48,7 +48,7 @@ public class WordsFacade {
         return wordUpdater.updateById(id, dtoRequest);
     }
 
-    public AddWordsToGroupDtoResponse addWordToGroup(AddWordToGroupDtoRequest request) {
-        return wordAssigner.addWordToGroup(request);
+    public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, AddWordToGroupDtoRequest request) {
+        return wordAssigner.addWordToGroup(groupId, request);
     }
 }

@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +16,7 @@ import static com.vocabularysrs.domain.words.WordsGroupMapper.mapFromWordsGroupT
 class WordsGroupRetriever {
 
     private final WordsGroupRepository groupRepository;
+    private final WordGroupLinkRepository linkRepository;
     private final CurrentUserProvider currentUserProvider;
 
     void assertGroupNameNotExists(String groupName) {
@@ -42,6 +44,17 @@ class WordsGroupRetriever {
         Long userId = currentUserProvider.getCurrentUserId();
         WordsGroup wordsGroup = groupRepository.findByIdAndUserId(groupId, userId)
                 .orElseThrow(() -> new WordsGroupNotFoundException(groupId));
-        return WordsGroupDtoRequest.builder().groupId(wordsGroup.getId()).groupName(wordsGroup.getGroupName()).build();
+        List<WordGroupLink> links =
+                linkRepository.findAllWithWordByGroupId(wordsGroup.getId());
+
+        List<WordDtoResponse> words = links.stream()
+                .map(link -> WordDtoResponse.builder()
+                        .id(link.getWord().getId())
+                        .word(link.getWord().getWord())
+                        .translate(link.getWord().getTranslate())
+                        .build())
+                .toList();
+
+        return WordsGroupDtoRequest.builder().groupId(wordsGroup.getId()).groupName(wordsGroup.getGroupName()).words(words).build();
     }
 }

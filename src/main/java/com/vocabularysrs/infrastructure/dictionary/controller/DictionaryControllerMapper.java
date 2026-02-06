@@ -1,5 +1,7 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.UpdateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
@@ -75,5 +77,17 @@ class DictionaryControllerMapper {
 
     public static DeleteGroupResponse mapFromWordsGroupDtoResponseToDeleteGroupResponse(final WordsGroupDtoResponse wordsGroupDtoResponse) {
         return DeleteGroupResponse.builder().groupName(wordsGroupDtoResponse.groupName()).message(wordsGroupDtoResponse.message()).build();
+    }
+
+    public static AddWordsToGroupDtoRequest mapFromAssignWordsToGroupRequestToAddWordsToGroupDtoRequest(final AssignWordsToGroupRequest request) {
+        return AddWordsToGroupDtoRequest.builder().wordIds(request.wordIds()).build();
+    }
+
+    public static AssignWordsToGroupResponse mapFromAddWordsToGroupDtoResponseToAssignWordsToGroupResponse(final AddWordsToGroupDtoResponse assign) {
+        return AssignWordsToGroupResponse.builder().groupName(assign.groupName()).words(assign.words()).countAddedWords(assign.countAddedWords()).build();
+    }
+
+    public static WordsGroupResponse mapFromWordsGroupDtoRequestToWordsGroupResponse(final WordsGroupDtoRequest group) {
+        return WordsGroupResponse.builder().groupId(group.groupId()).groupName(group.groupName()).words(group.words()).build();
     }
 }

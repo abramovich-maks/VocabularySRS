@@ -18,25 +18,23 @@ class GroupWordAssigner {
     private final WordsGroupRetriever groupRetriever;
     private final CurrentUserProvider currentUserProvider;
 
-    public AddWordsToGroupDtoResponse addWordToGroup(AddWordToGroupDtoRequest request) {
-        return assignWordsToGroup(AddWordsToGroupDtoRequest.builder()
-                        .groupId(request.groupId())
-                        .wordIds(List.of(request.wordId()))
-                        .build()
+    public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, AddWordToGroupDtoRequest request) {
+        return assignWordsToGroup(groupId, AddWordsToGroupDtoRequest.builder()
+                .wordIds(List.of(request.wordId()))
+                .build()
         );
     }
 
-    public AddWordsToGroupDtoResponse addWordsToGroup(AddWordsToGroupDtoRequest request) {
-        return assignWordsToGroup(AddWordsToGroupDtoRequest.builder()
-                .groupId(request.groupId())
+    public AddWordsToGroupDtoResponse addWordsToGroup(Long groupId, AddWordsToGroupDtoRequest request) {
+        return assignWordsToGroup(groupId, AddWordsToGroupDtoRequest.builder()
                 .wordIds(request.wordIds())
                 .build()
         );
     }
 
-    private AddWordsToGroupDtoResponse assignWordsToGroup(AddWordsToGroupDtoRequest request) {
+    private AddWordsToGroupDtoResponse assignWordsToGroup(Long groupId, AddWordsToGroupDtoRequest request) {
         Long userId = currentUserProvider.getCurrentUserId();
-        WordsGroup group = groupRetriever.findEntityById(request.groupId());
+        WordsGroup group = groupRetriever.findEntityById(groupId);
 
         List<WordEntry> addedWords = new ArrayList<>();
 

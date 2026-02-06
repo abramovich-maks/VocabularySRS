@@ -125,8 +125,8 @@ class WordsGroupFacadeTest {
         WordsGroupDtoRequest oldGroupName = wordsGroupFacade.findGroupByIdAndUser(0L);
         assertThat(oldGroupName.groupName()).isEqualTo("Animals");
         // when
-        UpdateGroupDtoRequest updateGroupDtoRequest = new UpdateGroupDtoRequest(0L, "Animals 2 - update");
-        WordsGroupDtoRequest updateGroupName = wordsGroupFacade.updateGroupName(updateGroupDtoRequest);
+        UpdateGroupDtoRequest updateGroupDtoRequest = new UpdateGroupDtoRequest("Animals 2 - update");
+        WordsGroupDtoRequest updateGroupName = wordsGroupFacade.updateGroupName(0L, updateGroupDtoRequest);
         // then
         WordsGroupDtoRequest newGroupName = wordsGroupFacade.findGroupByIdAndUser(0L);
         assertAll(
@@ -148,7 +148,7 @@ class WordsGroupFacadeTest {
                 .translate("собака")
                 .userId(currentUserProvider.getCurrentUserId()).build());
         // when
-        AddWordsToGroupDtoResponse response = wordsGroupFacade.addWordsToGroup(new AddWordsToGroupDtoRequest(group.groupId(), List.of(savedWord.getId(), savedWord2.getId())));
+        AddWordsToGroupDtoResponse response = wordsGroupFacade.addWordsToGroup(group.groupId(), new AddWordsToGroupDtoRequest(List.of(savedWord.getId(), savedWord2.getId())));
         // then
         assertAll(
                 () -> assertThat((response.groupName())).isEqualTo("Animals"),

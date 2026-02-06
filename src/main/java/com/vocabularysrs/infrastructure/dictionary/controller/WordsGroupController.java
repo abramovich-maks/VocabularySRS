@@ -1,6 +1,8 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.words.WordsGroupFacade;
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
@@ -22,9 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromAddWordsToGroupDtoResponseToAssignWordsToGroupResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromAllWordsGroupDtoRequestToAllGroupsResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromAssignWordsToGroupRequestToAddWordsToGroupDtoRequest;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromUpdateGroupRequestToUpdateGroupDtoRequest;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordsGroupDtoRequestToUpdateGroupResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordsGroupDtoRequestToWordsGroupResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordsGroupDtoResponseToDeleteGroupResponse;
 
 @AllArgsConstructor
@@ -60,6 +65,21 @@ class WordsGroupController {
         UpdateGroupDtoRequest build = mapFromUpdateGroupRequestToUpdateGroupDtoRequest(request);
         WordsGroupDtoRequest updatedGroup = wordsGroupFacade.updateGroupName(groupId, build);
         UpdateGroupResponse response = mapFromWordsGroupDtoRequestToUpdateGroupResponse(updatedGroup);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PostMapping("/{groupId}/add/words")
+    public ResponseEntity<AssignWordsToGroupResponse> assignWordsToGroup(@PathVariable Long groupId, @RequestBody AssignWordsToGroupRequest request) {
+        AddWordsToGroupDtoRequest build = mapFromAssignWordsToGroupRequestToAddWordsToGroupDtoRequest(request);
+        AddWordsToGroupDtoResponse assign = wordsGroupFacade.addWordsToGroup(groupId, build);
+        AssignWordsToGroupResponse response = mapFromAddWordsToGroupDtoResponseToAssignWordsToGroupResponse(assign);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/{groupId}")
+    public ResponseEntity<WordsGroupResponse> getGroupById(@PathVariable Long groupId) {
+        WordsGroupDtoRequest group = wordsGroupFacade.findGroupByIdAndUser(groupId);
+        WordsGroupResponse response = mapFromWordsGroupDtoRequestToWordsGroupResponse(group);
         return ResponseEntity.ok().body(response);
     }
 }

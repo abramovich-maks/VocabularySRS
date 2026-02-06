@@ -38,11 +38,11 @@ public class WordsGroupFacade {
         return groupRetriever.findGroupById(id);
     }
 
-    public WordsGroupDtoRequest updateGroupName( Long groupId, UpdateGroupDtoRequest dtoRequest) {
+    public WordsGroupDtoRequest updateGroupName(Long groupId, UpdateGroupDtoRequest dtoRequest) {
         return groupUpdater.updateGroupNameById(groupId, dtoRequest);
     }
 
-    public AddWordsToGroupDtoResponse addWordsToGroup(AddWordsToGroupDtoRequest request) {
-        return wordAssigner.addWordsToGroup(request);
+    public AddWordsToGroupDtoResponse addWordsToGroup(Long groupId, AddWordsToGroupDtoRequest request) {
+        return wordAssigner.addWordsToGroup(groupId, request);
     }
 }

@@ -363,7 +363,7 @@ class WordsFacadeTest {
                 .translate("кот")
                 .userId(currentUserProvider.getCurrentUserId()).build());
         // when
-        AddWordsToGroupDtoResponse response = wordsFacade.addWordToGroup(new AddWordToGroupDtoRequest(group.groupId(), savedWord.getId()));
+        AddWordsToGroupDtoResponse response = wordsFacade.addWordToGroup(group.groupId(), new AddWordToGroupDtoRequest(group.groupId(), savedWord.getId()));
         // then
         assertThat(response.countAddedWords()).isEqualTo(1);
     }

@@ -94,7 +94,7 @@ class WordAdder {
                     .groupId(group.getId())
                     .wordId(saved.getId())
                     .build();
-            groupWordAssigner.addWordToGroup(wordAddition);
+            groupWordAssigner.addWordToGroup(group.getId(), wordAddition);
         }
 
         log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
