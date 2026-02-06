@@ -1,7 +1,6 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.security.CurrentUserProvider;
-import com.vocabularysrs.domain.words.dto.AddWordToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
@@ -18,9 +17,9 @@ class GroupWordAssigner {
     private final WordsGroupRetriever groupRetriever;
     private final CurrentUserProvider currentUserProvider;
 
-    public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, AddWordToGroupDtoRequest request) {
+    public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, Long wordId) {
         return assignWordsToGroup(groupId, AddWordsToGroupDtoRequest.builder()
-                .wordIds(List.of(request.wordId()))
+                .wordIds(List.of(wordId))
                 .build()
         );
     }

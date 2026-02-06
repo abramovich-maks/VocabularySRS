@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
 import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
 import com.vocabularysrs.domain.words.WordsDtoResponse;
 import com.vocabularysrs.domain.words.WordsFacade;
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromAddWordsToGroupDtoResponseToAssignWordToGroupResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordDtoResponseToWordDtoControllerResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryControllerDtoRequestToWordAddDtoRequest;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
@@ -102,5 +104,11 @@ class DictionaryController {
         WordsResponse response = mapFromWordsDtoResponseToWordsResponse(availableWords);
         return ResponseEntity.ok(response);
     }
-}
 
+    @PostMapping("/groups/{groupId}/words/{wordId}")
+    public ResponseEntity<AssignWordToGroupResponse> assignWordsToGroup(@PathVariable Long groupId, @PathVariable Long wordId) {
+        AddWordsToGroupDtoResponse assign = wordsFacade.addWordToGroup(groupId, wordId);
+        AssignWordToGroupResponse response = mapFromAddWordsToGroupDtoResponseToAssignWordToGroupResponse(assign);
+        return ResponseEntity.ok().body(response);
+    }
+}

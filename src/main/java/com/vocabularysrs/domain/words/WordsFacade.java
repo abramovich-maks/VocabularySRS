@@ -1,7 +1,6 @@
 package com.vocabularysrs.domain.words;
 
 
-import com.vocabularysrs.domain.words.dto.AddWordToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
@@ -13,8 +12,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Transactional
 @AllArgsConstructor
@@ -50,8 +47,8 @@ public class WordsFacade {
         return wordUpdater.updateById(id, dtoRequest);
     }
 
-    public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, AddWordToGroupDtoRequest request) {
-        return wordAssigner.addWordToGroup(groupId, request);
+    public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, Long wordId) {
+        return wordAssigner.addWordToGroup(groupId, wordId);
     }
 
     public WordsDtoResponse findAvailableWords(Long groupId) {

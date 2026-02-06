@@ -11,4 +11,7 @@ public record WordsGroupDtoRequest(
         List<WordDtoResponse> words
 
 ) {
+    public int countWord() {
+        return words == null ? 0 : words.size();
+    }
 }

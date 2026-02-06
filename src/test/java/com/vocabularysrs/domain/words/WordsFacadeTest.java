@@ -5,7 +5,6 @@ import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
-import com.vocabularysrs.domain.words.dto.AddWordToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
@@ -363,7 +362,7 @@ class WordsFacadeTest {
                 .translate("кот")
                 .userId(currentUserProvider.getCurrentUserId()).build());
         // when
-        AddWordsToGroupDtoResponse response = wordsFacade.addWordToGroup(group.groupId(), new AddWordToGroupDtoRequest(group.groupId(), savedWord.getId()));
+        AddWordsToGroupDtoResponse response = wordsFacade.addWordToGroup(group.groupId(), savedWord.getId());
         // then
         assertThat(response.countAddedWords()).isEqualTo(1);
     }

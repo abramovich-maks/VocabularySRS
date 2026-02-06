@@ -19,6 +19,7 @@ class WordEntryMapper {
 
     public static WordEntryDtoResponse mapFromWordEntryToWordEntryDtoResponse(final WordEntry save) {
         return WordEntryDtoResponse.builder()
+                .id(save.getId())
                 .word(save.getWord())
                 .translate(save.getTranslate())
                 .message("Success. New word added")

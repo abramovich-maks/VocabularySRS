@@ -35,17 +35,27 @@ class WordsGroupRetriever {
 
     AllWordsGroupDtoRequest findAllGroupsByUser() {
         Long userId = currentUserProvider.getCurrentUserId();
-        List<WordsGroup> allByUserId = groupRepository.findAllByUserId(userId);
-        List<WordsGroupDtoRequest> list = mapFromWordsGroupToWordsGroupDtoRequest(allByUserId);
-        return AllWordsGroupDtoRequest.builder().group(list).build();
+        List<WordsGroup> groups = groupRepository.findAllByUserId(userId);
+
+        List<WordsGroupDtoRequest> list = groups.stream()
+                .map(this::getWordsGroupDtoRequest)
+                .toList();
+
+        return AllWordsGroupDtoRequest.builder()
+                .group(list)
+                .build();
     }
 
     WordsGroupDtoRequest findGroupById(final Long groupId) {
         Long userId = currentUserProvider.getCurrentUserId();
         WordsGroup wordsGroup = groupRepository.findByIdAndUserId(groupId, userId)
                 .orElseThrow(() -> new WordsGroupNotFoundException(groupId));
+        return getWordsGroupDtoRequest(wordsGroup);
+    }
+
+    private WordsGroupDtoRequest getWordsGroupDtoRequest(final WordsGroup group) {
         List<WordGroupLink> links =
-                linkRepository.findAllWithWordByGroupId(wordsGroup.getId());
+                linkRepository.findAllWithWordByGroupId(group.getId());
 
         List<WordDtoResponse> words = links.stream()
                 .map(link -> WordDtoResponse.builder()
@@ -55,6 +65,10 @@ class WordsGroupRetriever {
                         .build())
                 .toList();
 
-        return WordsGroupDtoRequest.builder().groupId(wordsGroup.getId()).groupName(wordsGroup.getGroupName()).words(words).build();
+        return WordsGroupDtoRequest.builder()
+                .groupId(group.getId())
+                .groupName(group.getGroupName())
+                .words(words)
+                .build();
     }
 }

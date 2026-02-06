@@ -24,6 +24,7 @@ class DictionaryControllerMapper {
 
     public static WordEntryControllerDtoResponse mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse(final WordEntryDtoResponse newWordEntry) {
         return WordEntryControllerDtoResponse.builder()
+                .id(newWordEntry.id())
                 .word(newWordEntry.word())
                 .translate(newWordEntry.translate())
                 .message(newWordEntry.message())
@@ -62,9 +63,13 @@ class DictionaryControllerMapper {
     }
 
     public static AllGroupsResponse mapFromAllWordsGroupDtoRequestToAllGroupsResponse(final AllWordsGroupDtoRequest allGroupByUser) {
-        List<GroupsResponse> allGroups = allGroupByUser.group().stream().map(group -> GroupsResponse.builder()
-                .groupId(group.groupId())
-                .groupName(group.groupName()).build()).toList();
+        List<GroupsResponse> allGroups = allGroupByUser.group().stream()
+                .map(group -> GroupsResponse.builder()
+                        .groupId(group.groupId())
+                        .groupName(group.groupName())
+                        .countWord(group.countWord())
+                        .build())
+                .toList();
         return AllGroupsResponse.builder().groups(allGroups).build();
     }
 
@@ -104,5 +109,11 @@ class DictionaryControllerMapper {
         return WordsResponse.builder()
                 .words(words)
                 .build();
+    }
+
+    public  static AssignWordToGroupResponse mapFromAddWordsToGroupDtoResponseToAssignWordToGroupResponse(final AddWordsToGroupDtoResponse assign) {
+        WordDtoResponse word = assign.words().stream().findFirst().orElseThrow(() -> new IllegalStateException("Word was not added to group"));
+        WordDtoControllerResponse build = WordDtoControllerResponse.builder().id(word.id()).word(word.word()).translate(word.translate()).build();
+        return AssignWordToGroupResponse.builder().groupName(assign.groupName()).word(build).build();
     }
 }

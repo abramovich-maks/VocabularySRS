@@ -90,11 +90,7 @@ class WordAdder {
         WordEntry saved = wordRepository.save(newWord);
 
         if (group != null) {
-            AddWordToGroupDtoRequest wordAddition = AddWordToGroupDtoRequest.builder()
-                    .groupId(group.getId())
-                    .wordId(saved.getId())
-                    .build();
-            groupWordAssigner.addWordToGroup(group.getId(), wordAddition);
+            groupWordAssigner.addWordToGroup(group.getId(), saved.getId());
         }
 
         log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
