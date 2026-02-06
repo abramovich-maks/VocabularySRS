@@ -12,8 +12,7 @@ class WordsGroupUpdater {
     private final WordsGroupRetriever groupRetriever;
 
 
-    WordsGroupDtoRequest updateGroupNameById(final UpdateGroupDtoRequest dtoRequest) {
-        Long groupId = dtoRequest.groupId();
+    WordsGroupDtoRequest updateGroupNameById(Long groupId, final UpdateGroupDtoRequest dtoRequest) {
         String newGroupName = dtoRequest.newGroupName();
 
         if (newGroupName == null) {

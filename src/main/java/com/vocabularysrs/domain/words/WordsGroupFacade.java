@@ -38,8 +38,8 @@ public class WordsGroupFacade {
         return groupRetriever.findGroupById(id);
     }
 
-    public WordsGroupDtoRequest updateGroupName(UpdateGroupDtoRequest dtoRequest) {
-        return groupUpdater.updateGroupNameById(dtoRequest);
+    public WordsGroupDtoRequest updateGroupName( Long groupId, UpdateGroupDtoRequest dtoRequest) {
+        return groupUpdater.updateGroupNameById(groupId, dtoRequest);
     }
 
     public AddWordsToGroupDtoResponse addWordsToGroup(AddWordsToGroupDtoRequest request) {

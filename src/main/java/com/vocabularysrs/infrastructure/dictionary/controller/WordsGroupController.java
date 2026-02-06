@@ -4,6 +4,8 @@ import com.vocabularysrs.domain.words.WordsGroupFacade;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
+import com.vocabularysrs.domain.words.dto.UpdateGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.CreateGroupRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.CreateGroupResponse;
@@ -14,11 +16,15 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromAllWordsGroupDtoRequestToAllGroupsResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromUpdateGroupRequestToUpdateGroupDtoRequest;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordsGroupDtoRequestToUpdateGroupResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordsGroupDtoResponseToDeleteGroupResponse;
 
 @AllArgsConstructor
 @RestController()
@@ -44,7 +50,15 @@ class WordsGroupController {
     @DeleteMapping("/{groupId}")
     public ResponseEntity<DeleteGroupResponse> deleteGroup(@PathVariable Long groupId) {
         WordsGroupDtoResponse wordsGroupDtoResponse = wordsGroupFacade.deleteGroup(groupId);
-        DeleteGroupResponse response = DeleteGroupResponse.builder().groupName(wordsGroupDtoResponse.groupName()).message(wordsGroupDtoResponse.message()).build();
+        DeleteGroupResponse response = mapFromWordsGroupDtoResponseToDeleteGroupResponse(wordsGroupDtoResponse);
+        return ResponseEntity.ok().body(response);
+    }
+
+    @PutMapping("/{groupId}")
+    public ResponseEntity<UpdateGroupResponse> updateNameGroup(@PathVariable Long groupId, @RequestBody UpdateGroupRequest request) {
+        UpdateGroupDtoRequest build = mapFromUpdateGroupRequestToUpdateGroupDtoRequest(request);
+        WordsGroupDtoRequest updatedGroup = wordsGroupFacade.updateGroupName(groupId, build);
+        UpdateGroupResponse response = mapFromWordsGroupDtoRequestToUpdateGroupResponse(updatedGroup);
         return ResponseEntity.ok().body(response);
     }
 }

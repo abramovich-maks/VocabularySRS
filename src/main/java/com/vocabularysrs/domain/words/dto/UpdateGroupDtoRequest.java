@@ -1,7 +1,9 @@
 package com.vocabularysrs.domain.words.dto;
 
+import lombok.Builder;
+
+@Builder
 public record UpdateGroupDtoRequest(
-        Long groupId,
         String newGroupName
 ) {
 }

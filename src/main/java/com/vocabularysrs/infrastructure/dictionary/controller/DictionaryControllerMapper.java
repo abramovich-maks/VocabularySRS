@@ -1,10 +1,14 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.UpdateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeleteGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
@@ -61,4 +65,15 @@ class DictionaryControllerMapper {
         return AllGroupsResponse.builder().groups(allGroups).build();
     }
 
+    public static UpdateGroupResponse mapFromWordsGroupDtoRequestToUpdateGroupResponse(final WordsGroupDtoRequest updatedGroup) {
+        return UpdateGroupResponse.builder().groupId(updatedGroup.groupId()).groupName(updatedGroup.groupName()).build();
+    }
+
+    public static UpdateGroupDtoRequest mapFromUpdateGroupRequestToUpdateGroupDtoRequest(final UpdateGroupRequest request) {
+        return UpdateGroupDtoRequest.builder().newGroupName(request.newGroupName()).build();
+    }
+
+    public static DeleteGroupResponse mapFromWordsGroupDtoResponseToDeleteGroupResponse(final WordsGroupDtoResponse wordsGroupDtoResponse) {
+        return DeleteGroupResponse.builder().groupName(wordsGroupDtoResponse.groupName()).message(wordsGroupDtoResponse.message()).build();
+    }
 }
