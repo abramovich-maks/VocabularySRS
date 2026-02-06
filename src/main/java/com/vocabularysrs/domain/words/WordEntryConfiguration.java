@@ -22,7 +22,7 @@ class WordEntryConfiguration {
         WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository,linkRepository, currentUserProvider);
         GroupWordAssigner wordAssigner = new GroupWordAssigner(linkRepository, wordRepository, wordsGroupRetriever, currentUserProvider);
         WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, wordTranslator, wordFetchable, wordsGroupRetriever, wordAssigner, clock);
-        WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever, wordDetailsDeleter);
+        WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever, wordDetailsDeleter,linkRepository);
         WordUpdater wordUpdater = new WordUpdater(wordRetriever);
         return new WordsFacade(wordAdder, wordDeleter, wordRetriever, wordUpdater, wordAssigner);
     }

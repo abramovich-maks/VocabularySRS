@@ -16,10 +16,12 @@ class WordDeleter {
     private final WordEntryRepository wordEntryRepository;
     private final WordRetriever wordRetriever;
     private final WordDetailsDeleter wordDetailsDeleter;
+    private final WordGroupLinkRepository linkRepository;
 
 
     WordEntryDtoResponse deleteById(final Long id) {
         WordEntry word = wordRetriever.findEntityById(id);
+        linkRepository.deleteByWord_Id(id);
         wordEntryRepository.delete(word);
         wordDetailsDeleter.deleteByWordId(id, word.getUserId());
 

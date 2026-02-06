@@ -21,4 +21,5 @@ interface WordGroupLinkRepository extends Repository<WordGroupLink, Long> {
             """)
     List<WordGroupLink> findAllWithWordByGroupId(Long groupId);
 
+    void deleteByWord_Id(Long wordId);
 }
