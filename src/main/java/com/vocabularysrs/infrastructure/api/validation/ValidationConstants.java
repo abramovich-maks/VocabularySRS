@@ -8,5 +8,6 @@ public interface ValidationConstants {
     int TRANSLATE_MIN_SIZE = 2;
     int TRANSLATE_MAX_SIZE = 255;
     int GROUP_NAME_SIZE = 25;
+    int GROUP_NAME_MIN_SIZE = 1;
 }
 

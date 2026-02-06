@@ -10,6 +10,7 @@ import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.CreateGroupRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.CreateGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeleteGroupResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,7 +35,7 @@ class WordsGroupController {
     private final WordsGroupFacade wordsGroupFacade;
 
     @PostMapping
-    public ResponseEntity<CreateGroupResponse> createGroup(@RequestBody CreateGroupRequest request) {
+    public ResponseEntity<CreateGroupResponse> createGroup(@RequestBody @Valid CreateGroupRequest request) {
         CreateGroupDtoRequest dtoRequest = CreateGroupDtoRequest.builder().groupName(request.groupName()).build();
         CreateGroupDtoResponse wordsGroup = wordsGroupFacade.createWordsGroup(dtoRequest);
         CreateGroupResponse response = CreateGroupResponse.builder().groupId(wordsGroup.groupId()).groupName(wordsGroup.groupName()).message(wordsGroup.message()).build();
