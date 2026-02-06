@@ -27,4 +27,15 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
     void delete(WordEntry word);
 
     Optional<WordEntry> findById(Long wordId);
+
+    @Query("""
+                SELECT w FROM WordEntry w
+                WHERE w.userId = :userId
+                AND w.id NOT IN (
+                    SELECT link.word.id FROM WordGroupLink link
+                    WHERE link.group.id = :groupId
+                )
+            """)
+    List<WordEntry> findAvailableWords(Long userId, Long groupId);
+
 }

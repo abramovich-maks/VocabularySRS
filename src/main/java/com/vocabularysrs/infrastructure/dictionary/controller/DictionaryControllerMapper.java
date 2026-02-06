@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
+import com.vocabularysrs.domain.words.WordsDtoResponse;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
@@ -89,5 +90,19 @@ class DictionaryControllerMapper {
 
     public static WordsGroupResponse mapFromWordsGroupDtoRequestToWordsGroupResponse(final WordsGroupDtoRequest group) {
         return WordsGroupResponse.builder().groupId(group.groupId()).groupName(group.groupName()).words(group.words()).build();
+    }
+
+    public static WordsResponse mapFromWordsDtoResponseToWordsResponse(final WordsDtoResponse availableWords) {
+        List<WordDtoControllerResponse> words = availableWords.words().stream()
+                .map(word -> WordDtoControllerResponse.builder()
+                        .id(word.id())
+                        .word(word.word())
+                        .translate(word.translate())
+                        .build())
+                .toList();
+
+        return WordsResponse.builder()
+                .words(words)
+                .build();
     }
 }

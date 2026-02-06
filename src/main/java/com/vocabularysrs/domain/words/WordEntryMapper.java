@@ -5,6 +5,8 @@ import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 
+import java.util.List;
+
 import static java.lang.String.format;
 
 class WordEntryMapper {
@@ -37,6 +39,15 @@ class WordEntryMapper {
                 .word(wordEntry.getWord())
                 .translate(wordEntry.getTranslate())
                 .message(format("Success. Word entry with id: %s updated", id))
+                .build();
+    }
+
+    public static WordsDtoResponse mapFromListWordEntryToWordsDtoResponse(final List<WordEntry> availableWords) {
+        List<WordDtoResponse> words = availableWords.stream()
+                .map(WordEntryMapper::mapFromWordEntryToWordDtoResponse)
+                .toList();
+        return WordsDtoResponse.builder()
+                .words(words)
                 .build();
     }
 }

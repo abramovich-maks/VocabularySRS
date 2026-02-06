@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Transactional
 @AllArgsConstructor
 public class WordsFacade {
@@ -50,5 +52,9 @@ public class WordsFacade {
 
     public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, AddWordToGroupDtoRequest request) {
         return wordAssigner.addWordToGroup(groupId, request);
+    }
+
+    public WordsDtoResponse findAvailableWords(Long groupId) {
+        return wordRetriever.findAvailableWords(groupId);
     }
 }
