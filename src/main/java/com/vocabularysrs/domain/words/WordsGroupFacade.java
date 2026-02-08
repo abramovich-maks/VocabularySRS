@@ -5,6 +5,7 @@ import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
+import com.vocabularysrs.domain.words.dto.DeleteWordFromGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.UpdateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
@@ -44,5 +45,9 @@ public class WordsGroupFacade {
 
     public AddWordsToGroupDtoResponse addWordsToGroup(Long groupId, AddWordsToGroupDtoRequest request) {
         return wordAssigner.addWordsToGroup(groupId, request);
+    }
+
+    public DeleteWordFromGroupDtoResponse deleteWordFromGroup(Long wordId, Long groupId) {
+        return wordAssigner.deleteWordFromGroup(wordId, groupId);
     }
 }

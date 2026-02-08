@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 
 import java.util.List;
 

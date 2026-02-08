@@ -1,6 +1,5 @@
-package com.vocabularysrs.domain.words;
+package com.vocabularysrs.domain.words.dto;
 
-import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import lombok.Builder;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

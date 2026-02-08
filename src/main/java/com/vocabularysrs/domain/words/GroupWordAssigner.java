@@ -3,13 +3,16 @@ package com.vocabularysrs.domain.words;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
+import com.vocabularysrs.domain.words.dto.DeleteWordFromGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
+@Log4j2
 class GroupWordAssigner {
 
     private final WordGroupLinkRepository linkRepository;
@@ -29,6 +32,20 @@ class GroupWordAssigner {
                 .wordIds(request.wordIds())
                 .build()
         );
+    }
+
+    public DeleteWordFromGroupDtoResponse deleteWordFromGroup(final Long wordId, final Long groupId) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        WordsGroup group = groupRetriever.findEntityById(groupId);
+        WordGroupLink wordGroupLink = linkRepository.findWordGroupLinkByWord_IdAndGroup_Id(wordId, group.getId())
+                .orElseThrow(() -> new WordNotInGroupException(wordId, group.getId()));
+        linkRepository.deleteByGroup_IdAndWord_Id( wordGroupLink.getGroup().getId(),wordGroupLink.getWord().getId());
+        String word = wordGroupLink.getWord().getWord();
+        String groupName = wordGroupLink.getGroup().getGroupName();
+        log.info("Deleted word {} from group {} (user id:{})", word, groupName, userId);
+        return DeleteWordFromGroupDtoResponse.builder()
+                .message(String.format("Deleted word " + word + " from group " + groupName))
+                .build();
     }
 
     private AddWordsToGroupDtoResponse assignWordsToGroup(Long groupId, AddWordsToGroupDtoRequest request) {
