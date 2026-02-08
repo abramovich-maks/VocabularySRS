@@ -1,12 +1,14 @@
 package com.vocabularysrs.domain.words;
 
 
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ public class WordsFacade {
     private final WordDeleter wordDeleter;
     private final WordRetriever wordRetriever;
     private final WordUpdater wordUpdater;
+    private final GroupWordAssigner wordAssigner;
 
     public WordEntryDtoResponse addWord(WordAddDtoRequest dtoRequest) {
         return wordAdder.addWord(dtoRequest);
@@ -43,5 +46,13 @@ public class WordsFacade {
 
     public WordEntryUpdateDtoResponse updatePartiallyById(Long id, WordUpdatePartiallyDtoRequest dtoRequest) {
         return wordUpdater.updateById(id, dtoRequest);
+    }
+
+    public AddWordsToGroupDtoResponse addWordToGroup(Long groupId, Long wordId) {
+        return wordAssigner.addWordToGroup(groupId, wordId);
+    }
+
+    public WordsDtoResponse findAvailableWords(Long groupId) {
+        return wordRetriever.findAvailableWords(groupId);
     }
 }

@@ -2,6 +2,7 @@ package com.vocabularysrs.infrastructure.api.notfound;
 
 import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskNotFoundException;
 import com.vocabularysrs.domain.words.WordNotFoundException;
+import com.vocabularysrs.domain.words.WordsGroupNotFoundException;
 import com.vocabularysrs.infrastructure.api.ApiErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -28,9 +29,19 @@ class NotFoundErrorHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrorResponse handleWordNotFound(WordNotFoundException exception) {
-        log.warn(exception.getMessage());
+        log.warn("Word not found. wordId={}", exception.wordId);
         return new ApiErrorResponse(
                 "WORD_NOT_FOUND",
+                exception.getMessage());
+    }
+
+    @ExceptionHandler(WordsGroupNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrorResponse handleWordsGroupNotFound(WordsGroupNotFoundException exception) {
+        log.warn("Words group not found. groupId={}", exception.groupId);
+        return new ApiErrorResponse(
+                "WORDS_GROUP_NOT_FOUND",
                 exception.getMessage());
     }
 }

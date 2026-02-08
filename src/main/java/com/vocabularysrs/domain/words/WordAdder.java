@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.translation.TranslationResult;
 import com.vocabularysrs.domain.translation.WordTranslator;
 import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
+import com.vocabularysrs.domain.words.dto.AddWordToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
@@ -24,22 +25,24 @@ class WordAdder {
     private final CurrentUserProvider currentUserProvider;
     private final WordTranslator wordTranslator;
     private final WordDetailsFetchable wordFetchable;
+    private final WordsGroupRetriever groupRetriever;
+    private final GroupWordAssigner groupWordAssigner;
 
     private final Clock clock;
 
 
-    WordEntryDtoResponse addWord(final WordAddDtoRequest dtoRequest) {
+    WordEntryDtoResponse addWord(final WordAddDtoRequest request) {
         LocalDate today = LocalDate.now(clock);
 
-        if (dtoRequest.word() == null) {
+        if (request.word() == null) {
             throw InvalidWordException.wordIsNull();
         }
-        if (dtoRequest.translate() == null) {
+        if (request.translate() == null) {
             throw InvalidWordException.translateIsNull();
         }
 
-        String word = WordNormalizer.normalizeWord(dtoRequest.word());
-        String translate = WordNormalizer.normalizeTranslate(dtoRequest.translate());
+        String word = WordNormalizer.normalizeWord(request.word());
+        String translate = WordNormalizer.normalizeTranslate(request.translate());
 
         wordRetriever.assertNotExistsByWord(word);
 
@@ -48,11 +51,11 @@ class WordAdder {
                 .translate(translate)
                 .build();
 
-        newWord.initialize(today);
-        newWord.setUserId(currentUserProvider.getCurrentUserId());
-        WordEntry save = wordRepository.save(newWord);
-        log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
-        return mapFromWordEntryToWordEntryDtoResponse(save);
+        WordsGroup group = null;
+        if (request.groupId() != null) {
+            group = groupRetriever.findEntityById(request.groupId());
+        }
+        return saveAndAssignWord(newWord, today, group);
     }
 
     WordEntryDtoResponse addWordWithAutoTranslate(final WordWithAutoTranslateDtoRequest request) {
@@ -73,13 +76,24 @@ class WordAdder {
                 .translate(translation.translatedText())
                 .build();
 
+        WordsGroup group = null;
+        if (request.groupId() != null) {
+            group = groupRetriever.findEntityById(request.groupId());
+        }
+        return saveAndAssignWord(newWord, today, group);
+    }
+
+    private WordEntryDtoResponse saveAndAssignWord(final WordEntry newWord, final LocalDate today, final WordsGroup group) {
         newWord.initialize(today);
         newWord.setUserId(currentUserProvider.getCurrentUserId());
 
         WordEntry saved = wordRepository.save(newWord);
 
-        log.info("Added new word (auto-translate): {} -> {}", saved.getWord(), saved.getTranslate());
+        if (group != null) {
+            groupWordAssigner.addWordToGroup(group.getId(), saved.getId());
+        }
 
+        log.info("Added new word: {} -> {}", newWord.getWord(), newWord.getTranslate());
         return mapFromWordEntryToWordEntryDtoResponse(saved);
     }
 }

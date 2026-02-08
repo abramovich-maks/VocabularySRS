@@ -2,10 +2,14 @@ package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
+import static com.vocabularysrs.domain.words.WordEntryMapper.mapFromListWordEntryToWordsDtoResponse;
 import static com.vocabularysrs.domain.words.WordEntryMapper.mapFromWordEntryToWordDtoResponse;
 
 @AllArgsConstructor
@@ -45,5 +49,11 @@ class WordRetriever {
         Long userId = currentUserProvider.getCurrentUserId();
         return wordEntryRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new WordNotFoundException(id));
+    }
+
+    public WordsDtoResponse findAvailableWords(Long groupId) {
+        Long userId = currentUserProvider.getCurrentUserId();
+        List<WordEntry> availableWords = wordEntryRepository.findAvailableWords(userId, groupId);
+        return mapFromListWordEntryToWordsDtoResponse(availableWords);
     }
 }

@@ -2,19 +2,24 @@ package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
 import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
-import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import com.vocabularysrs.domain.words.WordsFacade;
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordToGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDetailsControllerDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryWithAutoTranslateControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordsResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,11 +34,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromAddWordsToGroupDtoResponseToAssignWordToGroupResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordDtoResponseToWordDtoControllerResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryControllerDtoRequestToWordAddDtoRequest;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToDeletedWordEntryControllerDtoResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryDtoResponseToWordEntryControllerDtoResponse;
 import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse;
+import static com.vocabularysrs.infrastructure.dictionary.controller.DictionaryControllerMapper.mapFromWordsDtoResponseToWordsResponse;
 
 @AllArgsConstructor
 @RestController()
@@ -92,5 +99,18 @@ class DictionaryController {
         WordDetailsControllerDto build = WordDetailsControllerDto.builder().phonetic(details.phonetic()).audioUrl(details.audioUrl()).example(details.example()).alternativeTranslate(details.alternatives()).build();
         return ResponseEntity.ok(build);
     }
-}
 
+    @GetMapping("/{groupId}/available")
+    public ResponseEntity<WordsResponse> findAvailableWords(@PathVariable Long groupId) {
+        WordsDtoResponse availableWords = wordsFacade.findAvailableWords(groupId);
+        WordsResponse response = mapFromWordsDtoResponseToWordsResponse(availableWords);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/groups/{groupId}/words/{wordId}")
+    public ResponseEntity<AssignWordToGroupResponse> assignWordsToGroup(@PathVariable Long groupId, @PathVariable Long wordId) {
+        AddWordsToGroupDtoResponse assign = wordsFacade.addWordToGroup(groupId, wordId);
+        AssignWordToGroupResponse response = mapFromAddWordsToGroupDtoResponseToAssignWordToGroupResponse(assign);
+        return ResponseEntity.ok().body(response);
+    }
+}

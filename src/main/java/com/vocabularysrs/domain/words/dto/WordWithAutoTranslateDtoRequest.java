@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record WordWithAutoTranslateDtoRequest(
-        String word
+        String word,
+        Long groupId
 ) {
 }

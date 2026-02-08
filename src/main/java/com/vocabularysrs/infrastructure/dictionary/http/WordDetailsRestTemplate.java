@@ -50,6 +50,11 @@ public class WordDetailsRestTemplate implements WordDetailsFetchable {
             log.error("Dictionary client error for word '{}'", word, ex);
             throw new RuntimeException("Dictionary client error");
 
+        } catch (org.springframework.web.client.ResourceAccessException ex) {
+            log.error("Dictionary API unavailable while fetching '{}'", word, ex);
+            throw new DictionaryUnavailableException(
+                    "Dictionary service is temporarily unavailable. Try again later."
+            );
         } catch (Exception ex) {
             log.error("Unexpected error while fetching word '{}'", word, ex);
             throw new RuntimeException("Dictionary error");

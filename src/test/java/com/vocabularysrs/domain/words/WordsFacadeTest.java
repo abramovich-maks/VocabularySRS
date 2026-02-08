@@ -5,6 +5,9 @@ import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
+import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
+import com.vocabularysrs.domain.words.dto.CreateGroupDtoRequest;
+import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
@@ -45,13 +48,17 @@ class WordsFacadeTest {
     private final WordDetailsDeleter wordDetailsDeleter = new WordDetailsDeleteTestImpl();
     private final InMemoryTranslationServiceTestImpl translationService = new InMemoryTranslationServiceTestImpl();
     private final InMemoryFetcherTestImpl fetcherTest = new InMemoryFetcherTestImpl();
-    private final WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService, fetcherTest);
+    private final WordsGroupRepository wordsGroupRepository = new InMemoryWordsGroupRepositoryTestImpl();
+    private final WordGroupLinkRepository linkRepository = new InMemoryWordGroupLinkRepositoryTestImpl();
+    private final WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService, fetcherTest, wordsGroupRepository, linkRepository);
     private final DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
+    private final WordsGroupFacade wordsGroupFacade = new WordEntryConfiguration().wordsGroupFacade(wordsGroupRepository, currentUserProvider, linkRepository, repository);
+
 
     @Test
     public void should_return_success_when_user_gave_new_word_and_translate() {
         // given
-        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот", null);
         // when
         WordEntryDtoResponse result = wordsFacade.addWord(dtoRequest);
         // then
@@ -63,8 +70,8 @@ class WordsFacadeTest {
     @Test
     public void should_return_error_when_user_gave_null_word_or_null_translate() {
         // given
-        WordAddDtoRequest wordIsNull = new WordAddDtoRequest(null, "кот");
-        WordAddDtoRequest translateIsNull = new WordAddDtoRequest("cat", null);
+        WordAddDtoRequest wordIsNull = new WordAddDtoRequest(null, "кот", null);
+        WordAddDtoRequest translateIsNull = new WordAddDtoRequest("cat", null, null);
         // when && then
         InvalidWordException word = assertThrows(InvalidWordException.class, () -> wordsFacade.addWord(wordIsNull));
         assertThat(word.getMessage()).isEqualTo("Word must not be null");
@@ -76,8 +83,8 @@ class WordsFacadeTest {
     @Test
     public void should_throw_an_exception_when_word_already_exist() {
         // given
-        WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот");
-        WordAddDtoRequest word_2 = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот", null);
+        WordAddDtoRequest word_2 = new WordAddDtoRequest("cat", "кот", null);
         // when
         wordsFacade.addWord(word_1);
         // then
@@ -120,7 +127,7 @@ class WordsFacadeTest {
     @Test
     public void should_deleted_message_when_user_want_delete_by_exist_id() {
         // given
-        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот", null);
         wordsFacade.addWord(dtoRequest);
         // when
         WordEntryDtoResponse result = wordsFacade.deleteWord(0L);
@@ -133,8 +140,8 @@ class WordsFacadeTest {
     public void should_return_all_words_entry() {
         // given
         assertThat(wordsFacade.findAllWords(Pageable.unpaged())).isEmpty();
-        WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот");
-        WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2");
+        WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот", null);
+        WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2", null);
         // when
         wordsFacade.addWord(dtoRequest1);
         wordsFacade.addWord(dtoRequest2);
@@ -148,8 +155,8 @@ class WordsFacadeTest {
     @Test
     public void should_return_one_word_entry_by_id() {
         // given
-        WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот");
-        WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2");
+        WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот", null);
+        WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2", null);
         wordsFacade.addWord(dtoRequest1);
         wordsFacade.addWord(dtoRequest2);
         // when
@@ -184,7 +191,7 @@ class WordsFacadeTest {
     @Test
     public void should_return_updated_word() {
         // given
-        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот", null);
         wordsFacade.addWord(dtoRequest);
         WordUpdatePartiallyDtoRequest updateRequest = WordUpdatePartiallyDtoRequest.builder()
                 .word("dog")
@@ -208,7 +215,7 @@ class WordsFacadeTest {
     @Test
     public void should_return_updated_translate() {
         // given
-        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот");
+        WordAddDtoRequest dtoRequest = new WordAddDtoRequest("cat", "кот", null);
         wordsFacade.addWord(dtoRequest);
         WordUpdatePartiallyDtoRequest updateRequest = WordUpdatePartiallyDtoRequest.builder()
                 .translate("dog")
@@ -244,8 +251,8 @@ class WordsFacadeTest {
     @Test
     void should_map_entities_to_snapshots_for_given_date() {
         // given
-        WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот");
-        WordAddDtoRequest word_2 = new WordAddDtoRequest("dog", "собака");
+        WordAddDtoRequest word_1 = new WordAddDtoRequest("cat", "кот", null);
+        WordAddDtoRequest word_2 = new WordAddDtoRequest("dog", "собака", null);
         wordsFacade.addWord(word_1);
         wordsFacade.addWord(word_2);
         WordEntryJpaAdapter adapter = new WordEntryJpaAdapter(repository);
@@ -330,11 +337,11 @@ class WordsFacadeTest {
     void should_return_only_current_user_words() {
         // given
         ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
-        wordsFacade.addWord(new WordAddDtoRequest("cat", "кот"));
-        wordsFacade.addWord(new WordAddDtoRequest("dog", "собака"));
+        wordsFacade.addWord(new WordAddDtoRequest("cat", "кот", null));
+        wordsFacade.addWord(new WordAddDtoRequest("dog", "собака", null));
 
         ((TestCurrentUserProvider) currentUserProvider).setUserId(2L);
-        wordsFacade.addWord(new WordAddDtoRequest("sun", "солнце"));
+        wordsFacade.addWord(new WordAddDtoRequest("sun", "солнце", null));
         // when
         ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
         Page<WordDtoResponse> result =
@@ -344,5 +351,19 @@ class WordsFacadeTest {
         assertThat(result)
                 .extracting(WordDtoResponse::word)
                 .containsExactlyInAnyOrder("cat", "dog");
+    }
+
+    @Test
+    void should_add_word_to_group() {
+        // given
+        CreateGroupDtoResponse group = wordsGroupFacade.createWordsGroup(new CreateGroupDtoRequest("Animals"));
+        WordEntry savedWord = repository.save(WordEntry.builder()
+                .word("cat")
+                .translate("кот")
+                .userId(currentUserProvider.getCurrentUserId()).build());
+        // when
+        AddWordsToGroupDtoResponse response = wordsFacade.addWordToGroup(group.groupId(), savedWord.getId());
+        // then
+        assertThat(response.countAddedWords()).isEqualTo(1);
     }
 }

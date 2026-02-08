@@ -16,13 +16,15 @@ import java.time.Clock;
 class WordEntryConfiguration {
 
     @Bean
-    WordsFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock, WordDetailsDeleter wordDetailsDeleter, TranslationService translationService, WordDetailsFetchable wordFetchable) {
+    WordsFacade dictionaryFacade(WordEntryRepository wordRepository, CurrentUserProvider currentUserProvider, Clock clock, WordDetailsDeleter wordDetailsDeleter, TranslationService translationService, WordDetailsFetchable wordFetchable, WordsGroupRepository groupRepository, WordGroupLinkRepository linkRepository) {
         WordRetriever wordRetriever = new WordRetriever(wordRepository, currentUserProvider);
         WordTranslator wordTranslator = new WordTranslator(translationService, currentUserProvider);
-        WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, wordTranslator, wordFetchable, clock);
-        WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever, wordDetailsDeleter);
+        WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository,linkRepository, currentUserProvider);
+        GroupWordAssigner wordAssigner = new GroupWordAssigner(linkRepository, wordRepository, wordsGroupRetriever, currentUserProvider);
+        WordAdder wordAdder = new WordAdder(wordRepository, wordRetriever, currentUserProvider, wordTranslator, wordFetchable, wordsGroupRetriever, wordAssigner, clock);
+        WordDeleter wordDeleter = new WordDeleter(wordRepository, wordRetriever, wordDetailsDeleter,linkRepository);
         WordUpdater wordUpdater = new WordUpdater(wordRetriever);
-        return new WordsFacade(wordAdder, wordDeleter, wordRetriever, wordUpdater);
+        return new WordsFacade(wordAdder, wordDeleter, wordRetriever, wordUpdater, wordAssigner);
     }
 
     @Bean
@@ -34,5 +36,15 @@ class WordEntryConfiguration {
     DictionaryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator, Clock clock, CurrentUserProvider currentUserProvider) {
         WordRetriever wordRetriever = new WordRetriever(wordEntryRepository, currentUserProvider);
         return new DictionaryUpdateAdapter(wordEntryRepository, wordRetriever, calculator, clock);
+    }
+
+    @Bean
+    WordsGroupFacade wordsGroupFacade(WordsGroupRepository groupRepository, CurrentUserProvider currentUserProvider, WordGroupLinkRepository linkRepository, WordEntryRepository wordRepository) {
+        WordsGroupRetriever wordsGroupRetriever = new WordsGroupRetriever(groupRepository,linkRepository, currentUserProvider);
+        WordsGroupAdder groupAdder = new WordsGroupAdder(wordsGroupRetriever, groupRepository, currentUserProvider);
+        WordsGroupDeleter wordsGroupDeleter = new WordsGroupDeleter(groupRepository, wordsGroupRetriever, linkRepository);
+        WordsGroupUpdater wordsGroupUpdater = new WordsGroupUpdater(wordsGroupRetriever);
+        GroupWordAssigner wordAssigner = new GroupWordAssigner(linkRepository, wordRepository, wordsGroupRetriever, currentUserProvider);
+        return new WordsGroupFacade(groupAdder, wordsGroupDeleter, wordsGroupRetriever, wordsGroupUpdater, wordAssigner);
     }
 }

@@ -3,6 +3,7 @@ package com.vocabularysrs.infrastructure.api.business;
 import com.vocabularysrs.domain.dailytest.DailyTestAlreadyCompletedException;
 import com.vocabularysrs.domain.loginandregister.UserAlreadyExistException;
 import com.vocabularysrs.domain.words.WordAlreadyExistsException;
+import com.vocabularysrs.domain.words.WordsGroupAlreadyExistsException;
 import com.vocabularysrs.infrastructure.api.ApiErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,16 @@ public class BusinessErrorHandler {
         log.warn(exception.getMessage());
         return new ApiErrorResponse(
                 "WORD_ALREADY_EXIST",
+                exception.getMessage());
+    }
+
+    @ExceptionHandler(WordsGroupAlreadyExistsException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse handleWordsGroupAlreadyExists(WordsGroupAlreadyExistsException exception) {
+        log.warn(exception.getMessage());
+        return new ApiErrorResponse(
+                "WORDS_GROUP_ALREADY_EXIST",
                 exception.getMessage());
     }
 

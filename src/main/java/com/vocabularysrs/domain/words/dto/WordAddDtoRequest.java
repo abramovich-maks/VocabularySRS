@@ -14,6 +14,8 @@ public record WordAddDtoRequest(
         String word,
 
         @Size(min = TRANSLATE_MIN_SIZE, max = TRANSLATE_MAX_SIZE, message = "{translate.size}")
-        String translate
+        String translate,
+
+        Long groupId
 ) {
 }

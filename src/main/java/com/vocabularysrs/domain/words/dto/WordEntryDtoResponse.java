@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record WordEntryDtoResponse(
+        Long id,
         String word,
         String translate,
         String message
