@@ -1,6 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
-import com.vocabularysrs.domain.words.WordsDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.AllWordsGroupDtoRequest;
@@ -11,12 +11,21 @@ import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AllGroupsResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordToGroupResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordsToGroupRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordsToGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeleteGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.GroupsResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.UpdateGroupRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.UpdateGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordsGroupResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordsResponse;
 
 import java.util.List;
 

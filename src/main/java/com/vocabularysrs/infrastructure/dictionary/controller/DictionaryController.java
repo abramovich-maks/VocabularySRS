@@ -2,7 +2,7 @@ package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
 import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
-import com.vocabularysrs.domain.words.WordsDtoResponse;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import com.vocabularysrs.domain.words.WordsFacade;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
@@ -11,6 +11,7 @@ import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordToGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDetailsControllerDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
@@ -18,6 +19,7 @@ import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryContr
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryWithAutoTranslateControllerDtoRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePartiallyDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordsResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;

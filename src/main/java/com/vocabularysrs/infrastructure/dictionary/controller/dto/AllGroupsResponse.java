@@ -1,4 +1,4 @@
-package com.vocabularysrs.infrastructure.dictionary.controller;
+package com.vocabularysrs.infrastructure.dictionary.controller.dto;
 
 import lombok.Builder;
 

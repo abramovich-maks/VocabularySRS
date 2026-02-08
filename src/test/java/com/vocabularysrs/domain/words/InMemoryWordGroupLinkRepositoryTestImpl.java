@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.words;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,6 +31,21 @@ class InMemoryWordGroupLinkRepositoryTestImpl implements WordGroupLinkRepository
     @Override
     public List<WordGroupLink> findAllWithWordByGroupId(final Long groupId) {
         return List.of();
+    }
+
+    @Override
+    public void deleteByWord_Id(final Long wordId) {
+
+    }
+
+    @Override
+    public Optional<WordGroupLink> findWordGroupLinkByWord_IdAndGroup_Id(final Long wordId, final Long groupId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void deleteByGroup_IdAndWord_Id(final Long groupId, final Long wordId) {
+
     }
 
     @Override

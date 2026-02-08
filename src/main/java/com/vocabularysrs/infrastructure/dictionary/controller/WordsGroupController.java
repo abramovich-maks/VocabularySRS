@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller;
 
+import com.vocabularysrs.domain.words.dto.DeleteWordFromGroupDtoResponse;
 import com.vocabularysrs.domain.words.WordsGroupFacade;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
@@ -9,9 +10,15 @@ import com.vocabularysrs.domain.words.dto.CreateGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.UpdateGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsGroupDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AllGroupsResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordsToGroupRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordsToGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.CreateGroupRequest;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.CreateGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeleteGroupResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.UpdateGroupRequest;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.UpdateGroupResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordsGroupResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -81,5 +88,11 @@ class WordsGroupController {
         WordsGroupDtoRequest group = wordsGroupFacade.findGroupByIdAndUser(groupId);
         WordsGroupResponse response = mapFromWordsGroupDtoRequestToWordsGroupResponse(group);
         return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/{groupId}/word/{wordId}")
+    public ResponseEntity<DeleteWordFromGroupDtoResponse> deleteWordFromGroup(@PathVariable Long wordId, @PathVariable Long groupId) {
+        DeleteWordFromGroupDtoResponse deleteWordFromGroup = wordsGroupFacade.deleteWordFromGroup(wordId, groupId);
+        return ResponseEntity.ok().body(deleteWordFromGroup);
     }
 }
