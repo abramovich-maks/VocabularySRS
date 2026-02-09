@@ -87,7 +87,7 @@ class DictionaryController {
     }
 
     @PatchMapping("/{wordEntryId}")
-    public ResponseEntity<WordUpdatePartiallyDtoResponse> partiallyUpdateWordEntry(@PathVariable Long wordEntryId, @RequestBody WordUpdatePartiallyDtoRequest requestDto) {
+    public ResponseEntity<WordUpdatePartiallyDtoResponse> partiallyUpdateWordEntry(@PathVariable Long wordEntryId, @RequestBody @Valid WordUpdatePartiallyDtoRequest requestDto) {
         WordEntryUpdateDtoResponse wordEntryById = wordsFacade.updatePartiallyById(wordEntryId, requestDto);
         WordUpdatePartiallyDtoResponse response = mapFromWordEntryUpdateDtoResponseToWordUpdatePartiallyDtoResponse(wordEntryById);
         return ResponseEntity.ok().body(response);
