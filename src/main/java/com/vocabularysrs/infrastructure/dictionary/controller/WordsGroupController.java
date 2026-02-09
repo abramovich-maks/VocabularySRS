@@ -68,7 +68,7 @@ class WordsGroupController {
     }
 
     @PutMapping("/{groupId}")
-    public ResponseEntity<UpdateGroupResponse> updateNameGroup(@PathVariable Long groupId, @RequestBody UpdateGroupRequest request) {
+    public ResponseEntity<UpdateGroupResponse> updateNameGroup(@PathVariable Long groupId, @RequestBody @Valid UpdateGroupRequest request) {
         UpdateGroupDtoRequest build = mapFromUpdateGroupRequestToUpdateGroupDtoRequest(request);
         WordsGroupDtoRequest updatedGroup = wordsGroupFacade.updateGroupName(groupId, build);
         UpdateGroupResponse response = mapFromWordsGroupDtoRequestToUpdateGroupResponse(updatedGroup);
