@@ -1,6 +1,6 @@
 package com.vocabularysrs.domain.loginandregister.dto;
 
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +21,7 @@ public record UserRegisterRequestDto(
         String surname,
 
         @NotNull(message = "{language.not.null}")
-        UserLanguage language,
+        Language language,
 
         @NotNull(message = "{email.not.null}")
         @NotEmpty(message = "{email.not.empty}")

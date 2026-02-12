@@ -3,7 +3,7 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +52,7 @@ class JwtAuthTokenFilterTest {
                 .withIssuer("VocabularySRS-backend")
                 .withClaim("type", "access")
                 .withClaim("userId", 1L)
-                .withClaim("userLanguage", "RU")
+                .withClaim("language", "RU")
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -67,7 +67,7 @@ class JwtAuthTokenFilterTest {
 
         SecurityUser principal = (SecurityUser) auth.getPrincipal();
         assertEquals(1L, principal.getUserId());
-        assertEquals(UserLanguage.RU, principal.getUserLanguage());
+        assertEquals(Language.RU, principal.getUserLanguage());
         assertEquals("test@email.com", principal.getUsername());
     }
 
@@ -79,7 +79,7 @@ class JwtAuthTokenFilterTest {
                 .withIssuer("VocabularySRS-backend")
                 .withClaim("type", "access")
                 .withClaim("userId", 5L)
-                .withClaim("userLanguage", "RU")
+                .withClaim("language", "RU")
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         MockHttpServletRequest request = new MockHttpServletRequest();

@@ -1,11 +1,11 @@
-package com.vocabularysrs.domain.loginandregister;
+package com.vocabularysrs.domain.shared;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum UserLanguage {
+public enum Language {
     RU("ru"),
     PL("pl"),
     DE("de");

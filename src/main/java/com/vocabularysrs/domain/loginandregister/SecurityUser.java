@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.loginandregister;
 
+import com.vocabularysrs.domain.shared.Language;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,14 +10,14 @@ import java.util.Collections;
 public class SecurityUser implements UserDetails {
 
     private final Long userId;
-    private final UserLanguage userLanguage;
+    private final Language language;
     private final String username;
     private final String passwordHash;
 
 
-    public SecurityUser(Long userId, UserLanguage userLanguage, String username, final String passwordHash) {
+    public SecurityUser(Long userId, Language language, String username, final String passwordHash) {
         this.userId = userId;
-        this.userLanguage = userLanguage;
+        this.language = language;
         this.username = username;
         this.passwordHash = passwordHash;
     }
@@ -25,8 +26,8 @@ public class SecurityUser implements UserDetails {
         return userId;
     }
 
-    public UserLanguage getUserLanguage() {
-        return userLanguage;
+    public Language getUserLanguage() {
+        return language;
     }
 
     @Override

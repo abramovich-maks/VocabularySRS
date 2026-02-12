@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return new SecurityUser(
                 user.getId(),
-                user.getUserLanguage(),
+                user.getLanguage(),
                 user.getEmail(),
                 user.getPasswordHash()
         );

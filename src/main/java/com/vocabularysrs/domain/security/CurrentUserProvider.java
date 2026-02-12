@@ -1,9 +1,9 @@
 package com.vocabularysrs.domain.security;
 
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 
 public interface CurrentUserProvider {
     Long getCurrentUserId();
 
-    UserLanguage getCurrentUserLanguage();
+    Language getCurrentUserLanguage();
 }

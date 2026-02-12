@@ -3,7 +3,7 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,11 +34,11 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                 String username = decodedJWT.getSubject();
 
                 Long userId = decodedJWT.getClaim("userId").asLong();
-                String language = decodedJWT.getClaim("userLanguage").asString();
+                String language = decodedJWT.getClaim("language").asString();
 
                 SecurityUser securityUser = new SecurityUser(
                         userId,
-                        UserLanguage.valueOf(language),
+                        Language.valueOf(language),
                         username,
                         "");
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(securityUser, null, securityUser.getAuthorities());

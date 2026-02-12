@@ -1,6 +1,6 @@
 package com.vocabularysrs.domain.translation;
 
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 
@@ -11,8 +11,8 @@ public class WordTranslator {
     private final CurrentUserProvider userProvider;
 
     public TranslationResult translate(String word) {
-        UserLanguage userLanguage = userProvider.getCurrentUserLanguage();
-        String targetLang = userLanguage.getLanguage();
+        Language language = userProvider.getCurrentUserLanguage();
+        String targetLang = language.getLanguage();
         return translationService.translate(word, targetLang);
     }
 }

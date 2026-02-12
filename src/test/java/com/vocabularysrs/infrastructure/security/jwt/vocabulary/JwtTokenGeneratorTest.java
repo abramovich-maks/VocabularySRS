@@ -3,7 +3,7 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -48,7 +48,7 @@ class JwtTokenGeneratorTest {
         SecurityUser securityUser = mock(SecurityUser.class);
         when(securityUser.getUsername()).thenReturn("email@test.com");
         when(securityUser.getUserId()).thenReturn(1L);
-        when(securityUser.getUserLanguage()).thenReturn(UserLanguage.RU);
+        when(securityUser.getUserLanguage()).thenReturn(Language.RU);
 
         // when
         String token = jwtTokenGenerator.generateAccessToken(securityUser);
@@ -62,7 +62,7 @@ class JwtTokenGeneratorTest {
         assertEquals(now, decoded.getIssuedAt().toInstant());
         assertEquals(now.plusSeconds(1800), decoded.getExpiresAt().toInstant());
         assertEquals(1L, decoded.getClaim("userId").asLong());
-        assertEquals("RU", decoded.getClaim("userLanguage").asString());
+        assertEquals("RU", decoded.getClaim("language").asString());
         assertEquals("access", decoded.getClaim("type").asString());
     }
 }

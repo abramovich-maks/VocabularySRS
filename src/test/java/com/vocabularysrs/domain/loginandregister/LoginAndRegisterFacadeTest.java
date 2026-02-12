@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.loginandregister;
 
 import com.vocabularysrs.domain.loginandregister.dto.UserRegisterRequestDto;
 import com.vocabularysrs.domain.loginandregister.dto.UserRegisterResponseDto;
+import com.vocabularysrs.domain.shared.Language;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,7 +24,7 @@ class LoginAndRegisterFacadeTest {
         UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
                 .username("Maksim")
                 .surname("Abramovich")
-                .language(UserLanguage.RU)
+                .language(Language.RU)
                 .email(email)
                 .password(password)
                 .build();
@@ -46,7 +47,7 @@ class LoginAndRegisterFacadeTest {
         UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
                 .username("Maksim")
                 .surname("Abramovich")
-                .language(UserLanguage.RU)
+                .language(Language.RU)
                 .email(email)
                 .password(password)
                 .build();
@@ -65,7 +66,7 @@ class LoginAndRegisterFacadeTest {
         UserRegisterRequestDto newUserRequest = UserRegisterRequestDto.builder()
                 .username("Maksim")
                 .surname("Abramovich")
-                .language(UserLanguage.RU)
+                .language(Language.RU)
                 .email(email)
                 .password(password)
                 .build();

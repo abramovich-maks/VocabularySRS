@@ -1,6 +1,6 @@
 package com.vocabularysrs.domain.dailytest;
 
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 
 class TestCurrentUserProvider implements CurrentUserProvider {
@@ -10,7 +10,7 @@ class TestCurrentUserProvider implements CurrentUserProvider {
     }
 
     @Override
-    public UserLanguage getCurrentUserLanguage() {
-        return UserLanguage.RU;
+    public Language getCurrentUserLanguage() {
+        return Language.RU;
     }
 }

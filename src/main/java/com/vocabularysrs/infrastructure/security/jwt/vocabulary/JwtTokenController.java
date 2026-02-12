@@ -3,7 +3,7 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
-import com.vocabularysrs.domain.loginandregister.UserLanguage;
+import com.vocabularysrs.domain.shared.Language;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,10 +54,10 @@ class JwtTokenController {
             String username = decodedJWT.getSubject();
 
             Long userId = decodedJWT.getClaim("userId").asLong();
-            String language = decodedJWT.getClaim("userLanguage").asString();
+            String language = decodedJWT.getClaim("language").asString();
             SecurityUser user = new SecurityUser(
                     userId,
-                    UserLanguage.valueOf(language),
+                    Language.valueOf(language),
                     username,
                     "");
 
