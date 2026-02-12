@@ -1,22 +1,17 @@
 package com.vocabularysrs.domain.irregularverbs;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter(AccessLevel.PACKAGE)
-@Setter(AccessLevel.PACKAGE)
 @Entity
 class IrregularVerb {
 
@@ -29,9 +24,12 @@ class IrregularVerb {
     )
     private Long id;
 
+    @Column(nullable = false)
     private String baseForm;
 
+    @Column(nullable = false)
     private String pastSimple;
 
+    @Column(nullable = false)
     private String pastParticiple;
 }
