@@ -28,8 +28,17 @@ class IrregularVerb {
     private String baseForm;
 
     @Column(nullable = false)
+    private String baseTranscription;
+
+    @Column(nullable = false)
     private String pastSimple;
 
     @Column(nullable = false)
+    private String pastTranscription;
+
+    @Column(nullable = false)
     private String pastParticiple;
+
+    @Column(nullable = false)
+    private String pastParticipleTranscription;
 }
