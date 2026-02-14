@@ -3,7 +3,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'powstawać', id FROM irregular_verb WHERE base_form='arise';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'entstehen', id FROM irregular_verb WHERE base_form='arise';
 
-INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'awake', '[əˈweɪk]', 'awoke/awaked', '[əˈwəʊk]/[əˈweɪkt]', 'awoken/awaked', '[əˈwəʊkən]/[əˈweɪkt]');
+INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'awake', '[əˈweɪk]', 'awoke', '[əˈwəʊk]', 'awoken', '[əˈwəʊkən]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'просыпаться', id FROM irregular_verb WHERE base_form='awake';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'obudzić się', id FROM irregular_verb WHERE base_form='awake';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'aufwachen', id FROM irregular_verb WHERE base_form='awake';
@@ -14,9 +14,9 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'sein', id FROM irregular_verb WHERE base_form='be';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'bear', '[beə]', 'bore', '[bɔː]', 'born/borne', '[bɔːn]');
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'нести', id FROM irregular_verb WHERE base_form='bear';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'znosić', id FROM irregular_verb WHERE base_form='bear';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'tragen', id FROM irregular_verb WHERE base_form='bear';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'нести, терпеть, рождать', id FROM irregular_verb WHERE base_form='bear';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'znosić, nosić, rodzić', id FROM irregular_verb WHERE base_form='bear';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'tragen, ertragen, gebären', id FROM irregular_verb WHERE base_form='bear';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'beat', '[biːt]', 'beat', '[biːt]', 'beaten', '[ˈbiːtn]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'бить', id FROM irregular_verb WHERE base_form='beat';
@@ -39,7 +39,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'beugen', id FROM irregular_verb WHERE base_form='bend';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'bet', '[bet]', 'bet', '[bet]', 'bet', '[bet]');
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'держать пари', id FROM irregular_verb WHERE base_form='bet';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'спорить (на деньги)', id FROM irregular_verb WHERE base_form='bet';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'zakładać się', id FROM irregular_verb WHERE base_form='bet';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'wetten', id FROM irregular_verb WHERE base_form='bet';
 
@@ -115,7 +115,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'cling', '[klɪŋ]', 'clung', '[klʌŋ]', 'clung', '[klʌŋ]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'цепляться', id FROM irregular_verb WHERE base_form='cling';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'czepiać się', id FROM irregular_verb WHERE base_form='cling';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'czepiać się, przylgnąć', id FROM irregular_verb WHERE base_form='cling';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'klammern', id FROM irregular_verb WHERE base_form='cling';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'come', '[kʌm]', 'came', '[keɪm]', 'come', '[kʌm]');
@@ -130,7 +130,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'creep', '[kriːp]', 'crept', '[krept]', 'crept', '[krept]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'ползти', id FROM irregular_verb WHERE base_form='creep';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'czołgać się', id FROM irregular_verb WHERE base_form='creep';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'pełzać', id FROM irregular_verb WHERE base_form='creep';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'kriechen', id FROM irregular_verb WHERE base_form='creep';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'cut', '[kʌt]', 'cut', '[kʌt]', 'cut', '[kʌt]');
@@ -139,9 +139,9 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'schneiden', id FROM irregular_verb WHERE base_form='cut';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'deal', '[diːl]', 'dealt', '[delt]', 'dealt', '[delt]');
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'иметь дело', id FROM irregular_verb WHERE base_form='deal';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'zajmować się', id FROM irregular_verb WHERE base_form='deal';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'handeln', id FROM irregular_verb WHERE base_form='deal';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'иметь дело с, обращаться с', id FROM irregular_verb WHERE base_form='deal';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'mieć do czynienia, zajmować się', id FROM irregular_verb WHERE base_form='deal';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'sich befassen, umgehen mit', id FROM irregular_verb WHERE base_form='deal';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'dig', '[dɪɡ]', 'dug', '[dʌɡ]', 'dug', '[dʌɡ]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'копать', id FROM irregular_verb WHERE base_form='dig';
@@ -328,7 +328,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'trzymać', id FROM irregular_verb WHERE base_form='keep';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'behalten', id FROM irregular_verb WHERE base_form='keep';
 
-INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'kneel', '[niːl]', 'knelt/kneeled', '[nelt]/[niːld]', 'knelt/kneeled', '[nelt]/[niːld]');
+INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'kneel', '[niːl]', 'knelt', '[nelt]', 'knelt', '[nelt]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'становиться на колени', id FROM irregular_verb WHERE base_form='kneel';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'klękać', id FROM irregular_verb WHERE base_form='kneel';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'knien', id FROM irregular_verb WHERE base_form='kneel';
@@ -436,7 +436,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'overhear', '[ˌəʊvəˈhɪə]', 'overheard', '[ˌəʊvəˈhɜːd]', 'overheard', '[ˌəʊvəˈhɜːd]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'подслушивать', id FROM irregular_verb WHERE base_form='overhear';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'podsłuchiwać', id FROM irregular_verb WHERE base_form='overhear';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'überhören', id FROM irregular_verb WHERE base_form='overhear';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'belauschen', id FROM irregular_verb WHERE base_form='overhear';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'oversee', '[ˌəʊvəˈsiː]', 'oversaw', '[ˌəʊvəˈsɔː]', 'overseen', '[ˌəʊvəˈsiːn]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'контролировать', id FROM irregular_verb WHERE base_form='oversee';
@@ -466,7 +466,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'put', '[pʊt]', 'put', '[pʊt]', 'put', '[pʊt]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'класть', id FROM irregular_verb WHERE base_form='put';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'kłaść', id FROM irregular_verb WHERE base_form='put';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'legen', id FROM irregular_verb WHERE base_form='put';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'setzen, stellen, legen', id FROM irregular_verb WHERE base_form='put';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'quit', '[kwɪt]', 'quit/quitted', '[kwɪt]/[ˈkwɪtɪd]', 'quit/quitted', '[kwɪt]/[ˈkwɪtɪd]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'бросать', id FROM irregular_verb WHERE base_form='quit';
@@ -549,9 +549,9 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'scheren', id FROM irregular_verb WHERE base_form='shear';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'shed', '[ʃed]', 'shed', '[ʃed]', 'shed', '[ʃed]');
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'проливать', id FROM irregular_verb WHERE base_form='shed';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'rozlewać', id FROM irregular_verb WHERE base_form='shed';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'vergießen', id FROM irregular_verb WHERE base_form='shed';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'проливать, сбрасывать', id FROM irregular_verb WHERE base_form='shed';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'rozlewać, zrzucać', id FROM irregular_verb WHERE base_form='shed';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'vergießen, verlieren, abwerfen', id FROM irregular_verb WHERE base_form='shed';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'shine', '[ʃaɪn]', 'shone', '[ʃəʊn]', 'shone', '[ʃəʊn]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'сиять', id FROM irregular_verb WHERE base_form='shine';
@@ -690,7 +690,7 @@ INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELE
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'steal', '[stiːl]', 'stole', '[stəʊl]', 'stolen', '[ˈstəʊlən]');
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'RU', 'красть', id FROM irregular_verb WHERE base_form='steal';
-INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'kraść', id FROM irregular_verb WHERE base_form='steal';
+INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'PL', 'ukraść', id FROM irregular_verb WHERE base_form='steal';
 INSERT INTO irregular_verb_translation (id, language, translation, verb_id) SELECT nextval('irregular_verb_translation_id_seq'), 'DE', 'stehlen', id FROM irregular_verb WHERE base_form='steal';
 
 INSERT INTO irregular_verb (id, base_form, base_transcription, past_simple, past_transcription, past_participle, past_participle_transcription) VALUES (nextval('irregular_verb_id_seq'), 'stick', '[stɪk]', 'stuck', '[stʌk]', 'stuck', '[stʌk]');
