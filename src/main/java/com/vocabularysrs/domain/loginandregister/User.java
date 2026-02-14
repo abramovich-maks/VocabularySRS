@@ -48,6 +48,7 @@ class User {
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_language", nullable = false)
     private Language language;
 
     static User createNew(final String username, final String surname, final Language language, final String email, final String passwordHash) {
