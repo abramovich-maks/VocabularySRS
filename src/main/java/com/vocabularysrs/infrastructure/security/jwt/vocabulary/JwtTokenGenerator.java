@@ -5,7 +5,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
@@ -15,7 +14,6 @@ import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
-@Profile("!integration")
 public class JwtTokenGenerator {
 
     private final Clock clock;

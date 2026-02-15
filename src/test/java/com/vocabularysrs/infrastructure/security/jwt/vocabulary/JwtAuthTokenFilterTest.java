@@ -18,6 +18,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,8 +38,11 @@ class JwtAuthTokenFilterTest {
         KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         generator.initialize(2048);
         keyPair = generator.generateKeyPair();
-
-        JwtTokenValidator validator = new JwtTokenValidator(keyPair);
+        Clock clock = Clock.fixed(
+                Instant.parse("2025-12-19T10:00:00Z"),
+                ZoneOffset.UTC
+        );
+        JwtTokenValidator validator = new JwtTokenValidator(keyPair, clock);
         filter = new JwtAuthTokenFilter(validator);
     }
 
@@ -53,6 +60,8 @@ class JwtAuthTokenFilterTest {
                 .withClaim("type", "access")
                 .withClaim("userId", 1L)
                 .withClaim("language", "RU")
+                .withIssuedAt(Date.from(Instant.parse("2025-12-19T09:59:00Z")))
+                .withExpiresAt(Date.from(Instant.parse("2025-12-19T10:30:00Z")))
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -80,6 +89,8 @@ class JwtAuthTokenFilterTest {
                 .withClaim("type", "access")
                 .withClaim("userId", 5L)
                 .withClaim("language", "RU")
+                .withIssuedAt(Date.from(Instant.parse("2025-12-19T09:59:00Z")))
+                .withExpiresAt(Date.from(Instant.parse("2025-12-19T10:30:00Z")))
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         MockHttpServletRequest request = new MockHttpServletRequest();

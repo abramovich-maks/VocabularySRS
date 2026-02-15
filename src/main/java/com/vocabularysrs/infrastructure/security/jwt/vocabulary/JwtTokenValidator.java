@@ -10,12 +10,15 @@ import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Clock;
+import java.time.Instant;
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenValidator {
 
     private final KeyPair keyPair;
+    private final Clock clock;
 
     public DecodedJWT verifyRefreshToken(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getPublic(), null)).build();
@@ -27,8 +30,15 @@ public class JwtTokenValidator {
     }
 
     public DecodedJWT verifyAccessToken(String token) {
-        JWTVerifier verifier = JWT.require(Algorithm.RSA256((RSAPublicKey) keyPair.getPublic(), null)).build();
-        DecodedJWT jwt = verifier.verify(token);
+        DecodedJWT jwt = JWT.decode(token);
+        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) keyPair.getPublic(), null);
+        algorithm.verify(jwt);
+        Instant now = Instant.now(clock);
+        Instant expiresAt = jwt.getExpiresAt().toInstant();
+
+        if (expiresAt.isBefore(now)) {
+            throw new JWTVerificationException("Token expired");
+        }
         if (!"access".equals(jwt.getClaim("type").asString())) {
             throw new JWTVerificationException("Not an access token");
         }

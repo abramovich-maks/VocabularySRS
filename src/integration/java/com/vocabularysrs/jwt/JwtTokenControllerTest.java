@@ -2,6 +2,7 @@ package com.vocabularysrs.jwt;
 
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
+import com.vocabularysrs.infrastructure.security.jwt.vocabulary.JwtTokenGenerator;
 import com.vocabularysrs.infrastructure.security.jwt.vocabulary.TokenRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -22,6 +23,9 @@ class JwtTokenControllerTest extends BaseIntegrationTest {
 
     @MockitoBean
     AuthenticationManager authenticationManager;
+
+    @MockitoBean
+    public JwtTokenGenerator jwtTokenGenerator;
 
     @Test
     void shouldReturn200AndSetRefreshCookie() throws Exception {

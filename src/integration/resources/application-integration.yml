@@ -1,0 +1,14 @@
+spring:
+  cache:
+    type: none
+    redis:
+      time-to-live: PT10S
+  data:
+    redis:
+      host: localhost
+      port: 63792
+
+  ## Token jwt
+auth:
+  jwt:
+    expirationSeconds: 999999999
