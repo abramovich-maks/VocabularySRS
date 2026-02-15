@@ -48,9 +48,30 @@ public interface IntegrationTestData {
                 """;
     }
 
+    default String requestBodyLogin() {
+        return """
+                {
+                  "email": "ru@ru",
+                  "password": "12345678"
+                }
+                """.trim();
+    }
+
+    default String requestBodyRegister() {
+        return """
+                {
+                  "username": "Maksim",
+                  "surname": "Abramovich",
+                  "language": "RU",
+                  "email": "ru@ru",
+                  "password": "12345678"
+                }
+                """.trim();
+    }
+
     default AnswerResult answerQuestion(MockMvc mockMvc, ObjectMapper objectMapper, String authHeader, long questionId, String answer) throws Exception {
         MvcResult result = mockMvc.perform(post("/dailytest/questions/{id}/answer", questionId)
-                        .header("Authorization", authHeader)
+                        .header("Authorization", "Bearer " + authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                     { "userAnswer": "%s" }
