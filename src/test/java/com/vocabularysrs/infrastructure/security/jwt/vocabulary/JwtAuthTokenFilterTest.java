@@ -30,8 +30,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ExtendWith(MockitoExtension.class)
 class JwtAuthTokenFilterTest {
 
+    private static final String TEST_ISSUER = "VocabularySRS-backend";
+
     KeyPair keyPair;
     JwtAuthTokenFilter filter;
+
+    JwtConfigurationProperties properties;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -42,7 +46,13 @@ class JwtAuthTokenFilterTest {
                 Instant.parse("2025-12-19T10:00:00Z"),
                 ZoneOffset.UTC
         );
-        JwtTokenValidator validator = new JwtTokenValidator(keyPair, clock);
+        properties = new JwtConfigurationProperties(
+                3600L,
+                TEST_ISSUER,
+                604800L,
+                false
+        );
+        JwtTokenValidator validator = new JwtTokenValidator(keyPair, clock, properties);
         filter = new JwtAuthTokenFilter(validator);
     }
 
@@ -56,7 +66,7 @@ class JwtAuthTokenFilterTest {
         // given
         String token = JWT.create()
                 .withSubject("test@email.com")
-                .withIssuer("VocabularySRS-backend")
+                .withIssuer(TEST_ISSUER)
                 .withClaim("type", "access")
                 .withClaim("userId", 1L)
                 .withClaim("language", "RU")
@@ -85,7 +95,7 @@ class JwtAuthTokenFilterTest {
         // given
         String token = JWT.create()
                 .withSubject("user@u")
-                .withIssuer("VocabularySRS-backend")
+                .withIssuer(TEST_ISSUER)
                 .withClaim("type", "access")
                 .withClaim("userId", 5L)
                 .withClaim("language", "RU")
