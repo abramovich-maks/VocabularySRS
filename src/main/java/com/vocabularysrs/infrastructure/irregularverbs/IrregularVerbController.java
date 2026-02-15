@@ -2,6 +2,8 @@ package com.vocabularysrs.infrastructure.irregularverbs;
 
 import com.vocabularysrs.domain.irregularverbs.IrregularVerbDto;
 import com.vocabularysrs.domain.irregularverbs.IrregularVerbFacade;
+import com.vocabularysrs.domain.security.CurrentUserProvider;
+import com.vocabularysrs.domain.shared.Language;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +17,12 @@ import java.util.List;
 class IrregularVerbController {
 
     private final IrregularVerbFacade facade;
+    private final CurrentUserProvider currentUserProvider;
 
     @GetMapping
     public List<IrregularVerbDto> getAll() {
-        return facade.findAll();
+        Language language = currentUserProvider.getCurrentUserLanguage();
+        return facade.findAll(language);
     }
 }
 

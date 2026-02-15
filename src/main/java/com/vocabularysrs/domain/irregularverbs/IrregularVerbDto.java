@@ -1,5 +1,7 @@
 package com.vocabularysrs.domain.irregularverbs;
 
+import java.io.Serializable;
+
 public record IrregularVerbDto(
         String baseForm,
         String baseTranscription,
@@ -8,5 +10,5 @@ public record IrregularVerbDto(
         String pastParticiple,
         String pastParticipleTranscription,
         String translation
-) {
+) implements Serializable {
 }

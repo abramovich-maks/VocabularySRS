@@ -1,6 +1,5 @@
 package com.vocabularysrs.domain.irregularverbs;
 
-import com.vocabularysrs.domain.security.CurrentUserProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -8,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 class IrregularVerbConfiguration {
 
     @Bean
-    public IrregularVerbFacade irregularVerbFacade(IrregularVerbRepository repository, CurrentUserProvider currentUserProvider) {
-        return new IrregularVerbFacade(repository, currentUserProvider);
+    public IrregularVerbFacade irregularVerbFacade(IrregularVerbRepository repository) {
+        return new IrregularVerbFacade(repository);
     }
 }

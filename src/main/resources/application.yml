@@ -25,6 +25,16 @@ spring:
       hibernate:
         format_sql: false
 
+    ## Redis
+  cache:
+    type: redis
+    redis:
+      time-to-live: 24h
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
 server:
   servlet:
     context-path: /api

@@ -1,8 +1,8 @@
 package com.vocabularysrs.domain.irregularverbs;
 
-import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.shared.Language;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -10,10 +10,9 @@ import java.util.List;
 public class IrregularVerbFacade {
 
     private final IrregularVerbRepository repository;
-    private final CurrentUserProvider currentUserProvider;
 
-    public List<IrregularVerbDto> findAll() {
-        Language language = currentUserProvider.getCurrentUserLanguage();
+    @Cacheable(value = "irregularVerb", key = "#language")
+    public List<IrregularVerbDto> findAll(Language language) {
         return repository.findAllByLanguage(language);
     }
 }

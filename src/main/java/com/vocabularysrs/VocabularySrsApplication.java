@@ -6,9 +6,11 @@ import com.vocabularysrs.infrastructure.translation.http.TranslateClientConfigur
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableConfigurationProperties({JwtConfigurationProperties.class, DictionaryRestTemplateConfigurationProperties.class, TranslateClientConfigurationProperties.class})
+@EnableCaching
 public class VocabularySrsApplication {
 
     public static void main(String[] args) {

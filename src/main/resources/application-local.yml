@@ -1,11 +1,22 @@
 spring:
 
-    ## Hibernate
+  ## Hibernate
   jpa:
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+
+  ## Redis
+  cache:
+    type: redis
+    redis:
+      time-to-live: PT3M
+  data:
+    redis:
+      host: localhost
+      port: 63792
+
 
 auth:
   jwt:
