@@ -3,7 +3,6 @@ package com.vocabularysrs.feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
-import com.vocabularysrs.PageResponse;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
 import com.vocabularysrs.domain.dailytest.dto.QuestionDto;
@@ -11,6 +10,7 @@ import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
+import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordsResponse;
 import com.vocabularysrs.infrastructure.security.jwt.vocabulary.JwtResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -56,9 +56,9 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         // then
         MvcResult mvcResultZeroWords = performEmptyResults.andExpect(status().isOk()).andReturn();
         String jsonEmptyWords = mvcResultZeroWords.getResponse().getContentAsString();
-        PageResponse<WordDtoControllerResponse> emptyWordsResponse = objectMapper.readValue(jsonEmptyWords, new TypeReference<>() {
+        WordsResponse emptyWordsResponse = objectMapper.readValue(jsonEmptyWords, new TypeReference<>() {
         });
-        assertThat(emptyWordsResponse.content()).isEmpty();
+        assertThat(emptyWordsResponse.words()).isEmpty();
 
 
 // step 2: user made POST /words with body (word: cat, translate: кот) at 19-12-2025 12:00, and the system returned OK (200) with message: "Success. New word added" and word: "cat", translate: "кот".
@@ -86,11 +86,11 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         // then
         MvcResult mvcResultOneWord = getAllWordsRequest.andExpect(status().isOk()).andReturn();
         String jsonWithOneWord = mvcResultOneWord.getResponse().getContentAsString();
-        PageResponse<WordDtoControllerResponse> responseWithOneWord = objectMapper.readValue(jsonWithOneWord, new TypeReference<>() {
+        WordsResponse responseWithOneWord = objectMapper.readValue(jsonWithOneWord, new TypeReference<>() {
         });
-        WordDtoControllerResponse actual = responseWithOneWord.content().get(0);
+        WordDtoControllerResponse actual = responseWithOneWord.words().get(0);
         assertAll(
-                () -> assertThat(responseWithOneWord.content().size()).isEqualTo(1),
+                () -> assertThat(responseWithOneWord.words().size()).isEqualTo(1),
                 () -> assertThat(actual.id()).isEqualTo(1L),
                 () -> assertThat(actual.word()).isEqualTo(CAT),
                 () -> assertThat(actual.translate()).isEqualTo(CAT_RU)
@@ -131,9 +131,9 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         // then
         MvcResult mvcResultFourWords = getAllWordsAfterAddingRequest.andExpect(status().isOk()).andReturn();
         String jsonWithFourWords = mvcResultFourWords.getResponse().getContentAsString();
-        PageResponse<WordDtoControllerResponse> responseWithFourWords = objectMapper.readValue(jsonWithFourWords, new TypeReference<>() {
+        WordsResponse responseWithFourWords = objectMapper.readValue(jsonWithFourWords, new TypeReference<>() {
         });
-        assertThat(responseWithFourWords.content())
+        assertThat(responseWithFourWords.words())
                 .hasSize(4)
                 .extracting(WordDtoControllerResponse::id, WordDtoControllerResponse::word, WordDtoControllerResponse::translate)
                 .containsExactly(
@@ -176,10 +176,10 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .andExpect(status().isOk())
                 .andReturn();
 
-        PageResponse<WordDtoControllerResponse> afterDelete =
+        WordsResponse afterDelete =
                 objectMapper.readValue(afterDeleteResult.getResponse().getContentAsString(), new TypeReference<>() {
                 });
-        assertThat(afterDelete.content()).hasSize(3);
+        assertThat(afterDelete.words()).hasSize(3);
 
 
 // step 10: system time is advanced to 2025-12-20T06:01 (next day morning)
