@@ -36,4 +36,9 @@ class WordEntryJpaAdapter implements WordEntryReadPort {
                         wordEntry.getTranslate()
                 ));
     }
+
+    @Override
+    public Optional<LocalDate> findNearestReviewDate(Long userId) {
+        return Optional.ofNullable(repository.findNearestReviewDate(userId, LocalDate.now()));
+    }
 }

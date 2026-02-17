@@ -1,8 +1,8 @@
 package com.vocabularysrs.domain.words;
 
-import com.vocabularysrs.domain.dailytest.DictionaryUpdatePort;
-import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
+import com.vocabularysrs.domain.learningtest.WordEntryUpdatePort;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Log4j2
-class DictionaryUpdateAdapter implements DictionaryUpdatePort {
+class WordEntryUpdateAdapter implements WordEntryUpdatePort {
 
     private final WordEntryRepository wordEntryRepository;
     private final WordRetriever wordRetriever;
@@ -25,13 +25,13 @@ class DictionaryUpdateAdapter implements DictionaryUpdatePort {
     @Override
     public void update(DailyTestResponseDto result) {
         LocalDate today = LocalDate.now(clock);
-        Map<Long, List<AnswerResult>> answersByWord =
+        Map<Long, List<AnswerResultDto>> answersByWord =
                 result.answers().stream()
-                        .collect(Collectors.groupingBy(AnswerResult::wordEntryId));
-        for (Map.Entry<Long, List<AnswerResult>> entry : answersByWord.entrySet()) {
+                        .collect(Collectors.groupingBy(AnswerResultDto::wordEntryId));
+        for (Map.Entry<Long, List<AnswerResultDto>> entry : answersByWord.entrySet()) {
             Long wordId = entry.getKey();
-            List<AnswerResult> answersForWord = entry.getValue();
-            boolean correct = answersForWord.stream().allMatch(AnswerResult::correct);
+            List<AnswerResultDto> answersForWord = entry.getValue();
+            boolean correct = answersForWord.stream().allMatch(AnswerResultDto::correct);
             try {
                 WordEntry entityById = wordRetriever.findEntityById(wordId);
                 entityById.applyReviewResult(correct, calculator, today);

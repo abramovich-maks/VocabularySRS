@@ -1,4 +1,4 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
+package com.vocabularysrs.domain.learningtest;
 
 public enum TranslationDirection {
     WORD_TO_TRANSLATION,

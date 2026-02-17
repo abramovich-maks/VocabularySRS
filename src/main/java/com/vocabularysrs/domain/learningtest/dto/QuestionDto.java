@@ -1,6 +1,6 @@
-package com.vocabularysrs.domain.dailytest.dto;
+package com.vocabularysrs.domain.learningtest.dto;
 
-import com.vocabularysrs.domain.learningtaskgenerator.TranslationDirection;
+import com.vocabularysrs.domain.learningtest.TranslationDirection;
 import lombok.Builder;
 
 @Builder

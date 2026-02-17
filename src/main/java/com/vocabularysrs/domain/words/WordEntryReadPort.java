@@ -8,4 +8,6 @@ public interface WordEntryReadPort {
     List<WordEntrySnapshot> findWordEntriesByNextReviewDateAndUserIdLessThanEqual(LocalDate today, Long userId);
 
     Optional<WordEntrySnapshot> findById(Long wordId);
+
+    Optional<LocalDate> findNearestReviewDate(Long userId);
 }

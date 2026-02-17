@@ -33,9 +33,9 @@ class WordEntryConfiguration {
     }
 
     @Bean
-    DictionaryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator, Clock clock, CurrentUserProvider currentUserProvider) {
+    WordEntryUpdateAdapter dictionaryUpdateAdapter(WordEntryRepository wordEntryRepository, RepetitionIntervalCalculator calculator, Clock clock, CurrentUserProvider currentUserProvider) {
         WordRetriever wordRetriever = new WordRetriever(wordEntryRepository, currentUserProvider);
-        return new DictionaryUpdateAdapter(wordEntryRepository, wordRetriever, calculator, clock);
+        return new WordEntryUpdateAdapter(wordEntryRepository, wordRetriever, calculator, clock);
     }
 
     @Bean

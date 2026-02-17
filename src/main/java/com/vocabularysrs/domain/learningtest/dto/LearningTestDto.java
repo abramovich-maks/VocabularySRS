@@ -1,9 +1,9 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
+package com.vocabularysrs.domain.learningtest.dto;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public record LearningTaskDto(
+public record LearningTestDto(
         Long id,
         LocalDate taskDate,
         Long userId,

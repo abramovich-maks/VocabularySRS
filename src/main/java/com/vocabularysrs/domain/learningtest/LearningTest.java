@@ -1,5 +1,6 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
+package com.vocabularysrs.domain.learningtest;
 
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ import java.util.List;
 @Getter(AccessLevel.PACKAGE)
 @Setter(AccessLevel.PACKAGE)
 @Entity
-class LearningTask {
+class LearningTest {
 
     @Id
     @GeneratedValue(generator = "learning_task_id_seq", strategy = GenerationType.SEQUENCE)
@@ -39,10 +40,10 @@ class LearningTask {
 
     private Long userId;
 
-    @OneToMany(mappedBy = "learningTask", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "learningTest", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
 
-    LearningTask(final Long userId, final LocalDate taskDate, final List<Question> questions) {
+    LearningTest(final Long userId, final LocalDate taskDate, final List<Question> questions) {
         this.userId = userId;
         this.taskDate = taskDate;
         this.questions = questions;
@@ -50,11 +51,11 @@ class LearningTask {
 
     public void addQuestion(Question question) {
         this.questions.add(question);
-        question.setLearningTask(this);
+        question.setLearningTest(this);
     }
 
 
-    AnswerResult answerQuestion(Long questionId, String userAnswer) {
+    AnswerResultDto answerQuestion(Long questionId, String userAnswer) {
         Question question = questions.stream()
                 .filter(q -> q.getId().equals(questionId))
                 .findFirst()

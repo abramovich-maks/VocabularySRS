@@ -1,4 +1,4 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
+package com.vocabularysrs.domain.learningtest;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -6,25 +6,25 @@ import org.springframework.data.repository.Repository;
 import java.time.LocalDate;
 import java.util.Optional;
 
-interface LearningTaskRepository extends Repository<LearningTask, Long> {
-    LearningTask save(LearningTask task);
+interface LearningTestRepository extends Repository<LearningTest, Long> {
+    LearningTest save(LearningTest task);
 
     @Query("""
                         select task
-                        from LearningTask task
+                        from LearningTest task
                         left join fetch task.questions
                         where task.userId = :userId
                         and task.taskDate = :taskDate
             """)
-    Optional<LearningTask> findLearningTaskByTaskDateAndUserId(LocalDate taskDate, Long userId);
+    Optional<LearningTest> findLearningTaskByTaskDateAndUserId(LocalDate taskDate, Long userId);
 
     @Query("""
                 select task
-                from LearningTask task
+                from LearningTest task
                 join fetch task.questions q
                 where q.id = :questionId
                 and task.userId = :userId
             """)
-    Optional<LearningTask> findByQuestionIdAndUserId(Long questionId, Long userId);
+    Optional<LearningTest> findByQuestionIdAndUserId(Long questionId, Long userId);
 }
 

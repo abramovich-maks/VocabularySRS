@@ -1,5 +1,6 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
+package com.vocabularysrs.domain.learningtest;
 
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -46,7 +47,7 @@ class Question {
     private String userAnswer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private LearningTask learningTask;
+    private LearningTest learningTest;
 
     Question(final Long wordEntryId, final String prompt, final TranslationDirection direction, String answer) {
         this.wordEntryId = wordEntryId;
@@ -71,8 +72,8 @@ class Question {
         return answered && answer.equalsIgnoreCase(userAnswer);
     }
 
-    AnswerResult toResult() {
-        return new AnswerResult(
+    AnswerResultDto toResult() {
+        return new AnswerResultDto(
                 id,
                 wordEntryId,
                 prompt,

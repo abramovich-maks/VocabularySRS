@@ -1,4 +1,6 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
+package com.vocabularysrs.domain.learningtest.dto;
+
+import com.vocabularysrs.domain.learningtest.TranslationDirection;
 
 public record QuestionSnapshot(
         Long id,

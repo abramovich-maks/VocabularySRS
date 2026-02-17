@@ -1,9 +1,9 @@
-package com.vocabularysrs.domain.learningtaskgenerator;
+package com.vocabularysrs.domain.learningtest.dto;
 
 import lombok.Builder;
 
 @Builder
-public record AnswerResult(
+public record AnswerResultDto(
         Long questionId,
         Long wordEntryId,
         String word,

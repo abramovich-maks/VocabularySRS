@@ -3,10 +3,10 @@ package com.vocabularysrs.feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
-import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
-import com.vocabularysrs.domain.dailytest.dto.DailyTestShowResponseDto;
-import com.vocabularysrs.domain.dailytest.dto.QuestionDto;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestDto;
+import com.vocabularysrs.domain.learningtest.dto.QuestionDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements IntegrationTestData {
+class UserAddWordsAndCompleteDailyTestDto extends BaseIntegrationTest implements IntegrationTestData {
 
     @Test
     public void should_handle_full_srs_flow_with_skipped_days() throws Exception {
@@ -195,7 +195,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         // then
         MvcResult dailyTestResponse = firstDailyTestRequest.andExpect(status().isOk()).andReturn();
         String jsonGetResponse = dailyTestResponse.getResponse().getContentAsString();
-        DailyTestShowResponseDto getResponse = objectMapper.readValue(jsonGetResponse, DailyTestShowResponseDto.class);
+        DailyTestDto getResponse = objectMapper.readValue(jsonGetResponse, DailyTestDto.class);
 
         assertThat(getResponse.userId()).isEqualTo(1);
         assertThat(getResponse.id()).isNotNull();
@@ -205,7 +205,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
 
 // step 12: user made POST /dailytest and requested 2 true and 4 false questions, and the server returned test statistics.
         // given && when
-        AnswerResult question1 = answerQuestion(mockMvc, objectMapper, jwtToken, 1, "кот");
+        AnswerResultDto question1 = answerQuestion(mockMvc, objectMapper, jwtToken, 1, "кот");
         answerQuestion(mockMvc, objectMapper, jwtToken, 2, "cat");
         answerQuestion(mockMvc, objectMapper, jwtToken, 3, "qwe");
         answerQuestion(mockMvc, objectMapper, jwtToken, 4, "qwe");
@@ -232,7 +232,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(summary.incorrect()).isEqualTo(4);
         assertThat(summary.answers()).hasSize(6);
         assertThat(summary.answers())
-                .extracting(AnswerResult::correct)
+                .extracting(AnswerResultDto::correct)
                 .containsExactly(true, true, false, false, false, false);
 
 
@@ -248,7 +248,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .andExpect(status().isOk());
         MvcResult secondDayDailyTestResponse = secondDailyTestRequest.andExpect(status().isOk()).andReturn();
         String jsonGetResponse1 = secondDayDailyTestResponse.getResponse().getContentAsString();
-        DailyTestShowResponseDto getResponse1 = objectMapper.readValue(jsonGetResponse1, DailyTestShowResponseDto.class);
+        DailyTestDto getResponse1 = objectMapper.readValue(jsonGetResponse1, DailyTestDto.class);
 
         assertThat(getResponse1.userId()).isEqualTo(1);
         assertThat(getResponse1.id()).isNotNull();
@@ -289,7 +289,7 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
                 .andExpect(status().isOk());
         MvcResult getTestAfter20Days = dailyTestAfterLongBreakRequest.andExpect(status().isOk()).andReturn();
         String jsonGetResponse20Days = getTestAfter20Days.getResponse().getContentAsString();
-        DailyTestShowResponseDto getResponse20Days = objectMapper.readValue(jsonGetResponse20Days, DailyTestShowResponseDto.class);
+        DailyTestDto getResponse20Days = objectMapper.readValue(jsonGetResponse20Days, DailyTestDto.class);
 
         assertThat(getResponse20Days.userId()).isEqualTo(1);
         assertThat(getResponse20Days.id()).isNotNull();
@@ -317,11 +317,11 @@ class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements In
         assertThat(summaryFinal.correct()).isEqualTo(6);
         assertThat(summaryFinal.incorrect()).isEqualTo(0);
         assertThat(summaryFinal.answers())
-                .allMatch(AnswerResult::correct);
+                .allMatch(AnswerResultDto::correct);
 
 
         mockMvc.perform(get("/dailytest")
                         .header("Authorization", "Bearer " + jwtToken))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
     }
 }

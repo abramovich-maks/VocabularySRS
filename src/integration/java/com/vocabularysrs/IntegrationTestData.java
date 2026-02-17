@@ -1,7 +1,7 @@
 package com.vocabularysrs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -69,7 +69,7 @@ public interface IntegrationTestData {
                 """.trim();
     }
 
-    default AnswerResult answerQuestion(MockMvc mockMvc, ObjectMapper objectMapper, String authHeader, long questionId, String answer) throws Exception {
+    default AnswerResultDto answerQuestion(MockMvc mockMvc, ObjectMapper objectMapper, String authHeader, long questionId, String answer) throws Exception {
         MvcResult result = mockMvc.perform(post("/dailytest/questions/{id}/answer", questionId)
                         .header("Authorization", "Bearer " + authHeader)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -78,6 +78,6 @@ public interface IntegrationTestData {
                                 """.formatted(answer)))
                 .andExpect(status().isOk())
                 .andReturn();
-        return objectMapper.readValue(result.getResponse().getContentAsString(), AnswerResult.class);
+        return objectMapper.readValue(result.getResponse().getContentAsString(), AnswerResultDto.class);
     }
 }

@@ -1,9 +1,9 @@
-package com.vocabularysrs.domain.dailytest.dto;
+package com.vocabularysrs.domain.learningtest.dto;
 
 import lombok.Builder;
 
 @Builder
-public record AnswerResultDto(
+public record UserAnsweredDto(
         Long questionId,
         Long wordEntryId,
         String userAnswer,

@@ -1,8 +1,7 @@
-package com.vocabularysrs.domain.dailytest;
+package com.vocabularysrs.domain.learningtest;
 
-import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskResultPort;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -15,18 +14,25 @@ import java.util.List;
 @Log4j2
 class DailyTestResultRetriever {
 
-    private final LearningTaskResultPort learningTaskResultPort;
-    private final DictionaryUpdatePort dictionaryUpdatePort;
+    private final LearningTestRepository learningTestRepository;
+    private final WordEntryUpdatePort wordEntryUpdatePort;
     private final CurrentUserProvider currentUserProvider;
     private final Clock clock;
+
 
     public DailyTestResponseDto resultTest() {
         LocalDate today = LocalDate.now(clock);
         Long userId = currentUserProvider.getCurrentUserId();
 
-        List<AnswerResult> results = learningTaskResultPort.getResultsForTask(today, userId);
+        LearningTest test = learningTestRepository.findLearningTaskByTaskDateAndUserId(today, userId)
+                .orElseThrow(() -> new LearningTestNotFoundException(today, userId));
 
-        long correct = results.stream().filter(AnswerResult::correct).count();
+        List<AnswerResultDto> results = test.getQuestions().stream()
+                .filter(Question::isAnswered)
+                .map(Question::toResult)
+                .toList();
+
+        long correct = results.stream().filter(AnswerResultDto::correct).count();
         long incorrect = results.size() - correct;
 
         DailyTestResponseDto response = DailyTestResponseDto.builder()
@@ -39,7 +45,7 @@ class DailyTestResultRetriever {
 
         log.info("DailyTest results size = {}", results.size());
 
-        dictionaryUpdatePort.update(response);
+        wordEntryUpdatePort.update(response);
 
         return response;
     }
