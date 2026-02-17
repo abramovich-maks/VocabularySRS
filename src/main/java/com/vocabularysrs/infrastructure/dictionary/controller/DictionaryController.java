@@ -2,7 +2,6 @@ package com.vocabularysrs.infrastructure.dictionary.controller;
 
 import com.vocabularysrs.domain.worddetails.WordDetailsFacade;
 import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
-import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import com.vocabularysrs.domain.words.WordsFacade;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
@@ -11,6 +10,7 @@ import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.AssignWordToGroupResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDetailsControllerDto;
@@ -22,8 +22,6 @@ import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordUpdatePart
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordsResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,9 +72,10 @@ class DictionaryController {
     }
 
     @GetMapping
-    public Page<WordDtoControllerResponse> getAllWords(Pageable pageable) {
-        return wordsFacade.findAllWords(pageable)
-                .map(DictionaryControllerMapper::mapFromWordDtoResponseToWordDtoControllerResponse);
+    public ResponseEntity<WordsResponse> getAllWords() {
+        WordsDtoResponse allWords = wordsFacade.findAllWords();
+        WordsResponse response = mapFromWordsDtoResponseToWordsResponse(allWords);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{wordEntryId}")

@@ -16,7 +16,7 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
 
     boolean existsByIdAndUserId(Long id, Long userId);
 
-    Page<WordEntry> findAllByUserId(Long userId, Pageable pageable);
+    List<WordEntry> findAllByUserId(Long userId);
 
     @Query("SELECT s FROM WordEntry s WHERE s.id = :id AND s.userId = :userId")
     Optional<WordEntry> findByIdAndUserId(Long id, Long userId);

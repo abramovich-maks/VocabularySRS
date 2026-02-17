@@ -36,8 +36,8 @@ public class WordsFacade {
         return wordDeleter.deleteById(id);
     }
 
-    public Page<WordDtoResponse> findAllWords(final Pageable pageable) {
-        return wordRetriever.findAllByUserId(pageable);
+    public WordsDtoResponse findAllWords() {
+        return wordRetriever.findAllByUserId();
     }
 
     public WordDtoResponse findById(Long id) {
