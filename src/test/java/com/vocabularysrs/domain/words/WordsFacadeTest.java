@@ -13,6 +13,7 @@ import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
@@ -139,7 +140,7 @@ class WordsFacadeTest {
     @Test
     public void should_return_all_words_entry() {
         // given
-        assertThat(wordsFacade.findAllWords(Pageable.unpaged())).isEmpty();
+        assertThat(wordsFacade.findAllWords().words()).isEmpty();
         WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот", null);
         WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2", null);
         // when
@@ -147,8 +148,8 @@ class WordsFacadeTest {
         wordsFacade.addWord(dtoRequest2);
         // then
         assertAll(
-                () -> assertThat(wordsFacade.findAllWords(Pageable.unpaged())).hasSize(2),
-                () -> assertThat(wordsFacade.findAllWords(Pageable.unpaged())).extracting(WordDtoResponse::word).contains("cat", "cat2")
+                () -> assertThat(wordsFacade.findAllWords().words()).hasSize(2),
+                () -> assertThat(wordsFacade.findAllWords().words()).extracting(WordDtoResponse::word).contains("cat", "cat2")
         );
     }
 
@@ -344,11 +345,11 @@ class WordsFacadeTest {
         wordsFacade.addWord(new WordAddDtoRequest("sun", "солнце", null));
         // when
         ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
-        Page<WordDtoResponse> result =
-                wordsFacade.findAllWords(Pageable.unpaged());
+        WordsDtoResponse result =
+                wordsFacade.findAllWords();
         // then
-        assertThat(result).hasSize(2);
-        assertThat(result)
+        assertThat(result.words()).hasSize(2);
+        assertThat(result.words())
                 .extracting(WordDtoResponse::word)
                 .containsExactlyInAnyOrder("cat", "dog");
     }

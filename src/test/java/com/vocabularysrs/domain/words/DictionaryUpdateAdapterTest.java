@@ -67,6 +67,6 @@ class DictionaryUpdateAdapterTest {
                 .build();
         // when && then
         assertDoesNotThrow(() -> adapter.update(response));
-        assertTrue(repository.findAllByUserId(response.userId(), Pageable.unpaged()).isEmpty());
+        assertTrue(repository.findAllByUserId(response.userId()).isEmpty());
     }
 }
