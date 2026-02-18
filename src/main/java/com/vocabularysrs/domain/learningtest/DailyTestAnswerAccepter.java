@@ -1,6 +1,5 @@
 package com.vocabularysrs.domain.learningtest;
 
-import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.learningtest.dto.UserAnsweredDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,7 @@ class DailyTestAnswerAccepter {
         Long userId = currentUserProvider.getCurrentUserId();
         LearningTest test = learningTestRepository.findByQuestionIdAndUserId(questionId, userId)
                 .orElseThrow(() -> new QuestionNotFoundException(questionId, userId));
-        AnswerResultDto result = test.answerQuestion(questionId, userAnswer);
+        AnswerResult result = test.answerQuestion(questionId, userAnswer);
         learningTestRepository.save(test);
         return mapFromAnswerResultToAnswerResultDto(result);
     }

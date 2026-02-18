@@ -1,6 +1,5 @@
 package com.vocabularysrs.domain.learningtest;
 
-import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -72,8 +71,8 @@ class Question {
         return answered && answer.equalsIgnoreCase(userAnswer);
     }
 
-    AnswerResultDto toResult() {
-        return new AnswerResultDto(
+    AnswerResult toResult() {
+        return new AnswerResult(
                 id,
                 wordEntryId,
                 prompt,

@@ -1,6 +1,5 @@
 package com.vocabularysrs.domain.learningtest;
 
-import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -55,7 +54,7 @@ class LearningTest {
     }
 
 
-    AnswerResultDto answerQuestion(Long questionId, String userAnswer) {
+    AnswerResult answerQuestion(Long questionId, String userAnswer) {
         Question question = questions.stream()
                 .filter(q -> q.getId().equals(questionId))
                 .findFirst()
