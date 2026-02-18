@@ -1,13 +1,15 @@
 package com.vocabularysrs.domain.learningtest;
 
-import com.vocabularysrs.domain.learningtest.dto.LearningTestDto;
 import com.vocabularysrs.domain.learningtest.dto.DailyTestDto;
+import com.vocabularysrs.domain.learningtest.dto.LearningTestDto;
+import com.vocabularysrs.domain.learningtest.dto.QuestionDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.WordEntryReadPort;
 import lombok.AllArgsConstructor;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -28,13 +30,13 @@ class DailyTestRetriever {
         LearningTestDto test = findInProgress(today, userId)
                 .orElseGet(() -> learningTestGenerator.generateDailyTest(today, userId));
 
-        var questions = test.questions().stream()
+        List<QuestionDto> questions = test.questions().stream()
                 .filter(q -> !q.answered())
                 .toList();
 
         if (questions.isEmpty()) {
 
-            var nearestReviewDate = wordEntryReadPort.findNearestReviewDate(userId);
+            Optional<LocalDate> nearestReviewDate = wordEntryReadPort.findNearestReviewDate(userId);
 
             if (nearestReviewDate.isEmpty()) {
                 return DailyTestDto.builder()
@@ -51,10 +53,7 @@ class DailyTestRetriever {
                 .id(test.id())
                 .userId(test.userId())
                 .taskDate(test.taskDate())
-                .questions(
-                        questions.stream()
-                                .map(LearningTestMapper::mapFromQuestionSnapshotToQuestionDto)
-                                .toList())
+                .questions(questions)
                 .status(DailyTestStatus.AVAILABLE)
                 .build();
     }

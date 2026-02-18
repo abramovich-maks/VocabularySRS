@@ -7,7 +7,7 @@ public record LearningTestDto(
         Long id,
         LocalDate taskDate,
         Long userId,
-        List<QuestionSnapshot> questions,
+        List<QuestionDto> questions,
         boolean hasUnansweredQuestions
 ) {
 }
