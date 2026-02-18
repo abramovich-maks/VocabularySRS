@@ -1,9 +1,9 @@
 package com.vocabularysrs.domain.learningtest;
 
 
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtest.dto.DailyTestDto;
-import com.vocabularysrs.domain.learningtest.dto.UserAnsweredDto;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -13,7 +13,7 @@ public class LearningTestFacade {
     private final DailyTestResultRetriever dailyTestResultRetriever;
     private final DailyTestAnswerAccepter dailyTestAnswerAccepter;
 
-    public UserAnsweredDto answerTheQuestion(Long questionId, String answer) {
+    public AnswerResultDto answerTheQuestion(Long questionId, String answer) {
         return dailyTestAnswerAccepter.answerQuestion(questionId, answer);
     }
 

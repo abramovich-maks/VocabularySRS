@@ -1,15 +1,15 @@
 package com.vocabularysrs.domain.learningtest;
 
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.learningtest.dto.LearningTestDto;
 import com.vocabularysrs.domain.learningtest.dto.QuestionDto;
-import com.vocabularysrs.domain.learningtest.dto.UserAnsweredDto;
 
 import java.util.List;
 
 class LearningTestMapper {
 
-    public static UserAnsweredDto mapFromAnswerResultToAnswerResultDto(final AnswerResult result) {
-        return UserAnsweredDto.builder().questionId(result.questionId()).wordEntryId(result.wordEntryId()).userAnswer(result.userAnswer()).correctAnswer(result.correctAnswer()).correct(result.correct()).build();
+    public static AnswerResultDto mapFromAnswerResultToAnswerResultDto(final AnswerResult result) {
+        return AnswerResultDto.builder().questionId(result.questionId()).wordEntryId(result.wordEntryId()).userAnswer(result.userAnswer()).correctAnswer(result.correctAnswer()).correct(result.correct()).build();
     }
 
     public static LearningTestDto mapFromLearningTaskToLearningTaskDto(LearningTest task) {

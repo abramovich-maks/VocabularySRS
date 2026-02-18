@@ -1,9 +1,9 @@
 package com.vocabularysrs.infrastructure.dailytest;
 
-import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtest.LearningTestFacade;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.learningtest.dto.DailyTestDto;
-import com.vocabularysrs.domain.learningtest.dto.UserAnsweredDto;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,8 @@ class DailyTestController {
     private final LearningTestFacade learningTestFacade;
 
     @PostMapping("/questions/{questionId}/answer")
-    public ResponseEntity<UserAnsweredDto> answerQuestion(@PathVariable Long questionId, @Valid @RequestBody AnswerQuestionRequestDto request) {
-        UserAnsweredDto result = learningTestFacade.answerTheQuestion(questionId, request.userAnswer());
+    public ResponseEntity<AnswerResultDto> answerQuestion(@PathVariable Long questionId, @Valid @RequestBody AnswerQuestionRequestDto request) {
+        AnswerResultDto result = learningTestFacade.answerTheQuestion(questionId, request.userAnswer());
         return ResponseEntity.ok(result);
     }
 

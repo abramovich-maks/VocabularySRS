@@ -1,6 +1,6 @@
 package com.vocabularysrs.domain.learningtest;
 
-import com.vocabularysrs.domain.learningtest.dto.UserAnsweredDto;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 
@@ -12,7 +12,7 @@ class DailyTestAnswerAccepter {
     private final CurrentUserProvider currentUserProvider;
     private final LearningTestRepository learningTestRepository;
 
-    public UserAnsweredDto answerQuestion(Long questionId, String userAnswer) {
+    public AnswerResultDto answerQuestion(Long questionId, String userAnswer) {
         Long userId = currentUserProvider.getCurrentUserId();
         LearningTest test = learningTestRepository.findByQuestionIdAndUserId(questionId, userId)
                 .orElseThrow(() -> new QuestionNotFoundException(questionId, userId));

@@ -1,7 +1,7 @@
 package com.vocabularysrs.domain.learningtest;
 
-import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,12 +27,12 @@ class DailyTestResultRetriever {
         LearningTest test = learningTestRepository.findLearningTaskByTaskDateAndUserId(today, userId)
                 .orElseThrow(() -> new LearningTestNotFoundException(today, userId));
 
-        List<AnswerResultDto> results = test.getQuestions().stream()
+        List<AnswerResult> results = test.getQuestions().stream()
                 .filter(Question::isAnswered)
                 .map(Question::toResult)
                 .toList();
 
-        long correct = results.stream().filter(AnswerResultDto::correct).count();
+        long correct = results.stream().filter(AnswerResult::correct).count();
         long incorrect = results.size() - correct;
 
         DailyTestResponseDto response = DailyTestResponseDto.builder()
@@ -40,7 +40,7 @@ class DailyTestResultRetriever {
                 .total(results.size())
                 .correct((int) correct)
                 .incorrect((int) incorrect)
-                .answers(results)
+                .answers(results.stream().map(answer -> AnswerResultDto.builder().questionId(answer.questionId()).wordEntryId(answer.wordEntryId()).word(answer.word()).userAnswer(answer.userAnswer()).correctAnswer(answer.correctAnswer()).correct(answer.correct()).build()).toList())
                 .build();
 
         log.info("DailyTest results size = {}", results.size());
