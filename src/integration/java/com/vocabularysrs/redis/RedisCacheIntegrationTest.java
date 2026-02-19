@@ -55,7 +55,7 @@ class RedisCacheIntegrationTest extends BaseIntegrationTest implements Integrati
     }
 
     @Test
-    public void should_save_offers_to_cache_and_then_invalidate_by_time_to_live() throws Exception {
+    public void should_save_irregular_verb_to_cache_and_then_invalidate_by_time_to_live() throws Exception {
         // step 1: someUser was registered
         // given & when
         mockMvc.perform(post("/register").content(requestBodyRegister())

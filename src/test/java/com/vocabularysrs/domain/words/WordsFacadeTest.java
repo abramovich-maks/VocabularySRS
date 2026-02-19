@@ -1,8 +1,8 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
@@ -16,8 +16,6 @@ import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -52,7 +50,7 @@ class WordsFacadeTest {
     private final WordsGroupRepository wordsGroupRepository = new InMemoryWordsGroupRepositoryTestImpl();
     private final WordGroupLinkRepository linkRepository = new InMemoryWordGroupLinkRepositoryTestImpl();
     private final WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService, fetcherTest, wordsGroupRepository, linkRepository);
-    private final DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
+    private final WordEntryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
     private final WordsGroupFacade wordsGroupFacade = new WordEntryConfiguration().wordsGroupFacade(wordsGroupRepository, currentUserProvider, linkRepository, repository);
 
 
@@ -302,7 +300,7 @@ class WordsFacadeTest {
         entry.initialize(clock.today());
         repository.save(entry);
         DailyTestResponseDto response = DailyTestResponseDto.builder()
-                .answers(List.of(AnswerResult.builder()
+                .answers(List.of(AnswerResultDto.builder()
                         .wordEntryId(0L)
                         .correct(true)
                         .build()))

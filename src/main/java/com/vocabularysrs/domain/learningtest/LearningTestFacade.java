@@ -2,8 +2,8 @@ package com.vocabularysrs.domain.learningtest;
 
 
 import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
-import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtest.dto.DailyTestDto;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

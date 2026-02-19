@@ -1,10 +1,9 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,7 +28,7 @@ class DictionaryUpdateAdapterTest {
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
     private final TestCurrentUserProvider currentUserProvider = new TestCurrentUserProvider();
     private final WordRetriever wordRetriever = new WordRetriever(repository, currentUserProvider);
-    private final DictionaryUpdateAdapter adapter = new DictionaryUpdateAdapter(repository, wordRetriever, calculator, clock);
+    private final WordEntryUpdateAdapter adapter = new WordEntryUpdateAdapter(repository, wordRetriever, calculator, clock);
 
     @Test
     void should_update_word_entry_when_answer_is_correct() {
@@ -42,7 +41,7 @@ class DictionaryUpdateAdapterTest {
         entry.initialize(clock.today());
         repository.save(entry);
         DailyTestResponseDto response = DailyTestResponseDto.builder().answers(List.of(
-                AnswerResult.builder()
+                AnswerResultDto.builder()
                         .wordEntryId(0L)
                         .correct(true)
                         .build()
@@ -60,7 +59,7 @@ class DictionaryUpdateAdapterTest {
     void should_skip_update_when_word_does_not_exist() {
         // given
         DailyTestResponseDto response = DailyTestResponseDto.builder().answers(List.of(
-                        AnswerResult.builder()
+                        AnswerResultDto.builder()
                                 .wordEntryId(999L)
                                 .correct(true)
                                 .build()))

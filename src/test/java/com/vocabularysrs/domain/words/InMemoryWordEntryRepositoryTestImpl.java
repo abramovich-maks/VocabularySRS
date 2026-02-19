@@ -103,4 +103,9 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     public List<WordEntry> findAvailableWords(final Long userId, final Long groupId) {
         return List.of();
     }
+
+    @Override
+    public LocalDate findNearestReviewDate(final Long userId, final LocalDate today) {
+        return null;
+    }
 }
