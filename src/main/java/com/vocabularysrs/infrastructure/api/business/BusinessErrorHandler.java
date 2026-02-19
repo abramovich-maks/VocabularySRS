@@ -1,6 +1,5 @@
 package com.vocabularysrs.infrastructure.api.business;
 
-import com.vocabularysrs.domain.dailytest.DailyTestAlreadyCompletedException;
 import com.vocabularysrs.domain.loginandregister.UserAlreadyExistException;
 import com.vocabularysrs.domain.words.WordAlreadyExistsException;
 import com.vocabularysrs.domain.words.WordsGroupAlreadyExistsException;
@@ -37,17 +36,6 @@ public class BusinessErrorHandler {
                 "WORDS_GROUP_ALREADY_EXIST",
                 exception.getMessage());
     }
-
-    @ExceptionHandler(DailyTestAlreadyCompletedException.class)
-    @ResponseBody
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ApiErrorResponse handleTestAlreadyCompleted(DailyTestAlreadyCompletedException exception) {
-        log.info(exception.getMessage());
-        return new ApiErrorResponse(
-                "DAILY_TEST_ALREADY_COMPLETED",
-                exception.getMessage());
-    }
-
 
     @ExceptionHandler(UserAlreadyExistException.class)
     @ResponseBody

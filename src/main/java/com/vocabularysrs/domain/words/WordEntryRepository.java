@@ -36,4 +36,11 @@ interface WordEntryRepository extends Repository<WordEntry, Long> {
             """)
     List<WordEntry> findAvailableWords(Long userId, Long groupId);
 
+    @Query("""
+        SELECT MIN(w.nextReviewDate)
+        FROM WordEntry w
+        WHERE w.userId = :userId
+        AND w.nextReviewDate > :today
+    """)
+    LocalDate findNearestReviewDate(Long userId, LocalDate today);
 }

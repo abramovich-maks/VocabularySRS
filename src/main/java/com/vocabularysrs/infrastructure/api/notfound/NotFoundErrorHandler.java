@@ -1,6 +1,7 @@
 package com.vocabularysrs.infrastructure.api.notfound;
 
-import com.vocabularysrs.domain.learningtaskgenerator.LearningTaskNotFoundException;
+import com.vocabularysrs.domain.learningtest.LearningTestNotFoundException;
+import com.vocabularysrs.domain.learningtest.QuestionNotFoundException;
 import com.vocabularysrs.domain.words.WordNotFoundException;
 import com.vocabularysrs.domain.words.WordsGroupNotFoundException;
 import com.vocabularysrs.infrastructure.api.ApiErrorResponse;
@@ -15,13 +16,23 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Log4j2
 class NotFoundErrorHandler {
 
-    @ExceptionHandler(LearningTaskNotFoundException.class)
+    @ExceptionHandler(LearningTestNotFoundException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiErrorResponse handleLearningTaskNotFound(LearningTaskNotFoundException exception) {
-        log.warn(exception.getMessage());
+    public ApiErrorResponse handleLearningTaskNotFound(LearningTestNotFoundException exception) {
+        log.warn("User {} does not have a learning test for date {}.", exception.getUserId(), exception.getTaskDate());
         return new ApiErrorResponse(
                 "LEARNING_TASK_NOT_FOUND",
+                exception.getMessage());
+    }
+
+    @ExceptionHandler(QuestionNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrorResponse handleQuestionNotFound(QuestionNotFoundException exception) {
+        log.warn("User {} does not have a question with id {}.", exception.getUserId(), exception.getQuestionId());
+        return new ApiErrorResponse(
+                "QUESTION_NOT_FOUND",
                 exception.getMessage());
     }
 

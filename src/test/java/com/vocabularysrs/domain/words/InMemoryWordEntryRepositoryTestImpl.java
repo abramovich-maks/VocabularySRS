@@ -1,9 +1,6 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -59,26 +56,11 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     }
 
     @Override
-    public Page<WordEntry> findAllByUserId(Long userId, Pageable pageable) {
-
-        List<WordEntry> filtered = database.values().stream()
+    public List<WordEntry> findAllByUserId(final Long userId) {
+        return  database.values().stream()
                 .filter(entry -> userId.equals(entry.getUserId()))
                 .sorted(Comparator.comparing(WordEntry::getId))
                 .toList();
-
-        if (pageable.isUnpaged()) {
-            return new PageImpl<>(filtered);
-        }
-
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), filtered.size());
-
-        List<WordEntry> pageContent =
-                start >= filtered.size()
-                        ? List.of()
-                        : filtered.subList(start, end);
-
-        return new PageImpl<>(pageContent, pageable, filtered.size());
     }
 
     @Override
@@ -120,5 +102,10 @@ class InMemoryWordEntryRepositoryTestImpl implements WordEntryRepository {
     @Override
     public List<WordEntry> findAvailableWords(final Long userId, final Long groupId) {
         return List.of();
+    }
+
+    @Override
+    public LocalDate findNearestReviewDate(final Long userId, final LocalDate today) {
+        return null;
     }
 }

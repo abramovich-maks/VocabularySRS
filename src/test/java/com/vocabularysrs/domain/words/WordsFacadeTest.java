@@ -1,8 +1,8 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.dailytest.dto.DailyTestResponseDto;
-import com.vocabularysrs.domain.learningtaskgenerator.AnswerResult;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
@@ -13,10 +13,9 @@ import com.vocabularysrs.domain.words.dto.WordDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordEntryUpdateDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
+import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -51,7 +50,7 @@ class WordsFacadeTest {
     private final WordsGroupRepository wordsGroupRepository = new InMemoryWordsGroupRepositoryTestImpl();
     private final WordGroupLinkRepository linkRepository = new InMemoryWordGroupLinkRepositoryTestImpl();
     private final WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService, fetcherTest, wordsGroupRepository, linkRepository);
-    private final DictionaryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
+    private final WordEntryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
     private final WordsGroupFacade wordsGroupFacade = new WordEntryConfiguration().wordsGroupFacade(wordsGroupRepository, currentUserProvider, linkRepository, repository);
 
 
@@ -139,7 +138,7 @@ class WordsFacadeTest {
     @Test
     public void should_return_all_words_entry() {
         // given
-        assertThat(wordsFacade.findAllWords(Pageable.unpaged())).isEmpty();
+        assertThat(wordsFacade.findAllWords().words()).isEmpty();
         WordAddDtoRequest dtoRequest1 = new WordAddDtoRequest("cat", "кот", null);
         WordAddDtoRequest dtoRequest2 = new WordAddDtoRequest("cat2", "кот2", null);
         // when
@@ -147,8 +146,8 @@ class WordsFacadeTest {
         wordsFacade.addWord(dtoRequest2);
         // then
         assertAll(
-                () -> assertThat(wordsFacade.findAllWords(Pageable.unpaged())).hasSize(2),
-                () -> assertThat(wordsFacade.findAllWords(Pageable.unpaged())).extracting(WordDtoResponse::word).contains("cat", "cat2")
+                () -> assertThat(wordsFacade.findAllWords().words()).hasSize(2),
+                () -> assertThat(wordsFacade.findAllWords().words()).extracting(WordDtoResponse::word).contains("cat", "cat2")
         );
     }
 
@@ -301,7 +300,7 @@ class WordsFacadeTest {
         entry.initialize(clock.today());
         repository.save(entry);
         DailyTestResponseDto response = DailyTestResponseDto.builder()
-                .answers(List.of(AnswerResult.builder()
+                .answers(List.of(AnswerResultDto.builder()
                         .wordEntryId(0L)
                         .correct(true)
                         .build()))
@@ -344,11 +343,11 @@ class WordsFacadeTest {
         wordsFacade.addWord(new WordAddDtoRequest("sun", "солнце", null));
         // when
         ((TestCurrentUserProvider) currentUserProvider).setUserId(1L);
-        Page<WordDtoResponse> result =
-                wordsFacade.findAllWords(Pageable.unpaged());
+        WordsDtoResponse result =
+                wordsFacade.findAllWords();
         // then
-        assertThat(result).hasSize(2);
-        assertThat(result)
+        assertThat(result.words()).hasSize(2);
+        assertThat(result.words())
                 .extracting(WordDtoResponse::word)
                 .containsExactlyInAnyOrder("cat", "dog");
     }

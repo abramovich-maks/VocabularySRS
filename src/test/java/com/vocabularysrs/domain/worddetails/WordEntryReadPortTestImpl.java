@@ -37,6 +37,11 @@ class WordEntryReadPortTestImpl implements WordEntryReadPort {
     public Optional<WordEntrySnapshot> findById(Long id) {
         return Optional.ofNullable(data.get(id));
     }
+
+    @Override
+    public Optional<LocalDate> findNearestReviewDate(final Long userId) {
+        return Optional.empty();
+    }
 }
 
 
