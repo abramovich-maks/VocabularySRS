@@ -1,5 +1,6 @@
 package com.vocabularysrs;
 
+import com.vocabularysrs.domain.loginandregister.MailSenderProperties;
 import com.vocabularysrs.infrastructure.dictionary.http.DictionaryRestTemplateConfigurationProperties;
 import com.vocabularysrs.infrastructure.openai.OpenAiConfigurationProperties;
 import com.vocabularysrs.infrastructure.security.jwt.vocabulary.JwtConfigurationProperties;
@@ -14,7 +15,8 @@ import org.springframework.cache.annotation.EnableCaching;
         JwtConfigurationProperties.class,
         DictionaryRestTemplateConfigurationProperties.class,
         TranslateClientConfigurationProperties.class,
-        OpenAiConfigurationProperties.class
+        OpenAiConfigurationProperties.class,
+        MailSenderProperties.class
 })
 @EnableCaching
 public class VocabularySrsApplication {
