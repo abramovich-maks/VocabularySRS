@@ -73,5 +73,5 @@ openai:
   client:
     config:
       api-key: ${OPENAI_API_KEY}
-      model: gpt-4.1-nano
-      url: https://api.openai.com/v1/chat/completions
+      model: gpt-5-nano
+      url: /v1/responses
