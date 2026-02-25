@@ -1,10 +1,11 @@
 package com.vocabularysrs.domain.words;
 
+import com.vocabularysrs.domain.globalwords.GlobalWordFacade;
+import com.vocabularysrs.domain.globalwords.dto.GlobalWordRequest;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.translation.TranslationResult;
 import com.vocabularysrs.domain.translation.WordTranslator;
 import com.vocabularysrs.domain.worddetails.WordDetailsFetchable;
-import com.vocabularysrs.domain.words.dto.AddWordToGroupDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordAddDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordEntryDtoResponse;
 import com.vocabularysrs.domain.words.dto.WordWithAutoTranslateDtoRequest;
@@ -27,6 +28,7 @@ class WordAdder {
     private final WordDetailsFetchable wordFetchable;
     private final WordsGroupRetriever groupRetriever;
     private final GroupWordAssigner groupWordAssigner;
+    private final GlobalWordFacade globalWordFacade;
 
     private final Clock clock;
 
@@ -88,6 +90,8 @@ class WordAdder {
         newWord.setUserId(currentUserProvider.getCurrentUserId());
 
         WordEntry saved = wordRepository.save(newWord);
+
+        globalWordFacade.addWordToGlobal(GlobalWordRequest.builder().word(saved.getWord()).build());
 
         if (group != null) {
             groupWordAssigner.addWordToGroup(group.getId(), saved.getId());
