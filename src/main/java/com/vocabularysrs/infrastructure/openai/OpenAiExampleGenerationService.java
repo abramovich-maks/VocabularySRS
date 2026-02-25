@@ -36,6 +36,7 @@ class OpenAiExampleGenerationService implements ExampleGenerationService {
             The word must appear naturally.
             Focus on human actions or experiences.
             Do not start sentences with the target word.
+            Each sentence MUST contain the exact word "%s".
             Max 15 words.
             
             Return JSON:
@@ -67,8 +68,7 @@ class OpenAiExampleGenerationService implements ExampleGenerationService {
     }
 
     private OpenAiRequest getOpenAiRequest(final String word) {
-        String prompt = PROMPT_TEMPLATE.formatted(word);
-
+        String prompt = PROMPT_TEMPLATE.formatted(word, word);
         ContentRequest content = new ContentRequest("input_text", prompt);
         InputRequest inputRequest = new InputRequest("user", List.of(content));
         ReasoningRequest reasoningRequest = new ReasoningRequest("minimal");

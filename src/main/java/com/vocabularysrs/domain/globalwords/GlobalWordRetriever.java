@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.globalwords;
 
+import com.vocabularysrs.domain.globalwords.dto.GlobalWordRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,5 +15,9 @@ class GlobalWordRetriever {
     public boolean isExist(String word) {
         Optional<GlobalWord> existing = globalWordsRepository.findByWord(word);
         return existing.isPresent();
+    }
+
+    public Optional<GlobalWord> findByWord(GlobalWordRequest request) {
+        return globalWordsRepository.findByWord(request.word());
     }
 }

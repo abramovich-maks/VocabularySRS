@@ -82,7 +82,9 @@ class WordAdder {
         if (request.groupId() != null) {
             group = groupRetriever.findEntityById(request.groupId());
         }
-        return saveAndAssignWord(newWord, today, group);
+        WordEntryDtoResponse saved = saveAndAssignWord(newWord, today, group);
+        globalWordFacade.addWordToGlobal(GlobalWordRequest.builder().word(saved.word()).build());
+        return saved;
     }
 
     private WordEntryDtoResponse saveAndAssignWord(final WordEntry newWord, final LocalDate today, final WordsGroup group) {
@@ -90,8 +92,6 @@ class WordAdder {
         newWord.setUserId(currentUserProvider.getCurrentUserId());
 
         WordEntry saved = wordRepository.save(newWord);
-
-        globalWordFacade.addWordToGlobal(GlobalWordRequest.builder().word(saved.getWord()).build());
 
         if (group != null) {
             groupWordAssigner.addWordToGroup(group.getId(), saved.getId());
