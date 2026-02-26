@@ -14,7 +14,7 @@ public class GlobalWordFacade {
     private final WordExampleRetriever exampleRetriever;
 
     public GlobalWordResponse addWordToGlobal(GlobalWordRequest request) {
-        return wordAdder.addWordToGlobal(request.word());
+        return wordAdder.addWordToGlobal(request);
     }
 
     public WordExampleListResponse findExampleByWord(GlobalWordRequest request) {
