@@ -1,8 +1,9 @@
 package com.vocabularysrs.domain.words;
 
 import com.vocabularysrs.domain.AdjustableClock;
-import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
+import com.vocabularysrs.domain.globalwords.GlobalWordFacade;
 import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.worddetails.WordDetailsDeleter;
 import com.vocabularysrs.domain.words.dto.AddWordsToGroupDtoResponse;
@@ -16,6 +17,7 @@ import com.vocabularysrs.domain.words.dto.WordUpdatePartiallyDtoRequest;
 import com.vocabularysrs.domain.words.dto.WordsDtoResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -40,6 +42,8 @@ class WordsFacadeTest {
             ZoneId.systemDefault()
     );
 
+    private final GlobalWordFacade globalWordFacade = Mockito.mock(GlobalWordFacade.class);
+
     private final RepetitionIntervalCalculator calculator = new RepetitionIntervalCalculator();
     private final InMemoryWordEntryRepositoryTestImpl repository = new InMemoryWordEntryRepositoryTestImpl();
     private final WordEntryReadPort wordEntryReadPort = new WordEntryReadPortTestImpl();
@@ -49,7 +53,7 @@ class WordsFacadeTest {
     private final InMemoryFetcherTestImpl fetcherTest = new InMemoryFetcherTestImpl();
     private final WordsGroupRepository wordsGroupRepository = new InMemoryWordsGroupRepositoryTestImpl();
     private final WordGroupLinkRepository linkRepository = new InMemoryWordGroupLinkRepositoryTestImpl();
-    private final WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService, fetcherTest, wordsGroupRepository, linkRepository);
+    private final WordsFacade wordsFacade = new WordEntryConfiguration().dictionaryFacade(repository, currentUserProvider, clock, wordDetailsDeleter, translationService, fetcherTest, wordsGroupRepository, linkRepository, globalWordFacade);
     private final WordEntryUpdateAdapter adapter = new WordEntryConfiguration().dictionaryUpdateAdapter(repository, calculator, clock, currentUserProvider);
     private final WordsGroupFacade wordsGroupFacade = new WordEntryConfiguration().wordsGroupFacade(wordsGroupRepository, currentUserProvider, linkRepository, repository);
 
