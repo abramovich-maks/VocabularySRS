@@ -9,12 +9,19 @@ import com.vocabularysrs.infrastructure.openai.request.OpenAiRequest;
 import com.vocabularysrs.infrastructure.openai.request.ReasoningRequest;
 import com.vocabularysrs.infrastructure.openai.response.ExamplesWrapper;
 import com.vocabularysrs.infrastructure.openai.response.OpenAiResponse;
+import com.vocabularysrs.infrastructure.translation.http.WebClientResponseErrorMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.codec.DecodingException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
+import reactor.netty.http.client.PrematureCloseException;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -59,9 +66,23 @@ class OpenAiExampleGenerationService implements ExampleGenerationService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(openAiRequest)
                 .retrieve()
+                .onStatus(
+                        status -> status == HttpStatus.NO_CONTENT,
+                        clientResponse -> Mono.error(new ResponseStatusException(HttpStatus.NO_CONTENT))
+                )
+                .onStatus(
+                        HttpStatusCode::isError,
+                        clientResponse -> WebClientResponseErrorMapper.map(clientResponse.statusCode())
+                )
                 .bodyToMono(OpenAiResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(1))
                         .filter(throwable -> throwable instanceof WebClientRequestException))
+                .onErrorMap(
+                        ex -> ex instanceof WebClientRequestException
+                                || ex instanceof DecodingException
+                                || ex instanceof PrematureCloseException
+                                || reactor.core.Exceptions.isRetryExhausted(ex),
+                        ex -> new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, null, ex))
                 .block();
 
         return response != null ? getExamples(response, word) : List.of();

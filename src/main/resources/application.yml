@@ -72,6 +72,8 @@ translate:
 openai:
   client:
     config:
+      connection-timeout: 5000
+      read-timeout: 5000
       api-key: ${OPENAI_API_KEY}
       model: gpt-5-nano
       url: /v1/responses
