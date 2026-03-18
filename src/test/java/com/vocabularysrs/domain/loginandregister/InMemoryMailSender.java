@@ -1,5 +1,6 @@
 package com.vocabularysrs.domain.loginandregister;
 
+import jakarta.mail.Session;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
@@ -21,7 +22,7 @@ class InMemoryMailSender implements JavaMailSender {
 
     @Override
     public MimeMessage createMimeMessage() {
-        return null;
+        return new MimeMessage((Session) null);
     }
 
     @Override
