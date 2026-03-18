@@ -1,7 +1,10 @@
 package com.vocabularysrs.domain.worddetails;
 
-import com.vocabularysrs.domain.shared.Language;
+import com.vocabularysrs.domain.globalwords.GlobalWordFacade;
+import com.vocabularysrs.domain.globalwords.dto.GlobalWordRequest;
+import com.vocabularysrs.domain.globalwords.dto.WordExampleListResponse;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
+import com.vocabularysrs.domain.shared.Language;
 import com.vocabularysrs.domain.translation.TranslationAlternativeService;
 import com.vocabularysrs.domain.translation.TranslationAlternatives;
 import com.vocabularysrs.domain.worddetails.dto.WordHttpDto;
@@ -20,14 +23,20 @@ class WordDetailsRetriever {
     private final CurrentUserProvider currentUserProvider;
     private final TranslationAlternativeService translationAlternativeService;
 
+    private final GlobalWordFacade globalWordFacade;
+
 
     public WordHttpDto getOrLoad(Long wordId) {
         Long userId = currentUserProvider.getCurrentUserId();
+        WordEntrySnapshot word = wordEntryReadPort.findById(wordId)
+                .orElseThrow(() -> new IllegalStateException("Word not found: " + wordId));
+        WordExampleListResponse exampleByWord = globalWordFacade.findExampleByWord(GlobalWordRequest.builder().word(word.word()).build());
+
 
         WordDetailsEntry entry = repository.findByWordIdAndUserId(wordId, userId)
                 .orElseGet(() -> loadAndSave(wordId, userId));
         List<String> alternativeTranslations = entry.getAlternatives().stream().map(WordDetailsAlternativeTranslation::getAlternativeTranslate).toList();
-        return WordHttpDto.builder().phonetic(entry.getPhonetic()).audioUrl(entry.getAudioUrl()).example(entry.getExample()).alternatives(alternativeTranslations).build();
+        return WordHttpDto.builder().phonetic(entry.getPhonetic()).audioUrl(entry.getAudioUrl()).examples(exampleByWord.example()).alternatives(alternativeTranslations).build();
     }
 
 
@@ -45,7 +54,6 @@ class WordDetailsRetriever {
                 .userId(userId)
                 .phonetic(dto.phonetic())
                 .audioUrl(dto.audioUrl())
-                .example(dto.example())
                 .build();
 
         alternatives.values().forEach(translate ->

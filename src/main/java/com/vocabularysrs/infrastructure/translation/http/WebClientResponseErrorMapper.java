@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
-class WebClientResponseErrorMapper {
+public class WebClientResponseErrorMapper {
 
-    static Mono<? extends Throwable> map(HttpStatusCode status) {
+    public static Mono<? extends Throwable> map(HttpStatusCode status) {
         if (status.is5xxServerError()) {
             return Mono.error(new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,

@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.dictionary.controller.dto;
 
+import com.vocabularysrs.domain.globalwords.dto.WordExampleResponse;
 import lombok.Builder;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public record WordDetailsControllerDto(
         String phonetic,
         String audioUrl,
-        String example,
+        List<WordExampleResponse> examples,
         List<String> alternativeTranslate
 ) {
 }

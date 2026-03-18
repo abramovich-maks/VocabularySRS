@@ -1,5 +1,6 @@
 package com.vocabularysrs.infrastructure.api.notfound;
 
+import com.vocabularysrs.domain.globalwords.GlobalWordNotFoundException;
 import com.vocabularysrs.domain.learningtest.LearningTestNotFoundException;
 import com.vocabularysrs.domain.learningtest.QuestionNotFoundException;
 import com.vocabularysrs.domain.words.WordNotFoundException;
@@ -53,6 +54,16 @@ class NotFoundErrorHandler {
         log.warn("Words group not found. groupId={}", exception.groupId);
         return new ApiErrorResponse(
                 "WORDS_GROUP_NOT_FOUND",
+                exception.getMessage());
+    }
+
+    @ExceptionHandler(GlobalWordNotFoundException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiErrorResponse handleGlobalWordNotFound(GlobalWordNotFoundException exception) {
+        log.warn("Global word not found. word:\"{}\"", exception.word);
+        return new ApiErrorResponse(
+                "GLOBAL_WORD_NOT_FOUND",
                 exception.getMessage());
     }
 }
