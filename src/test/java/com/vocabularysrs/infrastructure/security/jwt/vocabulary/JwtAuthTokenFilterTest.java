@@ -3,6 +3,8 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
+import com.vocabularysrs.domain.loginandregister.UserSecurityQueryService;
+import com.vocabularysrs.domain.loginandregister.UserTestDataFactory;
 import com.vocabularysrs.domain.shared.Language;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,11 +28,14 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class JwtAuthTokenFilterTest {
 
     private static final String TEST_ISSUER = "VocabularySRS-backend";
+    UserSecurityQueryService userQueryService;
 
     KeyPair keyPair;
     JwtAuthTokenFilter filter;
@@ -53,7 +58,8 @@ class JwtAuthTokenFilterTest {
                 false
         );
         JwtTokenValidator validator = new JwtTokenValidator(keyPair, clock, properties);
-        filter = new JwtAuthTokenFilter(validator);
+        userQueryService = mock(UserSecurityQueryService.class);
+        filter = new JwtAuthTokenFilter(validator, userQueryService);
     }
 
     @AfterEach
@@ -77,6 +83,8 @@ class JwtAuthTokenFilterTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer " + token);
 
+        var user = UserTestDataFactory.createTestUser(1L);
+        when(userQueryService.findById(1L)).thenReturn(user);
         // when
         filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
 

@@ -3,6 +3,7 @@ package com.vocabularysrs.redis;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
 import com.vocabularysrs.domain.irregularverbs.IrregularVerbFacade;
+import com.vocabularysrs.domain.loginandregister.dto.UserRegisterResponseDto;
 import com.vocabularysrs.domain.shared.Language;
 import com.vocabularysrs.infrastructure.security.jwt.vocabulary.JwtResponseDto;
 import org.junit.jupiter.api.Test;
@@ -58,8 +59,14 @@ class RedisCacheIntegrationTest extends BaseIntegrationTest implements Integrati
     public void should_save_irregular_verb_to_cache_and_then_invalidate_by_time_to_live() throws Exception {
         // step 1: someUser was registered
         // given & when
-        mockMvc.perform(post("/register").content(requestBodyRegister())
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        MvcResult result = mockMvc.perform(post("/register").content(requestBodyRegister())
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
+
+        UserRegisterResponseDto response = objectMapper.readValue(result.getResponse().getContentAsString(), UserRegisterResponseDto.class);
+
+        mockMvc.perform(get("/confirm")
+                        .param("token", response.confirmationToken()))
+                .andExpect(status().isOk());
 
         // step 2: login
         // given && when

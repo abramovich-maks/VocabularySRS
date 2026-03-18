@@ -3,10 +3,11 @@ package com.vocabularysrs.feature;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.vocabularysrs.BaseIntegrationTest;
 import com.vocabularysrs.IntegrationTestData;
-import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtest.dto.AnswerResultDto;
 import com.vocabularysrs.domain.learningtest.dto.DailyTestDto;
+import com.vocabularysrs.domain.learningtest.dto.DailyTestResponseDto;
 import com.vocabularysrs.domain.learningtest.dto.QuestionDto;
+import com.vocabularysrs.domain.loginandregister.dto.UserRegisterResponseDto;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.DeletedWordEntryControllerDtoResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordDtoControllerResponse;
 import com.vocabularysrs.infrastructure.dictionary.controller.dto.WordEntryControllerDtoResponse;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserAddWordsAndCompleteDailyTestDto extends BaseIntegrationTest implements IntegrationTestData {
+class UserAddWordsAndCompleteDailyTest extends BaseIntegrationTest implements IntegrationTestData {
 
     @Test
     public void should_handle_full_srs_flow_with_skipped_days() throws Exception {
@@ -36,10 +37,14 @@ class UserAddWordsAndCompleteDailyTestDto extends BaseIntegrationTest implements
         final String CAR = "car", CAR_RU = "машина";
 
 // register and login
-        mockMvc.perform(post("/register").content(requestBodyRegister())
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+        MvcResult result = mockMvc.perform(post("/register").content(requestBodyRegister())
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andReturn();
 
+        UserRegisterResponseDto response = objectMapper.readValue(result.getResponse().getContentAsString(), UserRegisterResponseDto.class);
 
+        mockMvc.perform(get("/confirm")
+                        .param("token", response.confirmationToken()))
+                .andExpect(status().isOk());
         // given && when
         ResultActions successLoginRequest = mockMvc.perform(post("/token").content(requestBodyLogin())
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());

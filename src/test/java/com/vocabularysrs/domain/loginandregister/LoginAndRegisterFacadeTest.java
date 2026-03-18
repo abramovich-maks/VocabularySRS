@@ -4,6 +4,7 @@ import com.vocabularysrs.domain.loginandregister.dto.UserRegisterRequestDto;
 import com.vocabularysrs.domain.loginandregister.dto.UserRegisterResponseDto;
 import com.vocabularysrs.domain.shared.Language;
 import org.junit.jupiter.api.Test;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,7 +15,8 @@ class LoginAndRegisterFacadeTest {
 
     UserRepository userRepository = new InMemoryUserRepository();
     PasswordEncoder encodedPassword = new InMemoryPasswordEncoder();
-    LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterConfiguration().loginAndRegisterFacade(userRepository, encodedPassword);
+    JavaMailSender mailSender = new InMemoryMailSender();
+    LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterConfiguration().loginAndRegisterFacade(userRepository, encodedPassword, mailSender);
 
     @Test
     public void should_return_success_when_user_register_with_not_exist_email() {

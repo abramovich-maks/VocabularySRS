@@ -5,9 +5,11 @@ import com.vocabularysrs.domain.AdjustableClock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -27,6 +29,9 @@ public class BaseIntegrationTest {
 
     @Autowired
     public MockMvc mockMvc;
+
+    @MockitoBean
+    private JavaMailSender mailSender;
 
     @Autowired
     public ObjectMapper objectMapper;
