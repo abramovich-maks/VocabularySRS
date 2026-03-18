@@ -17,6 +17,11 @@ spring:
       host: localhost
       port: 63792
 
+    ## Mail Sender
+app:
+  email:
+    confirmation:
+      base-url: http://localhost:3000
 
 auth:
   jwt:

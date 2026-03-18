@@ -9,25 +9,18 @@ import java.util.Collections;
 
 public class SecurityUser implements UserDetails {
 
-    private final Long userId;
-    private final Language language;
-    private final String username;
-    private final String passwordHash;
+    private final User user;
 
-
-    public SecurityUser(Long userId, Language language, String username, final String passwordHash) {
-        this.userId = userId;
-        this.language = language;
-        this.username = username;
-        this.passwordHash = passwordHash;
+    public SecurityUser(User user) {
+        this.user = user;
     }
 
     public Long getUserId() {
-        return userId;
+        return user.getId();
     }
 
     public Language getUserLanguage() {
-        return language;
+        return user.getLanguage();
     }
 
     @Override
@@ -37,12 +30,12 @@ public class SecurityUser implements UserDetails {
 
     @Override
     public String getPassword() {
-        return passwordHash;
+        return user.getPasswordHash();
     }
 
     @Override
     public String getUsername() {
-        return username;
+        return user.getEmail();
     }
 
     @Override
@@ -58,5 +51,10 @@ public class SecurityUser implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return user.isEnabled();
     }
 }

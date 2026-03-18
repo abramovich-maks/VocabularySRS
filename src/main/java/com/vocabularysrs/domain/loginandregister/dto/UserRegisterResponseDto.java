@@ -8,6 +8,7 @@ public record UserRegisterResponseDto(
         String username,
         String surname,
         String email,
-        String message
+        String message,
+        String confirmationToken
 ) {
 }

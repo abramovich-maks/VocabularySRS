@@ -16,7 +16,8 @@ class LoginAndRegisterFacadeTest {
     UserRepository userRepository = new InMemoryUserRepository();
     PasswordEncoder encodedPassword = new InMemoryPasswordEncoder();
     JavaMailSender mailSender = new InMemoryMailSender();
-    LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterConfiguration().loginAndRegisterFacade(userRepository, encodedPassword, mailSender);
+    MailSenderProperties mailProperties = new MailSenderProperties("http://localhost:8080", "User123");
+    LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterConfiguration().loginAndRegisterFacade(userRepository, encodedPassword, mailSender, mailProperties);
 
     @Test
     public void should_return_success_when_user_register_with_not_exist_email() {

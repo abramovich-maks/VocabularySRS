@@ -3,7 +3,7 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
-import com.vocabularysrs.domain.shared.Language;
+import com.vocabularysrs.domain.loginandregister.UserSecurityQueryService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +23,7 @@ import java.io.IOException;
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenValidator jwtTokenValidator;
+    private final UserSecurityQueryService userQueryService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -31,16 +32,17 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 DecodedJWT decodedJWT = jwtTokenValidator.verifyAccessToken(token);
-                String username = decodedJWT.getSubject();
-
                 Long userId = decodedJWT.getClaim("userId").asLong();
-                String language = decodedJWT.getClaim("language").asString();
+                var optionalUser = userQueryService.findById(userId);
 
-                SecurityUser securityUser = new SecurityUser(
-                        userId,
-                        Language.valueOf(language),
-                        username,
-                        "");
+                if (optionalUser.isEmpty()) {
+                    log.warn("User not found for id: {}", userId);
+                    SecurityContextHolder.clearContext();
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+                var user = optionalUser.get();
+                SecurityUser securityUser = new SecurityUser(user);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(securityUser, null, securityUser.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (JWTVerificationException ex) {

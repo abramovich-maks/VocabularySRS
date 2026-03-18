@@ -2,6 +2,7 @@ package com.vocabularysrs.domain.loginandregister;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -9,10 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 class LoginAndRegisterConfiguration {
 
     @Bean
-    LoginAndRegisterFacade loginAndRegisterFacade(UserRepository userRepository, PasswordEncoder encodedPassword) {
+    LoginAndRegisterFacade loginAndRegisterFacade(UserRepository userRepository, PasswordEncoder encodedPassword, JavaMailSender mailSender, MailSenderProperties mailProperties) {
         UserRetriever userRetriever = new UserRetriever(userRepository);
-        UserAdder userAdder = new UserAdder(userRepository, userRetriever, encodedPassword);
-        return new LoginAndRegisterFacade(userAdder, userRetriever);
+        UserConformer userConformer = new UserConformer(mailSender, userRepository, mailProperties);
+        UserAdder userAdder = new UserAdder(userRepository, userRetriever, encodedPassword, userConformer);
+        return new LoginAndRegisterFacade(userAdder, userRetriever, userConformer);
     }
 
     @Bean

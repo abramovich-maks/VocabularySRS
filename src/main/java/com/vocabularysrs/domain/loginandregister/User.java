@@ -24,7 +24,7 @@ import lombok.Setter;
 @Setter(AccessLevel.PACKAGE)
 @Entity
 @Table(name = "users")
-class User {
+public class User {
 
     @Id
     @GeneratedValue(generator = "users_id_seq", strategy = GenerationType.SEQUENCE)
@@ -51,13 +51,24 @@ class User {
     @Column(name = "user_language", nullable = false)
     private Language language;
 
-    static User createNew(final String username, final String surname, final Language language, final String email, final String passwordHash) {
+    private String confirmationToken;
+
+    private boolean enabled = false;
+
+    public boolean confirm() {
+        this.setEnabled(true);
+        this.setConfirmationToken(null);
+        return true;
+    }
+
+    static User createNew(final String username, final String surname, final Language language, final String email, final String passwordHash, final String confirmationToken) {
         return User.builder()
                 .username(username)
                 .surname(surname)
                 .language(language)
                 .email(email)
                 .passwordHash(passwordHash)
+                .confirmationToken(confirmationToken)
                 .build();
     }
 }

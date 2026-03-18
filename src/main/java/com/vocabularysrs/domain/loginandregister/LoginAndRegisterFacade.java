@@ -9,6 +9,7 @@ public class LoginAndRegisterFacade {
 
     private final UserAdder userAdder;
     private final UserRetriever userRetriever;
+    private final UserConformer userConformer;
 
     public UserRegisterResponseDto registerUser(UserRegisterRequestDto requestDto) {
         return userAdder.addUser(requestDto);
@@ -16,5 +17,9 @@ public class LoginAndRegisterFacade {
 
     public UserDtoResponse findByEmail(String email) {
         return userRetriever.findByEmail(email);
+    }
+
+    public ConfirmResponse confirmUser(final String token) {
+        return userConformer.confirmUser(token);
     }
 }

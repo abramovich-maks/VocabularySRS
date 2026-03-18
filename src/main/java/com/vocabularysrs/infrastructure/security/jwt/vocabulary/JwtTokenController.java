@@ -3,7 +3,7 @@ package com.vocabularysrs.infrastructure.security.jwt.vocabulary;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.vocabularysrs.domain.loginandregister.SecurityUser;
-import com.vocabularysrs.domain.shared.Language;
+import com.vocabularysrs.domain.loginandregister.UserSecurityQueryService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,19 +28,28 @@ class JwtTokenController {
     private final JwtConfigurationProperties properties;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenValidator jwtTokenValidator;
+    private final UserSecurityQueryService userQueryService;
 
     @PostMapping("/token")
     public ResponseEntity<JwtResponseDto> login(@RequestBody @Valid TokenRequestDto dto, HttpServletResponse response) {
-        String email = dto.email().toLowerCase();
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, dto.password()));
-        SecurityUser user = (SecurityUser) auth.getPrincipal();
-        String accessToken = tokenGenerator.generateAccessToken(user);
-        String refreshToken = tokenGenerator.generateRefreshToken(user);
-        addRefreshCookie(response, refreshToken, (int) properties.refreshExpirationSeconds());
-        return ResponseEntity.ok(
-                JwtResponseDto.builder()
-                        .token(accessToken)
-                        .build());
+        try {
+            String email = dto.email().toLowerCase();
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, dto.password()));
+            SecurityUser user = (SecurityUser) auth.getPrincipal();
+            String accessToken = tokenGenerator.generateAccessToken(user);
+            String refreshToken = tokenGenerator.generateRefreshToken(user);
+            addRefreshCookie(response, refreshToken, (int) properties.refreshExpirationSeconds());
+            return ResponseEntity.ok(
+                    JwtResponseDto.builder()
+                            .token(accessToken)
+                            .build());
+
+        } catch (DisabledException e) {
+            return ResponseEntity.status(HttpServletResponse.SC_FORBIDDEN)
+                    .body(JwtResponseDto.builder()
+                            .error("Please confirm your email first")
+                            .build());
+        }
     }
 
 
@@ -51,17 +61,13 @@ class JwtTokenController {
         }
         try {
             DecodedJWT decodedJWT = jwtTokenValidator.verifyRefreshToken(refreshToken);
-            String username = decodedJWT.getSubject();
-
             Long userId = decodedJWT.getClaim("userId").asLong();
-            String language = decodedJWT.getClaim("language").asString();
-            SecurityUser user = new SecurityUser(
-                    userId,
-                    Language.valueOf(language),
-                    username,
-                    "");
-
-            String newAccessToken = tokenGenerator.generateAccessToken(user);
+            var optionalUser = userQueryService.findById(userId);
+            if (optionalUser.isEmpty()) {
+                return ResponseEntity.status(401).build();
+            }
+            SecurityUser securityUser = new SecurityUser(optionalUser.get());
+            String newAccessToken = tokenGenerator.generateAccessToken(securityUser);
             return ResponseEntity.ok(
                     JwtResponseDto.builder()
                             .token(newAccessToken)
