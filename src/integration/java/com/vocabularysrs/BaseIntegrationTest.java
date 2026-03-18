@@ -2,6 +2,8 @@ package com.vocabularysrs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vocabularysrs.domain.AdjustableClock;
+import jakarta.mail.internet.MimeMessage;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,10 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.time.Clock;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+
 @SpringBootTest(classes = {VocabularySrsApplication.class, IntegrationConfiguration.class})
 @ActiveProfiles("integration")
 @AutoConfigureMockMvc
@@ -32,6 +38,14 @@ public class BaseIntegrationTest {
 
     @MockitoBean
     private JavaMailSender mailSender;
+
+    @BeforeEach
+    void setupMailSender() {
+        MimeMessage mimeMessage = new MimeMessage((jakarta.mail.Session) null);
+
+        when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
+        doNothing().when(mailSender).send(any(MimeMessage.class));
+    }
 
     @Autowired
     public ObjectMapper objectMapper;

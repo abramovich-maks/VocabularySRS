@@ -11,6 +11,7 @@ class UserMapper {
                 .surname(savedUser.getSurname())
                 .email(savedUser.getEmail())
                 .message("User created successful!")
+                .confirmationToken(savedUser.getConfirmationToken())
                 .build();
     }
 }

@@ -11,4 +11,8 @@ interface UserRepository extends Repository<User, Long> {
     User save(User user);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByConfirmationToken(String confirmationToken);
+
+    Optional<User> findById(Long id);
 }

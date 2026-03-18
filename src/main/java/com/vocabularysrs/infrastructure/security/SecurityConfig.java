@@ -40,8 +40,8 @@ class SecurityConfig {
                                 "/webjars/**",
                                 "/token/**",
                                 "/register/**",
-                                "/test/**",
-                                "/swagger-resources/**"
+                                "/swagger-resources/**",
+                                "/confirm/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
