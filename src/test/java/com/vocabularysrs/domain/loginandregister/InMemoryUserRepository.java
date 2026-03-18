@@ -35,4 +35,14 @@ class InMemoryUserRepository implements UserRepository {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("User not found")));
     }
+
+    @Override
+    public Optional<User> findByConfirmationToken(final String confirmationToken) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> findById(final Long id) {
+        return Optional.empty();
+    }
 }
