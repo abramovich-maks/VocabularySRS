@@ -24,6 +24,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -84,7 +85,8 @@ class JwtAuthTokenFilterTest {
         request.addHeader("Authorization", "Bearer " + token);
 
         var user = UserTestDataFactory.createTestUser(1L);
-        when(userQueryService.findById(1L)).thenReturn(user);
+
+        when(userQueryService.findById(1L)).thenReturn(Optional.of(user));
         // when
         filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
 
@@ -113,6 +115,9 @@ class JwtAuthTokenFilterTest {
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.addHeader("Authorization", "Bearer " + token);
+
+        var user = UserTestDataFactory.createTestUser(5L);
+        when(userQueryService.findById(5L)).thenReturn(Optional.of(user));
 
         // when
         filter.doFilter(request, new MockHttpServletResponse(), new MockFilterChain());
