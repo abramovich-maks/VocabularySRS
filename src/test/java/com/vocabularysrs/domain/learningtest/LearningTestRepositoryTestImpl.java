@@ -1,5 +1,7 @@
 package com.vocabularysrs.domain.learningtest;
 
+import com.vocabularysrs.domain.loginandregister.User;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,19 +21,19 @@ class LearningTestRepositoryTestImpl implements LearningTestRepository {
                 q.setId(id);
             }
         });
-        storage.put(key(test.getTaskDate(), test.getUserId()), test);
+        storage.put(key(test.getTaskDate(), test.getUser().getId()), test);
         return test;
     }
 
     @Override
-    public Optional<LearningTest> findLearningTaskByTaskDateAndUserId(LocalDate date, Long userId) {
-        return Optional.ofNullable(storage.get(key(date, userId)));
+    public Optional<LearningTest> findLearningTaskByTaskDateAndUser(LocalDate date, User user) {
+        return Optional.ofNullable(storage.get(key(date, user.getId())));
     }
 
     @Override
-    public Optional<LearningTest> findByQuestionIdAndUserId(Long questionId, Long userId) {
+    public Optional<LearningTest> findByQuestionIdAndUser(Long questionId, User user) {
         return storage.values().stream()
-                .filter(test -> test.getUserId().equals(userId))
+                .filter(test -> test.getUser().getId().equals(user.getId()))
                 .filter(test -> test.getQuestions().stream()
                         .anyMatch(q -> q.getId().equals(questionId)))
                 .findFirst();

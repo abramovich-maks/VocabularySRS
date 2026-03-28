@@ -9,7 +9,7 @@ import java.util.List;
 class LearningTestMapper {
 
     public static AnswerResultDto mapFromAnswerResultToAnswerResultDto(final AnswerResult result) {
-        return AnswerResultDto.builder().questionId(result.questionId()).wordEntryId(result.wordEntryId()).userAnswer(result.userAnswer()).correctAnswer(result.correctAnswer()).correct(result.correct()).build();
+        return AnswerResultDto.builder().questionId(result.questionId()).wordEntryId(result.wordEntryId()).word(result.word()).userAnswer(result.userAnswer()).correctAnswer(result.correctAnswer()).correct(result.correct()).build();
     }
 
     public static LearningTestDto mapFromLearningTaskToLearningTaskDto(LearningTest task) {
@@ -26,7 +26,7 @@ class LearningTestMapper {
         return new LearningTestDto(
                 task.getId(),
                 task.getTaskDate(),
-                task.getUserId(),
+                task.getUser().getId(),
                 questions,
                 task.hasUnansweredQuestions()
         );

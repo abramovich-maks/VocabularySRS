@@ -15,11 +15,13 @@ class LearningTestConfigurations {
                                                  WordEntryReadPort wordEntryReadPort,
                                                  WordEntryUpdatePort wordEntryUpdatePort,
                                                  CurrentUserProvider user,
-                                                 Clock clock) {
-        LearningTestGenerator learningTestGenerator = new LearningTestGenerator(learningTaskRepository, wordEntryReadPort);
-        DailyTestRetriever retriever = new DailyTestRetriever(learningTestGenerator, user, wordEntryReadPort, learningTaskRepository, clock);
-        DailyTestResultRetriever resultRetriever = new DailyTestResultRetriever(learningTaskRepository, wordEntryUpdatePort, user, clock);
-        DailyTestAnswerAccepter answerAccepter = new DailyTestAnswerAccepter(user, learningTaskRepository);
+                                                 Clock clock,
+                                                 UserReadPort userReadPort,
+                                                 LearningTestHistoryRepository learningTestHistoryRepository) {
+        LearningTestGenerator learningTestGenerator = new LearningTestGenerator(learningTaskRepository, wordEntryReadPort, userReadPort);
+        DailyTestRetriever retriever = new DailyTestRetriever(learningTestGenerator, user, wordEntryReadPort, learningTaskRepository, userReadPort, clock);
+        DailyTestResultRetriever resultRetriever = new DailyTestResultRetriever(learningTaskRepository, wordEntryUpdatePort, user, userReadPort, clock, learningTestHistoryRepository);
+        DailyTestAnswerAccepter answerAccepter = new DailyTestAnswerAccepter(user, learningTaskRepository, userReadPort);
         return new LearningTestFacade(retriever, resultRetriever, answerAccepter);
     }
 }

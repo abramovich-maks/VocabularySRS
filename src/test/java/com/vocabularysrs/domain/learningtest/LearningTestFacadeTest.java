@@ -27,8 +27,9 @@ class LearningTestFacadeTest {
     );
     private final WordEntryReadPortTestImpl readPort = new WordEntryReadPortTestImpl();
     private final LearningTestRepositoryTestImpl repository = new LearningTestRepositoryTestImpl();
-
-    private final LearningTestFacade facade = new LearningTestConfigurations().learningTestFacade(repository, readPort, mock(WordEntryUpdatePort.class), new TestCurrentUserProvider(), clock);
+    private final LearningTestHistoryRepository learningTestHistoryRepository = new LearningTestHistoryRepositoryTestImpl();
+    private final UserReadPort userReadPort = new UserReadPortTestImpl();
+    private final LearningTestFacade facade = new LearningTestConfigurations().learningTestFacade(repository, readPort, mock(WordEntryUpdatePort.class), new TestCurrentUserProvider(), clock, userReadPort, learningTestHistoryRepository);
 
     @Test
     void should_return_no_words_when_user_has_no_words() {
