@@ -1,6 +1,7 @@
 package com.vocabularysrs.domain.learningtest;
 
 import com.vocabularysrs.domain.learningtest.dto.LearningTestDto;
+import com.vocabularysrs.domain.loginandregister.User;
 import com.vocabularysrs.domain.words.WordEntryReadPort;
 import com.vocabularysrs.domain.words.WordEntrySnapshot;
 import lombok.AllArgsConstructor;
@@ -18,11 +19,13 @@ class LearningTestGenerator {
 
     private final LearningTestRepository learningTaskRepository;
     private final WordEntryReadPort wordEntryReadPort;
+    private final UserReadPort userReadPort;
 
     public LearningTestDto generateDailyTest(LocalDate taskDate, Long userId) {
         List<WordEntrySnapshot> entries = wordEntryReadPort.findWordEntriesByNextReviewDateAndUserIdLessThanEqual(taskDate, userId);
 
-        LearningTest task = new LearningTest(userId, taskDate, new ArrayList<>());
+        User user = userReadPort.getReferenceById(userId);
+        LearningTest task = LearningTest.builder().taskDate(taskDate).user(user).questions(new ArrayList<>()).build();
 
         for (WordEntrySnapshot word : entries) {
             task.addQuestion(new Question(

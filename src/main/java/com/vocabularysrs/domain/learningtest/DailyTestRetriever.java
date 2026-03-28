@@ -3,6 +3,7 @@ package com.vocabularysrs.domain.learningtest;
 import com.vocabularysrs.domain.learningtest.dto.DailyTestDto;
 import com.vocabularysrs.domain.learningtest.dto.LearningTestDto;
 import com.vocabularysrs.domain.learningtest.dto.QuestionDto;
+import com.vocabularysrs.domain.loginandregister.User;
 import com.vocabularysrs.domain.security.CurrentUserProvider;
 import com.vocabularysrs.domain.words.WordEntryReadPort;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ class DailyTestRetriever {
     private final CurrentUserProvider currentUserProvider;
     private final WordEntryReadPort wordEntryReadPort;
     private final LearningTestRepository learningTestRepository;
+    private final UserReadPort userReadPort;
 
     private final Clock clock;
 
@@ -59,7 +61,8 @@ class DailyTestRetriever {
     }
 
     public Optional<LearningTestDto> findInProgress(LocalDate date, Long userId) {
-        return learningTestRepository.findLearningTaskByTaskDateAndUserId(date, userId)
+        User user = userReadPort.getReferenceById(userId);
+        return learningTestRepository.findLearningTaskByTaskDateAndUser(date, user)
                 .map(LearningTestMapper::mapFromLearningTaskToLearningTaskDto);
     }
 }

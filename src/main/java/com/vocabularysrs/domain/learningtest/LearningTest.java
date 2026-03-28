@@ -1,10 +1,13 @@
 package com.vocabularysrs.domain.learningtest;
 
+import com.vocabularysrs.domain.loginandregister.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
@@ -37,16 +40,12 @@ class LearningTest {
 
     private LocalDate taskDate;
 
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @OneToMany(mappedBy = "learningTest", cascade = CascadeType.ALL)
     private List<Question> questions = new ArrayList<>();
-
-    LearningTest(final Long userId, final LocalDate taskDate, final List<Question> questions) {
-        this.userId = userId;
-        this.taskDate = taskDate;
-        this.questions = questions;
-    }
 
     public void addQuestion(Question question) {
         this.questions.add(question);
